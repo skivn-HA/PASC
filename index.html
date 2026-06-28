@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="https://www.dropbox.com/scl/fi/919t0ezqqmiz7zxmdrm2z/Logo-S19.png?rlkey=r0yb4d9a05xrpe42kvbfyx7rc&raw=1">
-    <title>Poker Academy Social Club v1.0.3</title>
+    <title>PASC Season 19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -320,6 +320,9 @@
                             </div>
                             <button onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
                                 <i class="fas fa-plus mr-2"></i>Add Player
+                            </button>
+                            <button onclick="startGame()" class="px-8 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition-colors duration-300 text-white shadow-lg">
+                                <i class="fas fa-play mr-2"></i>START GAME
                             </button>
                         </div>
                         <div class="mb-4">
@@ -718,6 +721,36 @@
             if (pageId === 'stats') {
                 updateStats();
             }
+        }
+
+        function startGame() {
+            if (blindLevels.length === 0) {
+                alert('Please add at least one blind level on the Blind Timer page');
+                return;
+            }
+
+            if (isTimerRunning || currentBlindIndex !== 0) {
+                showPage('blind-timer');
+                return;
+            }
+
+            pauseTimer();
+            currentBlindIndex = 0;
+            window.timerHasStarted = false;
+            blindWarningGiven = false;
+
+            blindLevels.forEach(level => {
+                if (level.type === 'break') {
+                    level.timeLeft = level.breakTime;
+                } else {
+                    level.timeLeft = level.levelTime;
+                }
+            });
+
+            renderBlindLevelsList();
+            updateBlindDisplay();
+            showPage('blind-timer');
+            startTimer();
         }
         
         // Player registration functions
