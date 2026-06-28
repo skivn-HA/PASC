@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#9333ea">
+    <meta name="description" content="Poker Academy Social Club — registration, blind timer, and stats">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PASC">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="https://www.dropbox.com/scl/fi/919t0ezqqmiz7zxmdrm2z/Logo-S19.png?rlkey=r0yb4d9a05xrpe42kvbfyx7rc&raw=1">
+    <title>Poker Academy Social Club v1.0.3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        poker: {
+                            primary: '#111827', // gray-900
+                            secondary: '#1f2937', // gray-800
+                            accent: '#8a2be2', // purple
+                            highlight: '#f7931a', // orange
+                            text: '#f9fafb' // gray-100
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #232526 0%, #8a2be2 100%);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .glow {
+            box-shadow: 0 0 15px rgba(247, 147, 26, 0.7), 0 0 10px #232526;
+        }
+        
+        .input-highlight {
+            transition: all 0.3s ease;
+        }
+        
+        .input-highlight:focus {
+            border-color: #f7931a;
+            box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.3);
+        }
+        
+        .timer-display {
+            /* Auto-scales to the viewport: as big as possible while fitting width & height */
+            font-size: clamp(3rem, min(20vw, 30vh), 20rem);
+            line-height: 1;
+            color: white;
+        }
+        
+        .blind-display {
+            font-size: clamp(2rem, min(12vw, 18vh), 12rem);
+            line-height: 1;
+            color: #f7931a;
+        }
+        
+        .player-card {
+            transition: all 0.3s ease;
+        }
+        
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(247, 147, 26, 0.3);
+        }
+        
+        .eliminated {
+            opacity: 0.6;
+            background-color: rgba(138, 43, 226, 0.08);
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.5; transform: scale(1.2) rotate(10deg); }
+        }
+        .animate-sparkle {
+            animation: sparkle 1.4s infinite ease-in-out;
+            color: #f7931a;
+        }
+        /* Compact mode styles */
+        body.compact-mode .timer-display {
+            font-size: 6rem !important;
+        }
+        body.compact-mode .blind-display {
+            font-size: 4rem !important;
+        }
+        body.compact-mode #nextBlind {
+            font-size: 2rem !important;
+        }
+        
+        #nextBlind {
+            font-size: 2rem !important;
+            line-height: 1;
+        }
+        /* Pull the timer closer to the "Next" line and slider in normal (non-fullscreen) mode */
+        body:not(.fullscreen-mode) #timer.timer-display {
+            margin-top: -2rem;
+            margin-bottom: -1.5rem;
+        }
+        body.compact-mode .player-card,
+        body.compact-mode .bg-poker-primary,
+        body.compact-mode .bg-poker-secondary {
+            padding: 0.5rem !important;
+        }
+        body.compact-mode .container,
+        body.compact-mode .page {
+            padding: 0.5rem !important;
+        }
+        body.compact-mode h1,
+        body.compact-mode h2,
+        body.compact-mode h3 {
+            font-size: 1.2rem !important;
+        }
+        body.compact-mode .grid,
+        body.compact-mode .flex {
+            gap: 0.25rem !important;
+        }
+        body.compact-mode .mb-8,
+        body.compact-mode .mb-6,
+        body.compact-mode .mb-4,
+        body.compact-mode .mb-2 {
+            margin-bottom: 0.5rem !important;
+        }
+        body.compact-mode .gap-6 {
+            gap: 0.25rem !important;
+        }
+        body.compact-mode .gap-4 {
+            gap: 0.25rem !important;
+        }
+        body.compact-mode .gap-2 {
+            gap: 0.125rem !important;
+        }
+        body.compact-mode button,
+        body.compact-mode input,
+        body.compact-mode select {
+            font-size: 1rem !important;
+            padding: 0.5rem 0.75rem !important;
+        }
+        body.compact-mode .hide-in-compact {
+            display: none !important;
+        }
+        body.compact-mode #buyIn {
+            padding-left: 2rem !important;
+        }
+        /* Fullscreen mode styles */
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+        
+        #fullscreenOverlay .timer-display {
+            /* Fill the screen: limited by width (vw) and height (vh) so it always fits */
+            font-size: min(26vw, 40vh) !important;
+            margin-bottom: 0.5vh;
+        }
+        
+        #fullscreenOverlay .blind-display {
+            font-size: min(16vw, 22vh) !important;
+            margin-bottom: 1vh;
+        }
+        
+        #fullscreenOverlay #nextBlind {
+            font-size: min(6vw, 8vh) !important;
+            margin-bottom: 0;
+            line-height: 1;
+        }
+
+        #fullscreenOverlay #timer.timer-display {
+            margin-top: -3vh;
+        }
+        
+        #fullscreenOverlay .flex.flex-wrap.justify-center {
+            gap: 1rem;
+        }
+        
+        #fullscreenOverlay .flex.flex-wrap.justify-center button {
+            font-size: 1.5rem !important;
+            padding: 1rem 2rem !important;
+        }
+        
+        #fullscreenOverlay #timeSlider {
+            width: 80% !important;
+            max-width: 800px !important;
+            height: 20px !important;
+            margin-bottom: 1rem;
+        }
+        
+        #fullscreenOverlay .text-sm {
+            font-size: 1.5rem !important;
+        }
+        
+        #fullscreenOverlay #blindTimerGhostPlayer {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: rgba(31, 41, 55, 0.9);
+            border: 2px solid #8a2be2;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+        
+        #fullscreenOverlay #blindTimerGhostPlayer svg {
+            width: 64px;
+            height: 64px;
+        }
+        
+        #fullscreenOverlay #blindTimerGhostPlayer h3 {
+            font-size: 1.5rem;
+        }
+        
+        #fullscreenOverlay #blindTimerGhostPlayer div {
+            font-size: 2rem;
+        }
+        
+        /* Player dropdown styling */
+        #playerName {
+            font-size: 1.1rem;
+        }
+        
+        .player-dropdown-item {
+            font-size: 1.1rem;
+        }
+        
+        /* Bitcoin theme input styling */
+        input, select, textarea {
+            border-color: #374151 !important;
+            background-color: #111827 !important;
+            color: #f9fafb !important;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #f7931a !important;
+            box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.3) !important;
+        }
+        @media (max-width: 768px) {
+            #blindLevelsList .flex.items-center.p-0 {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+        }
+        body.compact-mode #blindLevelsList .bg-poker-primary {
+            padding: 0 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div class="w-full flex justify-center m-0 leading-none">
+        <!-- Logo Image -->
+        <img src="https://www.dropbox.com/scl/fi/919t0ezqqmiz7zxmdrm2z/Logo-S19.png?rlkey=r0yb4d9a05xrpe42kvbfyx7rc&raw=1" alt="Poker Academy Social Club Logo" class="block" style="height:280px; width:auto; object-fit:contain;" />
+    </div>
+    <div class="fixed top-2 right-2 z-50 flex gap-2">
+        <button id="installAppBtn" onclick="installApp()" class="hidden bg-purple-600 hover:bg-orange-500 text-white rounded-full px-3 py-2 shadow-lg focus:outline-none text-sm font-semibold" title="Install as app">
+            <i class="fas fa-download mr-1"></i>Install
+        </button>
+        <button id="layoutToggleBtn" onclick="toggleLayoutMode()" class="bg-poker-secondary hover:bg-poker-accent text-yellow-400 rounded-full p-2 shadow-lg focus:outline-none" title="Toggle Compact Layout">
+            <i class="fas fa-mobile-alt"></i>
+        </button>
+    </div>
+    <div class="container mx-auto px-4 pb-4 pt-0">
+        <!-- Navigation -->
+        <nav class="mb-4 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
+            <ul class="flex flex-wrap justify-center">
+                <li class="m-2">
+                    <button onclick="showPage('registration')" class="px-4 py-2 bg-purple-600 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-user-plus mr-2"></i>Registration
+                    </button>
+                </li>
+                <li class="m-2">
+                    <button onclick="showPage('stats')" class="px-4 py-2 bg-purple-600 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-chart-bar mr-2"></i>Stats Dashboard
+                    </button>
+                </li>
+                <li class="m-2">
+                    <button onclick="showPage('admin')" class="px-4 py-2 bg-red-700 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-user-shield mr-2"></i>Admin
+                    </button>
+                </li>
+                <li class="m-2">
+                    <button onclick="showPage('blind-timer')" class="px-4 py-2 bg-purple-600 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-clock mr-2"></i>Blind Timer
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        
+        <!-- Main Content -->
+        <main>
+            <!-- Registration Page -->
+            <div id="registration" class="page fade-in">
+                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                    <!-- Player Registration Card -->
+                    <div class="flex-1 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 mb-4 md:mb-0">
+                        <h2 class="text-2xl font-bold mb-4 text-yellow-400">
+                            <i class="fas fa-user-plus mr-2"></i>Player Registration
+                        </h2>
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="relative w-full md:w-[37.5%]">
+                                <input type="text" id="playerName" placeholder="Enter player or select from dropdown" autocomplete="off" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                <button type="button" onmousedown="togglePlayerNameDropdown(event)" tabindex="-1" title="Select a player" class="absolute right-2 top-1/2 -translate-y-1/2 text-poker-text/70 hover:text-poker-text px-1">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div id="playerNameDropdown" class="hidden absolute left-0 right-0 top-full mt-1 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-60 overflow-y-auto">
+                                    <!-- Options populated from Admin > Player Management -->
+                                </div>
+                            </div>
+                            <button onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-plus mr-2"></i>Add Player
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <h3 class="text-xl font-semibold mb-2">Registered Players</h3>
+                            <div id="playersList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                <!-- Players will be added here -->
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="assignTables()" class="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-table mr-2"></i>Assign Tables
+                            </button>
+                            <button onclick="clearPlayers()" class="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-trash mr-2"></i>Clear All
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Game Type & Buy In Card -->
+                    <div class="w-full md:w-80 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 flex flex-col gap-2">
+                        <h2 class="text-2xl font-bold mb-1 text-yellow-400">
+                            <i class="fas fa-coins mr-2"></i>Game Details
+                        </h2>
+                        <div>
+                            <label for="gameType" class="block mb-1 font-semibold text-poker-text">Game Type</label>
+                            <div class="relative">
+                                <input type="text" id="gameType" autocomplete="off" placeholder="Type or select a game type" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                <button type="button" onmousedown="toggleGameTypeDropdown(event)" tabindex="-1" title="Select a saved game" class="absolute right-2 top-1/2 -translate-y-1/2 text-poker-text/70 hover:text-poker-text px-1">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div id="gameTypeDropdown" class="hidden absolute left-0 right-0 top-full mt-1 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-60 overflow-y-auto">
+                                    <!-- Saved game types populated here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="startingStack" class="block mb-1 font-semibold text-poker-text">Starting Stack</label>
+                            <input type="text" id="startingStack" inputmode="numeric" placeholder="Enter starting stack" oninput="formatStartingStack(this)" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                        </div>
+                        <div>
+                            <label for="rebuyAddon" class="block mb-1 font-semibold text-poker-text">Rebuy / Addon</label>
+                            <select id="rebuyAddon" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="buyIn" class="block mb-1 font-semibold text-poker-text">Buy-in Cost</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 text-lg pointer-events-none">$</span>
+                                <input type="number" id="buyIn" placeholder="Enter buy-in amount" class="w-full pl-8 pr-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="gameCount" class="block mb-1 font-semibold text-poker-text">Game Count</label>
+                            <select id="gameCount" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="blindTime" class="block mb-1 font-semibold text-poker-text">Blind Time</label>
+                            <input type="number" id="blindTime" min="1" placeholder="Minutes" oninput="syncBlindTimeToTimer()" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                        </div>
+                        <button type="button" onclick="saveGameType()" class="mt-2 px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white">
+                            <i class="fas fa-save mr-2"></i>Save Game
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="tablesContainer" class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
+                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">
+                        <i class="fas fa-users mr-2"></i>Table Assignments
+                    </h2>
+                    <div id="tablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Tables will be added here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blind Timer Page -->
+            <div id="blind-timer" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
+                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">
+                        <i class="fas fa-clock mr-2"></i>Blind Timer
+                    </h2>
+                    <div class="mb-6" id="voiceSection">
+                        <label for="voiceSelect" class="block mb-1 font-medium">Voice for Announcements:</label>
+                        <div class="flex items-center gap-2">
+                            <select id="voiceSelect" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text"></select>
+                            <button id="testVoiceBtn" type="button" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium text-white">Test Voice</button>
+                        </div>
+                    </div>
+                    <div class="mb-6" id="blindLevelsSection">
+                        <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Blind Levels</h4>
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <input type="number" id="smallBlindInput" placeholder="Small Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            <input type="number" id="bigBlindInput" placeholder="Big Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            <input type="number" id="levelTimeInput" placeholder="Minutes" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            <button onclick="addBlindLevel()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-plus mr-2"></i>Add Level
+                            </button>
+                        </div>
+                        <!-- Set All Blind Times Section -->
+                        <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Set Blind Times</h4>
+                        <div class="flex items-center gap-2 mb-2">
+                            <input type="number" id="setAllBlindTimeInput" placeholder="Blind Time (min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:180px;">
+                            <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-clock mr-2"></i>Set Blind Times
+                            </button>
+                        </div>
+                        <!-- Breaks Section: moved here and restyled -->
+                        <div id="breaksSection" class="mb-2 mt-4">
+                            <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-coffee"></i>Breaks</h4>
+                            <div class="flex gap-2 items-center">
+                                <select id="breakAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
+                                <input type="number" id="breakTimeInput" placeholder="(min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:90px;">
+                                <button onclick="addBreakLevel()" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                    <i class="fas fa-coffee mr-2"></i>Add Break
+                                </button>
+                            </div>
+                        </div>
+                        <div id="blindLevelsList" class="mb-4 max-h-40 overflow-y-auto">
+                            <!-- Blind levels will be added here -->
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2 mb-4">
+                        <button onclick="toggleBlindLevelsVisibility()" id="hideBlindLevelsBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                            <i class="fas fa-eye-slash mr-2"></i>Hide Blind Levels
+                        </button>
+                        <button onclick="toggleFullscreen()" id="fullscreenBtn" class="px-4 py-2 bg-purple-700 hover:bg-purple-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                            <i class="fas fa-expand mr-2"></i>Fullscreen Timer
+                        </button>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div id="currentBlind" class="blind-display font-bold mb-2 text-yellow-400">Blinds: -/-</div>
+                        <div id="nextBlind" class="mb-0">Next: -/-</div>
+                        <div id="timer" class="timer-display font-mono mb-0">00:00</div>
+                        
+                        <!-- Time Adjustment Slider -->
+                        <div class="flex flex-col items-center mb-6">
+                            <input type="range" id="timeSlider" min="0" max="1200" value="1200" step="1" class="w-full md:w-2/3 lg:w-1/2 accent-yellow-400" oninput="onTimeSliderChange(this.value)">
+                            <div class="text-sm text-poker-text mt-1">Adjust Time Remaining</div>
+                        </div>
+                        
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <button onclick="startTimer()" id="startBtn" class="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white">
+                                <i class="fas fa-play mr-2"></i>Start
+                            </button>
+                            <button onclick="pauseTimer()" id="pauseBtn" class="px-6 py-3 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-lg transition-colors duration-300 hidden text-white">
+                                <i class="fas fa-pause mr-2"></i>Pause
+                            </button>
+                            <button onclick="nextBlind()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white">
+                                <i class="fas fa-forward mr-2"></i>Next Blind
+                            </button>
+                            <button onclick="prevBlind()" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white">
+                                <i class="fas fa-backward mr-2"></i>Previous Blind
+                            </button>
+                            <button onclick="resetCurrentBlind()" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white">
+                                <i class="fas fa-redo mr-2"></i>Reset Current
+                            </button>
+                        </div>
+                        
+                        <!-- Ghost Player Display -->
+                        <div id="blindTimerGhostPlayer" class="mt-8 p-4 bg-poker-primary rounded-lg border border-poker-accent/20 hidden">
+                            <div class="flex items-center justify-center gap-4">
+                                <div>
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z" fill="#fff" stroke="#6366f1" stroke-width="2"/>
+                                        <ellipse cx="18" cy="22" rx="2" ry="3" fill="#6366f1"/>
+                                        <ellipse cx="30" cy="22" rx="2" ry="3" fill="#6366f1"/>
+                                        <ellipse cx="24" cy="30" rx="3" ry="2" fill="#6366f1"/>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <h3 class="text-lg font-semibold mb-1 text-yellow-400">Ghost Player</h3>
+                                    <div id="blindTimerGhostPlayerName" class="text-2xl font-bold text-white">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stats Dashboard Page -->
+            <div id="stats" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
+                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">
+                        <i class="fas fa-chart-bar mr-2"></i>Stats Dashboard
+                    </h2>
+                    
+                    <div class="flex justify-end mb-4 gap-2">
+                        <button onclick="emailStats()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
+                            <i class="fas fa-envelope mr-2"></i>Email Stats
+                        </button>
+                        <button onclick="printStats()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
+                            <i class="fas fa-print mr-2"></i>Print Stats
+                        </button>
+                        <button onclick="smsStats()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
+                            <i class="fas fa-sms mr-2"></i>SMS Stats
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Today's Date</h3>
+                            <div class="text-2xl font-bold text-yellow-400" id="todaysDate">-</div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Game Type</h3>
+                            <div class="text-2xl font-bold text-yellow-400" id="gameTypeStat">-</div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Game Count</h3>
+                            <div class="text-2xl font-bold text-yellow-400" id="gameCountStat">-</div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Total Players</h3>
+                            <div class="text-2xl font-bold text-yellow-400" id="totalPlayersStat">0</div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Player Buy-in Cost</h3>
+                            <div class="text-2xl font-bold text-green-400 mb-4" id="buyInCostDisplay">$0</div>
+                            
+                            <h3 class="text-lg font-semibold mb-2">Total Buy-in Cash</h3>
+                            <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">PASC Cash</h3>
+                            <div class="mb-3">
+                                <div class="text-sm font-semibold text-white mb-1">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></div>
+                                <div class="text-xl font-bold text-green-400" id="pascGameCash">$0</div>
+                            </div>
+                            <div class="border-t border-poker-accent/20 pt-2">
+                                <div class="text-sm font-semibold text-white mb-1">Cash Taken from Raffle</div>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
+                                    <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="updateStats()" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Player Cash Payout <span id="playerCashPayoutPercent">(75%)</span></h3>
+                            <div class="text-2xl font-bold text-green-400" id="playerCashPayout">$0</div>
+                            <div class="mt-2 text-sm text-poker-text">
+                                <div>1st: <span id="payout1st">$0</span></div>
+                                <div>2nd: <span id="payout2nd">$0</span></div>
+                                <div>3rd: <span id="payout3rd">$0</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
+                            <h3 class="text-lg font-semibold mb-2">Total PASC Cash</h3>
+                            <div class="text-2xl font-bold text-green-400" id="pascCashTakings">$0</div>
+                            <div class="mt-2 text-sm text-poker-text">
+                                <div>PASC Game Cash: <span id="pascGameCashSummary">$0</span></div>
+                                <div>Raffle: <span id="raffleCashSummary">$0</span></div>
+                            </div>
+                        </div>
+                        <!-- Ghost Player Section (now in grid) -->
+                        <div id="ghostPlayerSection" class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10 flex items-center gap-4 mb-6 hidden">
+                            <div>
+                                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z" fill="#fff" stroke="#6366f1" stroke-width="2"/>
+                                    <ellipse cx="18" cy="22" rx="2" ry="3" fill="#6366f1"/>
+                                    <ellipse cx="30" cy="22" rx="2" ry="3" fill="#6366f1"/>
+                                    <ellipse cx="24" cy="30" rx="3" ry="2" fill="#6366f1"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-1 text-yellow-400">Ghost Player</h3>
+                                <div id="ghostPlayerName" class="text-xl font-bold text-white">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="bg-poker-primary rounded-xl p-4 shadow col-span-2 border border-poker-accent/10">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold">Points Table</h3>
+                            </div>
+                            <div id="pointsTable" class="overflow-y-auto max-h-96">
+                                <!-- Points table will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Page -->
+            <div id="admin" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-3xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-user-shield mr-2"></i>Admin Panel</h2>
+                    <div id="adminLoginSection">
+                        <form id="adminLoginForm" class="flex flex-col gap-4 max-w-sm mx-auto">
+                            <input type="text" id="adminUsername" placeholder="Username" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            <input type="password" id="adminPassword" placeholder="Password" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                            <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white">Login</button>
+                        </form>
+                        <div id="adminLoginError" class="text-red-400 mt-2 text-center hidden">Invalid username or password.</div>
+                    </div>
+                    <div id="adminPanelSection" class="hidden">
+                        <div class="mb-6">
+                            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
+                                <h3 class="text-xl font-semibold text-yellow-400">Player Management</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <button type="button" onclick="exportAdminData()" class="px-3 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white text-sm">
+                                        <i class="fas fa-file-export mr-2"></i>Export Data
+                                    </button>
+                                    <button type="button" onclick="document.getElementById('adminImportFile').click()" class="px-3 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white text-sm">
+                                        <i class="fas fa-file-import mr-2"></i>Import Data
+                                    </button>
+                                    <input type="file" id="adminImportFile" accept="application/json,.json" class="hidden" onchange="importAdminData(event)">
+                                </div>
+                            </div>
+                            <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                <input type="number" id="adminPlayerYears" placeholder="Years of Membership" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <option value="">Membership Status</option>
+                                    <option value="yes">Member</option>
+                                    <option value="no">Non-Member</option>
+                                </select>
+                                <select id="adminPlayerCommittee" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <option value="">Committee Member?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                                <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
+                            </form>
+                            <div id="adminPlayersList" class="overflow-x-auto">
+                                <!-- List of players will appear here -->
+                            </div>
+                        </div>
+                        <div class="border-t border-poker-accent/20 mb-6"></div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">PASC Cash & Payout Settings</h3>
+                            <form id="adminSettingsForm" class="flex flex-col md:flex-row gap-4 items-center">
+                                <div class="flex flex-col">
+                                    <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
+                                    <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                </div>
+                                <div class="flex flex-col">
+                                    <label for="adminPlayerPayoutPercent" class="text-sm font-semibold mb-1">Player Cash Payout %</label>
+                                    <input type="number" id="adminPlayerPayoutPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                </div>
+                                <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                            </form>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">Member Points & Winnings</h3>
+                            <div id="adminMemberStats" class="overflow-x-auto">
+                                <!-- Member stats table will appear here -->
+                            </div>
+                        </div>
+                        <button id="adminLogoutBtn" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Version Number - Appears on all pages -->
+        <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
+            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.06.28</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let players = [];
+        let tables = [];
+        let blindLevels = [];
+        let currentBlindIndex = 0;
+        let timerInterval;
+        let timeLeft = 0;
+        let isTimerRunning = false;
+        let eliminatedPlayers = [];
+        let blindWarningGiven = false;
+        let selectedVoice = null;
+        let originalPlayers = [];
+        let ghostEligible = false;
+        
+        // Page navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('fade-in');
+            });
+            
+            const page = document.getElementById(pageId);
+            page.classList.remove('hidden');
+            setTimeout(() => page.classList.add('fade-in'), 10);
+            
+            // Update stats when showing stats page
+            if (pageId === 'stats') {
+                updateStats();
+            }
+        }
+        
+        // Player registration functions
+        function registerPlayer() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (name === '') {
+                alert('Please enter a player name');
+                return;
+            }
+            
+            // Check if player with this name already exists
+            const existingPlayer = players.find(p => p.name.toLowerCase() === name.toLowerCase());
+            if (existingPlayer) {
+                alert(`Player "${name}" is already registered in this game.`);
+                return;
+            }
+            
+            const playerNumber = players.length + 1;
+            const adminRecord = (typeof adminPlayers !== 'undefined')
+                ? adminPlayers.find(p => (p.name || '').trim().toLowerCase() === name.toLowerCase())
+                : null;
+            const isMember = adminRecord
+                ? adminRecord.member === 'yes'
+                : ['David Bailey', 'Cindy', 'Andrew Bailey'].includes(name);
+            const isCommittee = adminRecord ? adminRecord.committee === 'yes' : false;
+            const player = {
+                id: Date.now(),
+                number: playerNumber,
+                name: name,
+                table: null,
+                eliminated: false,
+                isMember: isMember,
+                isCommittee: isCommittee
+            };
+            
+            players.push(player);
+            // Save original players if this is the first registration or after clear
+            if (originalPlayers.length === 0) {
+                originalPlayers = [];
+            }
+            originalPlayers.push({...player});
+            renderPlayersList();
+            nameInput.value = '';
+            updateStats();
+        }
+        
+        function renderPlayersList() {
+            const container = document.getElementById('playersList');
+            container.innerHTML = '';
+            players.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = `player-card bg-poker-primary rounded-lg p-4 shadow ${player.eliminated ? 'eliminated' : ''}`;
+                const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
+                const memberIcon = (player.isMember && !player.isCommittee) ? '<i class="far fa-user text-yellow-400 ml-2" title="PASC Member"></i>' : '';
+                playerCard.innerHTML = `
+                    <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>\n                </div>\n                <div class=\"flex items-center\">\n                        ${player.eliminated ? `<span class=\"text-sm bg-red-600 px-2 py-1 rounded ml-2\">Eliminated</span>` : ''}${committeeIcon}${memberIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
+                    </div>
+            </div>\n        `;
+                container.appendChild(playerCard);
+            });
+        }
+
+        function removePlayer(id) {
+            const player = players.find(p => p.id === id);
+            if (!player) return;
+            if (!confirm(`Remove ${player.name} from the game?`)) return;
+            players = players.filter(p => p.id !== id);
+            originalPlayers = originalPlayers.filter(p => p.id !== id);
+            eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== id);
+            if (window.selectedGhostPlayer && window.selectedGhostPlayer.id === id) {
+                window.selectedGhostPlayer = null;
+            }
+            // Renumber remaining players sequentially
+            players.forEach((p, i) => { p.number = i + 1; });
+            renderPlayersList();
+            renderTables();
+            updateStats();
+        }
+
+        function formatStartingStack(input) {
+            const digits = input.value.replace(/[^\d]/g, '');
+            input.value = digits ? Number(digits).toLocaleString('en-US') : '';
+        }
+
+        // --- SAVED GAME TYPES ---
+        let savedGames = JSON.parse(localStorage.getItem('savedGames') || '[]');
+        function persistSavedGames() {
+            localStorage.setItem('savedGames', JSON.stringify(savedGames));
+        }
+        function showGameTypeDropdown(filter = '') {
+            const dropdown = document.getElementById('gameTypeDropdown');
+            if (!dropdown) return;
+            const term = filter.trim().toLowerCase();
+            const matches = savedGames.filter(g => (g.gameType || '').toLowerCase().includes(term));
+            dropdown.innerHTML = '';
+            if (matches.length === 0) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+            matches.forEach((g) => {
+                const realIdx = savedGames.indexOf(g);
+                const item = document.createElement('div');
+                item.className = 'flex justify-between items-center px-4 py-2 cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'flex-grow truncate';
+                nameSpan.textContent = g.gameType;
+                nameSpan.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    loadSavedGame(realIdx);
+                    hideGameTypeDropdown();
+                });
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'ml-2 text-red-400 hover:text-red-200 font-bold flex-shrink-0';
+                del.title = 'Delete this game type';
+                del.innerHTML = '<i class="fas fa-times"></i>';
+                del.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteSavedGame(realIdx);
+                });
+                item.appendChild(nameSpan);
+                item.appendChild(del);
+                dropdown.appendChild(item);
+            });
+            dropdown.classList.remove('hidden');
+        }
+        function hideGameTypeDropdown() {
+            const dropdown = document.getElementById('gameTypeDropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+        function toggleGameTypeDropdown(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const dropdown = document.getElementById('gameTypeDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                hideGameTypeDropdown();
+            } else {
+                showGameTypeDropdown('');
+            }
+        }
+        function applyBlindTimeMinutes(minutes) {
+            const mins = parseInt(minutes);
+            if (isNaN(mins) || mins <= 0) return false;
+            blindLevels.forEach(level => {
+                if (!level.type || level.type !== 'break') {
+                    level.levelTime = mins * 60;
+                    level.timeLeft = mins * 60;
+                }
+            });
+            renderBlindLevelsList();
+            updateBlindDisplay();
+            return true;
+        }
+        function syncBlindTimeToTimer() {
+            const blindTimeEl = document.getElementById('blindTime');
+            const timerInput = document.getElementById('setAllBlindTimeInput');
+            if (!blindTimeEl) return;
+            if (timerInput) timerInput.value = blindTimeEl.value;
+            if (blindTimeEl.value) applyBlindTimeMinutes(blindTimeEl.value);
+        }
+        function loadSavedGame(idx) {
+            const g = savedGames[idx];
+            if (!g) return;
+            document.getElementById('gameType').value = g.gameType || '';
+            const ss = document.getElementById('startingStack');
+            if (ss) { ss.value = g.startingStack || ''; formatStartingStack(ss); }
+            const rebuy = document.getElementById('rebuyAddon');
+            if (rebuy) rebuy.value = g.rebuyAddon || 'no';
+            const buyIn = document.getElementById('buyIn');
+            if (buyIn) buyIn.value = g.buyIn || '';
+            const gameCount = document.getElementById('gameCount');
+            if (gameCount) gameCount.value = g.gameCount || '1';
+            const blindTime = document.getElementById('blindTime');
+            if (blindTime) blindTime.value = g.blindTime || '';
+            syncBlindTimeToTimer();
+            updateStats();
+        }
+        function saveGameType() {
+            const gameType = document.getElementById('gameType').value.trim();
+            if (!gameType) {
+                alert('Please enter a game type name first.');
+                return;
+            }
+            const entry = {
+                gameType,
+                startingStack: document.getElementById('startingStack').value,
+                rebuyAddon: document.getElementById('rebuyAddon').value,
+                buyIn: document.getElementById('buyIn').value,
+                gameCount: document.getElementById('gameCount').value,
+                blindTime: document.getElementById('blindTime').value
+            };
+            const existingIdx = savedGames.findIndex(g => (g.gameType || '').toLowerCase() === gameType.toLowerCase());
+            if (existingIdx !== -1) {
+                savedGames[existingIdx] = entry;
+            } else {
+                savedGames.push(entry);
+            }
+            savedGames.sort((a, b) => (a.gameType || '').localeCompare(b.gameType || ''));
+            persistSavedGames();
+            alert(`Game "${gameType}" saved.`);
+        }
+        function deleteSavedGame(idx) {
+            const g = savedGames[idx];
+            if (!g) return;
+            if (confirm(`Delete game type "${g.gameType}"?`)) {
+                savedGames.splice(idx, 1);
+                persistSavedGames();
+                showGameTypeDropdown(document.getElementById('gameType').value);
+            }
+        }
+
+        function assignTables() {
+            if (players.length === 0) {
+                alert('No players to assign to tables');
+                return;
+            }
+            
+            // Clear existing table assignments
+            players.forEach(player => {
+                player.table = null;
+            });
+            
+            // Calculate number of tables needed (max 8 players per table)
+            const numTables = Math.ceil(players.length / 8);
+            tables = Array.from({ length: numTables }, (_, i) => i + 1);
+            
+            // Enhanced shuffling for better mixing - shuffle multiple times
+            let shuffledPlayers = [...players];
+            
+            // First shuffle
+            shuffledPlayers = shuffledPlayers.sort(() => Math.random() - 0.5);
+            
+            // Second shuffle for better randomization
+            shuffledPlayers = shuffledPlayers.sort(() => Math.random() - 0.5);
+            
+            // Third shuffle with additional entropy
+            for (let i = 0; i < shuffledPlayers.length; i++) {
+                const randomIndex = Math.floor(Math.random() * shuffledPlayers.length);
+                [shuffledPlayers[i], shuffledPlayers[randomIndex]] = [shuffledPlayers[randomIndex], shuffledPlayers[i]];
+            }
+            
+            // Assign players to tables
+            let tableIndex = 0;
+            shuffledPlayers.forEach(player => {
+                player.table = tables[tableIndex];
+                tableIndex = (tableIndex + 1) % numTables;
+            });
+
+            // Shuffle player positions within each table for further randomness
+            tables.forEach(tableNum => {
+                // Get all players at this table
+                const tablePlayers = shuffledPlayers.filter(p => p.table === tableNum);
+                // Fisher-Yates shuffle for table positions
+                for (let i = tablePlayers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [tablePlayers[i], tablePlayers[j]] = [tablePlayers[j], tablePlayers[i]];
+                }
+                // Re-assign the shuffled order back to the main players array
+                // (update the order in the main players array for this table)
+                let idx = 0;
+                for (let i = 0; i < players.length; i++) {
+                    if (players[i].table === tableNum) {
+                        players[i] = tablePlayers[idx++];
+                    }
+                }
+            });
+            
+            renderTables();
+            renderPlayersList();
+            updateStats();
+        }
+        
+        function renderTables() {
+            const container = document.getElementById('tablesList');
+            container.innerHTML = '';
+            tables.forEach(tableNumber => {
+                const tablePlayers = players.filter(p => p.table === tableNumber);
+                const tableCard = document.createElement('div');
+                const isFinal = tableNumber === 'final';
+                tableCard.className = `rounded-xl shadow-xl overflow-hidden border ${isFinal ? 'border-yellow-400/60' : 'border-poker-accent/40'} bg-gradient-to-b from-poker-secondary to-poker-primary transform transition-transform hover:scale-[1.01]`;
+                // Use 'Final Table' if tableNumber is 'final'
+                const tableTitle = isFinal ? 'Final Table' : `Table ${tableNumber}`;
+                const headerGradient = isFinal
+                    ? 'from-yellow-500 via-amber-400 to-yellow-600'
+                    : 'from-poker-accent via-fuchsia-600 to-poker-highlight';
+                const headerIcon = isFinal ? 'fa-trophy' : 'fa-users';
+                tableCard.innerHTML = `
+                    <div class=\"bg-gradient-to-r ${headerGradient} px-4 py-3 flex items-center justify-center gap-2 shadow-md\">
+                        <i class=\"fas ${headerIcon} text-white drop-shadow\"></i>
+                        <h3 class=\"text-xl font-extrabold text-white tracking-wide drop-shadow\">${tableTitle}</h3>
+                    </div>
+                    <div class=\"p-4 space-y-2\">
+                        ${tablePlayers.map((player, idx) => {
+                            const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
+                            return `
+                            <div class=\"flex justify-between items-center p-2 rounded-lg border-l-4 transition-colors ${player.eliminated ? 'bg-red-900/40 border-red-500 opacity-75' : 'bg-poker-accent/25 border-poker-highlight hover:bg-poker-accent/40'}\">
+                                <div class=\"flex items-center gap-2\">
+                                    <span class=\"inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-xs shadow\">${idx + 1}</span>
+                                    <span class=\"font-bold text-yellow-300\">#${player.number}</span>
+                                    <span class=\"text-white font-medium ml-1\">${player.name}</span>
+                                    ${committeeIcon}
+                                </div>
+                                <div class=\"flex items-center gap-1\">
+                                    ${player.eliminated
+                                        ? `<span class=\"text-red-400 ml-2\"><i class=\"fas fa-skull\"></i></span><button onclick=\"eliminatePlayer(${player.id})\" class=\"px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs font-bold ml-2 text-white\" title=\"Undo elimination\"><i class='fas fa-undo'></i></button>`
+                                        : `<button onclick=\"eliminatePlayer(${player.id})\" class=\"px-3 py-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded text-xs font-bold ml-2 text-white shadow\">Eliminate</button>`}
+                                </div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                `;
+                container.appendChild(tableCard);
+            });
+        }
+        
+        function clearPlayers() {
+            if (confirm('Are you sure you want to clear all players?')) {
+                players = [];
+                tables = [];
+                eliminatedPlayers = [];
+                originalPlayers = [];
+                ghostEligible = false;
+                window.selectedGhostPlayer = null;
+                document.getElementById('playersList').innerHTML = '';
+                document.getElementById('tablesList').innerHTML = '';
+                const raffleCashEl = document.getElementById('raffleCash');
+                if (raffleCashEl) raffleCashEl.value = '0';
+                updateStats();
+            }
+        }
+        
+        // Blind timer functions
+        function addBlindLevel() {
+            const smallBlind = parseInt(document.getElementById('smallBlindInput').value);
+            const bigBlind = parseInt(document.getElementById('bigBlindInput').value);
+            const levelTime = parseInt(document.getElementById('levelTimeInput').value);
+            
+            if (isNaN(smallBlind) || isNaN(bigBlind) || isNaN(levelTime) || 
+                smallBlind <= 0 || bigBlind <= 0 || levelTime <= 0) {
+                alert('Please enter valid values for blinds and time');
+                return;
+            }
+            
+            if (bigBlind < smallBlind) {
+                alert('Big blind must be equal to or greater than small blind');
+                return;
+            }
+            
+            const level = {
+                smallBlind,
+                bigBlind,
+                levelTime: levelTime * 60, // Convert to seconds
+                timeLeft: levelTime * 60
+            };
+            
+            blindLevels.push(level);
+            renderBlindLevelsList();
+            
+            // Clear inputs
+            document.getElementById('smallBlindInput').value = '';
+            document.getElementById('bigBlindInput').value = '';
+            document.getElementById('levelTimeInput').value = '';
+            
+            // If this is the first level, set it as current
+            if (blindLevels.length === 1) {
+                currentBlindIndex = 0;
+                updateBlindDisplay();
+            }
+        }
+        
+        function renderBlindLevelsList() {
+            const container = document.getElementById('blindLevelsList');
+            container.innerHTML = '';
+            
+            blindLevels.forEach((level, index) => {
+                const levelItem = document.createElement('div');
+                levelItem.className = `flex justify-between items-center p-0 rounded mb-1 ${index === currentBlindIndex ? 'bg-poker-highlight/30' : 'bg-poker-primary'}`;
+                levelItem.innerHTML = `
+                    <div>
+                        <span class="font-bold">Level ${index + 1}:</span>
+                        <span>${level.smallBlind}/${level.bigBlind} - ${level.levelTime / 60} min</span>
+                    </div>
+                    <button onclick="removeBlindLevel(${index})" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(levelItem);
+            });
+        }
+        
+        function removeBlindLevel(index) {
+            blindLevels.splice(index, 1);
+            if (currentBlindIndex >= blindLevels.length) {
+                currentBlindIndex = Math.max(0, blindLevels.length - 1);
+            }
+            renderBlindLevelsList();
+            updateBlindDisplay();
+        }
+        
+        function clearBlindLevels() {
+            if (blindLevels.length === 0) return;
+            
+            if (confirm('Are you sure you want to clear all blind levels?')) {
+                blindLevels = [];
+                currentBlindIndex = 0;
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                window.timerHasStarted = false; // Reset timer start flag
+                document.getElementById('timer').textContent = '00:00';
+                document.getElementById('currentBlind').textContent = 'Blinds: -/-';
+                document.getElementById('nextBlind').textContent = 'Next: -/-';
+                document.getElementById('blindLevelsList').innerHTML = '';
+                
+                // Update button states
+                document.getElementById('startBtn').classList.remove('hidden');
+                document.getElementById('pauseBtn').classList.add('hidden');
+            }
+        }
+        
+        function startTimer() {
+            if (blindLevels.length === 0) {
+                alert('Please add at least one blind level');
+                return;
+            }
+            
+            if (isTimerRunning) return;
+            
+            // Check if this is the first time starting the timer
+            const isFirstStart = !window.timerHasStarted;
+            if (isFirstStart) {
+                window.timerHasStarted = true;
+                // Announce game start with current blind levels
+                const currentLevel = blindLevels[currentBlindIndex];
+                if (currentLevel.type === 'break') {
+                    speakBreak(currentLevel.breakTime / 60);
+                } else {
+                    speakGameStart(currentLevel.smallBlind, currentLevel.bigBlind);
+                }
+            }
+            
+            isTimerRunning = true;
+            ghostEligible = true; // Allow ghost player selection after timer starts
+            timeLeft = blindLevels[currentBlindIndex].timeLeft;
+            blindWarningGiven = false; // Reset warning for new level
+            
+            // Update button states (update all instances - original and cloned)
+            document.querySelectorAll('#startBtn').forEach(btn => btn.classList.add('hidden'));
+            document.querySelectorAll('#pauseBtn').forEach(btn => btn.classList.remove('hidden'));
+            
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                blindLevels[currentBlindIndex].timeLeft = timeLeft;
+                
+                // 30-second warning (skip for breaks)
+                if (timeLeft === 30 && !blindWarningGiven && blindLevels[currentBlindIndex].type !== 'break') {
+                    blindWarningGiven = true;
+                    speakWarning();
+                }
+                
+                if (timeLeft <= 0) {
+                    // If break, go to next blind after break ends
+                    if (blindLevels[currentBlindIndex].type === 'break') {
+                        nextBlind();
+                    } else {
+                        nextBlind();
+                    }
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+        
+        function pauseTimer() {
+            if (!isTimerRunning) return;
+            
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            
+            // Update button states (update all instances - original and cloned)
+            document.querySelectorAll('#startBtn').forEach(btn => btn.classList.remove('hidden'));
+            document.querySelectorAll('#pauseBtn').forEach(btn => btn.classList.add('hidden'));
+        }
+        
+        function nextBlind() {
+            if (blindLevels.length === 0) return;
+            
+            pauseTimer();
+            
+            currentBlindIndex = (currentBlindIndex + 1) % blindLevels.length;
+            const nextLevel = blindLevels[currentBlindIndex];
+            if (nextLevel.type === 'break') {
+                timeLeft = nextLevel.breakTime;
+                nextLevel.timeLeft = timeLeft;
+                updateBlindDisplay();
+                updateTimerDisplay();
+                // Announce break
+                speakBreak(nextLevel.breakTime / 60);
+                startTimer();
+            } else {
+                timeLeft = nextLevel.levelTime;
+                nextLevel.timeLeft = timeLeft;
+                updateBlindDisplay();
+                updateTimerDisplay();
+                // Announce the new blind level
+                speakBlindsUp(nextLevel.smallBlind, nextLevel.bigBlind);
+                startTimer();
+            }
+        }
+        
+        function prevBlind() {
+            if (blindLevels.length === 0) return;
+            
+            pauseTimer();
+            
+            currentBlindIndex = (currentBlindIndex - 1 + blindLevels.length) % blindLevels.length;
+            const prevLevel = blindLevels[currentBlindIndex];
+            if (prevLevel.type === 'break') {
+                timeLeft = prevLevel.breakTime;
+                prevLevel.timeLeft = timeLeft;
+                updateBlindDisplay();
+                updateTimerDisplay();
+                startTimer();
+            } else {
+                timeLeft = prevLevel.levelTime;
+                prevLevel.timeLeft = timeLeft;
+                updateBlindDisplay();
+                updateTimerDisplay();
+                if (isTimerRunning) {
+                    startTimer();
+                }
+            }
+        }
+        
+        function resetCurrentBlind() {
+            if (blindLevels.length === 0) return;
+            
+            pauseTimer();
+            
+            const level = blindLevels[currentBlindIndex];
+            if (level.type === 'break') {
+                timeLeft = level.breakTime;
+                level.timeLeft = timeLeft;
+            } else {
+                timeLeft = level.levelTime;
+                level.timeLeft = timeLeft;
+            }
+            
+            updateTimerDisplay();
+            // Update slider for reset
+            const slider = document.getElementById('timeSlider');
+            if (slider) {
+                const max = level.type === 'break' ? level.breakTime : level.levelTime;
+                slider.min = 0;
+                slider.max = max;
+                slider.value = 0;
+            }
+        }
+        
+        function updateTimerDisplay() {
+            const level = blindLevels[currentBlindIndex];
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timeText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update all timer elements (original and cloned)
+            document.querySelectorAll('#timer').forEach(timer => {
+                timer.textContent = timeText;
+            });
+            
+            // Update slider min/max and value so left = full time, right = 0
+            const sliders = document.querySelectorAll('#timeSlider');
+            sliders.forEach(slider => {
+                if (slider && blindLevels.length > 0) {
+                    const max = level.type === 'break' ? level.breakTime : level.levelTime;
+                    slider.min = 0;
+                    slider.max = max;
+                    slider.value = max - timeLeft;
+                }
+            });
+        }
+        
+        function updateBlindDisplay() {
+            if (blindLevels.length === 0) {
+                const currentBlindText = 'Blinds: -/-';
+                const nextBlindText = 'Next: -/-';
+                
+                document.querySelectorAll('#currentBlind').forEach(element => {
+                    element.textContent = currentBlindText;
+                });
+                document.querySelectorAll('#nextBlind').forEach(element => {
+                    element.textContent = nextBlindText;
+                });
+                return;
+            }
+            
+            const currentLevel = blindLevels[currentBlindIndex];
+            let currentBlindText = '';
+            if (currentLevel.type === 'break') {
+                currentBlindText = `Break: ${currentLevel.breakTime / 60} min`;
+            } else {
+                currentBlindText = `Blinds: ${currentLevel.smallBlind}/${currentLevel.bigBlind}`;
+            }
+            
+            const nextIndex = (currentBlindIndex + 1) % blindLevels.length;
+            const nextLevel = blindLevels[nextIndex];
+            let nextBlindText = '';
+            if (nextLevel.type === 'break') {
+                nextBlindText = `Next: Break (${nextLevel.breakTime / 60} min)`;
+            } else {
+                nextBlindText = `Next: ${nextLevel.smallBlind}/${nextLevel.bigBlind}`;
+            }
+            
+            // Update all current blind elements (original and cloned)
+            document.querySelectorAll('#currentBlind').forEach(element => {
+                element.textContent = currentBlindText;
+            });
+            
+            // Update all next blind elements (original and cloned)
+            document.querySelectorAll('#nextBlind').forEach(element => {
+                element.textContent = nextBlindText;
+            });
+            
+            renderBlindLevelsList();
+        }
+        
+        // Helper function to convert numbers to words (supports up to 999,999)
+        function numberToWords(num) {
+            if (typeof num !== 'number') num = parseInt(num);
+            if (isNaN(num)) return '';
+            const belowTwenty = ['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+            const tens = ['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+            function words(n) {
+                if (n < 20) return belowTwenty[n];
+                if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? ' ' + belowTwenty[n%10] : '');
+                if (n < 1000) return belowTwenty[Math.floor(n/100)] + ' hundred' + (n%100 ? ' ' + words(n%100) : '');
+                if (n < 1000000) return words(Math.floor(n/1000)) + ' thousand' + (n%1000 ? ' ' + words(n%1000) : '');
+                return n.toString();
+            }
+            return words(num);
+        }
+
+        function speakBlindsUp(smallBlind, bigBlind) {
+            if ('speechSynthesis' in window && selectedVoice !== null) {
+                // First utterance: 'Players, blinds are up.'
+                const message1 = 'Players, blinds are up.';
+                const utterance1 = new SpeechSynthesisUtterance(message1);
+                if (selectedVoice) utterance1.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance1);
+                // Second utterance: blind values, after 0.4s pause
+                setTimeout(() => {
+                    // Speak numbers as words
+                    const message2 = `${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
+                    const utterance2 = new SpeechSynthesisUtterance(message2);
+                    if (selectedVoice) utterance2.voice = selectedVoice;
+                    window.speechSynthesis.speak(utterance2);
+                }, 400);
+            }
+        }
+        
+        function speakGameStart(smallBlind, bigBlind) {
+            if ('speechSynthesis' in window && selectedVoice !== null) {
+                // First utterance: 'Players, the game has started, shuffle up and deal, good luck.'
+                const message1 = 'Players, the game has started, shuffle up and deal, good luck.';
+                const utterance1 = new SpeechSynthesisUtterance(message1);
+                if (selectedVoice) utterance1.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance1);
+                // Second utterance: blind values, after 0.8s pause
+                setTimeout(() => {
+                    // Speak numbers as words
+                    const message2 = `blinds ${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
+                    const utterance2 = new SpeechSynthesisUtterance(message2);
+                    if (selectedVoice) utterance2.voice = selectedVoice;
+                    window.speechSynthesis.speak(utterance2);
+                }, 800);
+            }
+        }
+        
+        function speakBreak(minutes) {
+            if ('speechSynthesis' in window && selectedVoice !== null) {
+                const message = `Players, we now have a break for ${minutes} minutes.`;
+                const utterance = new SpeechSynthesisUtterance(message);
+                if (selectedVoice) utterance.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // Stats functions
+        function updateStats() {
+            // Today's date
+            const today = new Date();
+            const dateStr = today.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('todaysDate').textContent = dateStr;
+
+            // Game type
+            const gameTypeInput = document.getElementById('gameType');
+            let gameType = '-';
+            if (gameTypeInput && gameTypeInput.value) {
+                gameType = gameTypeInput.value;
+            }
+            document.getElementById('gameTypeStat').textContent = gameType;
+
+            // Game count
+            const gameCountInput = document.getElementById('gameCount');
+            let gameCount = '-';
+            if (gameCountInput && gameCountInput.value) {
+                gameCount = gameCountInput.value;
+            }
+            const gameCountStat = document.getElementById('gameCountStat');
+            if (gameCountStat) gameCountStat.textContent = gameCount;
+
+            // Total players
+            document.getElementById('totalPlayersStat').textContent = players.length;
+
+            // Tables active (keep for points table logic)
+            const activeTables = new Set(players.filter(p => !p.eliminated).map(p => p.table)).size;
+
+            // Calculate game cash taking
+            const buyInInput = document.getElementById('buyIn');
+            let buyIn = 0;
+            if (buyInInput && buyInInput.value) {
+                buyIn = parseFloat(buyInInput.value) || 0;
+            }
+            // Display buy-in cost
+            document.getElementById('buyInCostDisplay').textContent = `$${buyIn}`;
+            const totalCash = buyIn * players.length;
+            document.getElementById('totalCashTaking').textContent = `$${totalCash}`;
+
+            // --- Use adminSettings for percentages ---
+            let pascPercent = 25;
+            let playerPayoutPercent = 75;
+            if (typeof adminSettings !== 'undefined') {
+                pascPercent = parseInt(adminSettings.pascPercent) || 25;
+                playerPayoutPercent = parseInt(adminSettings.playerPayoutPercent) || 75;
+            }
+            // Update percentage text in dashboard
+            const pascPercentSpan = document.getElementById('pascGameCashPercent');
+            if (pascPercentSpan) pascPercentSpan.textContent = `(${pascPercent}%)`;
+            const payoutPercentSpan = document.getElementById('playerCashPayoutPercent');
+            if (payoutPercentSpan) payoutPercentSpan.textContent = `(${playerPayoutPercent}%)`;
+            // PASC Game Cash (pascPercent% of total buy-in cash) - rounded to nearest $5
+            const pascGameCashRaw = totalCash * (pascPercent / 100);
+            const pascGameCashRounded = Math.round(pascGameCashRaw / 5) * 5;
+            document.getElementById('pascGameCash').textContent = `$${pascGameCashRounded.toFixed(2)}`;
+
+            // Cash taken from raffle (manual entry)
+            const raffleCashInput = document.getElementById('raffleCash');
+            const raffleCash = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
+
+            // Total PASC Cash Takings calculation (PASC Game Cash + Raffle Cash)
+            const pascCashTakings = pascGameCashRounded + raffleCash;
+            document.getElementById('pascCashTakings').textContent = `$${pascCashTakings.toFixed(2)}`;
+            const pascGameCashSummary = document.getElementById('pascGameCashSummary');
+            if (pascGameCashSummary) pascGameCashSummary.textContent = `$${pascGameCashRounded.toFixed(2)}`;
+            const raffleCashSummary = document.getElementById('raffleCashSummary');
+            if (raffleCashSummary) raffleCashSummary.textContent = `$${raffleCash.toFixed(2)}`;
+
+            // Player Cash Payout calculation - adjusted to ensure total equals totalCash
+            const playerCashPayout = totalCash - pascGameCashRounded;
+            document.getElementById('playerCashPayout').textContent = `$${playerCashPayout.toFixed(2)}`;
+            // 1st place: 50% of playerCashPayout - rounded to nearest $5
+            const payout1stRaw = playerCashPayout * 0.5;
+            const payout1stRounded = Math.round(payout1stRaw / 5) * 5;
+            document.getElementById('payout1st').textContent = `$${payout1stRounded.toFixed(2)}`;
+            // 2nd place: 30% of playerCashPayout - rounded to nearest $5
+            const payout2ndRaw = playerCashPayout * 0.3;
+            const payout2ndRounded = Math.round(payout2ndRaw / 5) * 5;
+            document.getElementById('payout2nd').textContent = `$${payout2ndRounded.toFixed(2)}`;
+            // 3rd place: 20% of playerCashPayout - adjusted to ensure total equals playerCashPayout
+            const payout3rd = playerCashPayout - payout1stRounded - payout2ndRounded;
+            document.getElementById('payout3rd').textContent = `$${payout3rd.toFixed(2)}`;
+            renderPointsTable();
+
+            // Ghost Player logic
+            const ghostSection = document.getElementById('ghostPlayerSection');
+            const ghostNameDiv = document.getElementById('ghostPlayerName');
+            const blindTimerGhostSection = document.getElementById('blindTimerGhostPlayer');
+            const blindTimerGhostNameDiv = document.getElementById('blindTimerGhostPlayerName');
+            const activePlayers = players.filter(p => !p.eliminated);
+            
+            // Check if ghost player is in top 3
+            let ghostStatus = '';
+            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
+                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
+                if (ghostPlayerPlace !== -1) {
+                    const place = players.length - ghostPlayerPlace;
+                    if (place <= 3) {
+                        ghostStatus = 'WINNER';
+                    } else {
+                        ghostStatus = 'NOT WON';
+                    }
+                }
+            }
+            
+            if (window.selectedGhostPlayer) {
+                ghostSection.classList.remove('hidden');
+                ghostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                // Also show in blind timer
+                if (blindTimerGhostSection && blindTimerGhostNameDiv) {
+                    blindTimerGhostSection.classList.remove('hidden');
+                    blindTimerGhostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                }
+            } else if (ghostEligible && activePlayers.length === 3 && originalPlayers.length > 0) {
+                // Only select ghost once per game
+                const ghostCandidates = originalPlayers;
+                
+                // Run random selection 5 times for more randomness
+                let finalRandomIdx = 0;
+                for (let i = 0; i < 5; i++) {
+                    finalRandomIdx = Math.floor(Math.random() * ghostCandidates.length);
+                    // Add a small delay to increase entropy
+                    if (i < 4) {
+                        // Generate additional random numbers to add entropy
+                        Math.random();
+                        Math.random();
+                    }
+                }
+                
+                window.selectedGhostPlayer = ghostCandidates[finalRandomIdx];
+                // Announce
+                if ('speechSynthesis' in window) {
+                    const msg = new SpeechSynthesisUtterance(`Players, the ghost player today is ${window.selectedGhostPlayer.name}`);
+                    if (selectedVoice) msg.voice = selectedVoice;
+                    window.speechSynthesis.speak(msg);
+                }
+                ghostSection.classList.remove('hidden');
+                ghostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                // Also show in blind timer
+                if (blindTimerGhostSection && blindTimerGhostNameDiv) {
+                    blindTimerGhostSection.classList.remove('hidden');
+                    blindTimerGhostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                }
+            } else {
+                ghostSection.classList.add('hidden');
+                ghostNameDiv.textContent = '-';
+                // Also hide in blind timer
+                if (blindTimerGhostSection && blindTimerGhostNameDiv) {
+                    blindTimerGhostSection.classList.add('hidden');
+                    blindTimerGhostNameDiv.textContent = '-';
+                }
+                window.selectedGhostPlayer = null;
+            }
+        }
+        
+        function renderPointsTable() {
+            const container = document.getElementById('pointsTable');
+            container.innerHTML = '';
+            const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
+            const totalPlayers = players.length;
+            // Get payout values for top 3
+            const payout1st = document.getElementById('payout1st')?.textContent || '$0';
+            const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
+            const payout3rd = document.getElementById('payout3rd')?.textContent || '$0';
+            // eliminatedPlayers: first eliminated is at index 0 (last place)
+            for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
+                const player = eliminatedPlayers[i];
+                const place = totalPlayers - i;
+                let points = 0;
+                if (place >= 1 && place <= 8) points = pointsArr[place - 1];
+                let prize = '';
+                let medal = '';
+                let ghostLabel = '';
+                if (window.selectedGhostPlayer && player.id === window.selectedGhostPlayer.id) {
+                    ghostLabel = `<span class="ml-2 inline-flex items-center px-2 py-1 rounded bg-indigo-700 text-white text-xs" style="white-space:nowrap;"><svg width='16' height='16' viewBox='0 0 48 48' fill='none' style='display:inline-block;vertical-align:middle;margin-right:2px;'><path d='M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z' fill='#fff' stroke='#6366f1' stroke-width='2'/><ellipse cx='18' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='30' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='24' cy='30' rx='3' ry='2' fill='#6366f1'/></svg>Ghost Player</span>`;
+                }
+                if (place === 1) {
+                    prize = payout1st;
+                    medal = '<span title="Gold" class="ml-2 text-yellow-400 text-xl">&#x1F947;</span>';
+                } else if (place === 2) {
+                    prize = payout2nd;
+                    medal = '<span title="Silver" class="ml-2 text-gray-300 text-xl">&#x1F948;</span>';
+                } else if (place === 3) {
+                    prize = payout3rd;
+                    medal = '<span title="Bronze" class="ml-2 text-orange-500 text-xl">&#x1F949;</span>';
+                }
+                const row = document.createElement('div');
+                row.className = 'flex items-center p-2 rounded mb-1 bg-purple-600/25';
+                row.innerHTML = `
+    <div class=\"flex items-center min-w-[110px] w-[110px] mr-2 gap-1\">
+        <span class=\"font-bold flex items-center gap-1\">${place}${(place===1)?'st':(place===2)?'nd':(place===3)?'rd':'th'}${medal}${ghostLabel}</span>
+        ${place <= 3 ? `<span class=\"font-bold text-green-400 ml-2\">${prize}</span>` : ''}
+    </div>
+    <div class=\"flex-1 text-center\">${player.name}</div>
+    <div class=\"font-bold text-right min-w-[70px] w-[70px]\">${points} pts</div>
+`;
+                container.appendChild(row);
+            }
+        }
+        
+        function eliminatePlayer(playerId) {
+            const player = players.find(p => p.id === playerId);
+            if (!player) return;
+            if (!player.eliminated) {
+                player.eliminated = true;
+                eliminatedPlayers.push(player);
+            } else {
+                player.eliminated = false;
+                // Remove from eliminatedPlayers
+                eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== playerId);
+            }
+            renderPlayersList();
+            renderTables();
+            rebalanceTables();
+            checkForFinalTable(); // <-- Add this line
+            updateStats();
+        }
+
+        // Automatically combine to Final Table when 8 players remain
+        function checkForFinalTable() {
+            const activePlayers = players.filter(p => !p.eliminated);
+            if (activePlayers.length === 8) {
+                // Assign all to table 'final'
+                activePlayers.forEach(p => p.table = 'final');
+                tables = ['final'];
+                renderTables();
+                renderPlayersList();
+            }
+        }
+        
+        function rebalanceTables() {
+            // Get all non-eliminated players
+            const activePlayers = players.filter(p => !p.eliminated);
+            if (activePlayers.length === 0) return;
+            // Group by table
+            const tableMap = {};
+            activePlayers.forEach(p => {
+                if (!tableMap[p.table]) tableMap[p.table] = [];
+                tableMap[p.table].push(p);
+            });
+            const tableNumbers = Object.keys(tableMap).map(Number);
+            if (tableNumbers.length < 2) return; // No need to rebalance if only one table
+            // Find table with most and fewest players
+            let maxTable = tableNumbers[0], minTable = tableNumbers[0];
+            tableNumbers.forEach(tn => {
+                if (tableMap[tn].length > tableMap[maxTable].length) maxTable = tn;
+                if (tableMap[tn].length < tableMap[minTable].length) minTable = tn;
+            });
+            // If difference is more than 1, move one player from maxTable to minTable
+            if (tableMap[maxTable].length - tableMap[minTable].length > 1) {
+                // Move the player with the highest player number from maxTable
+                const playerToMove = tableMap[maxTable].reduce((a, b) => (a.number > b.number ? a : b));
+                playerToMove.table = Number(minTable);
+                renderPlayersList();
+                renderTables();
+            }
+        }
+        
+        function speakWarning() {
+            const message = "Players, Blinds are up in 30 seconds.";
+            if ('speechSynthesis' in window && selectedVoice !== null) {
+                const utterance = new SpeechSynthesisUtterance(message);
+                if (selectedVoice) utterance.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // Voice selection logic
+        function populateVoiceList() {
+            const voiceSelect = document.getElementById('voiceSelect');
+            if (!voiceSelect) return;
+            const voices = window.speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            
+            // Add 'No Voice' option
+            const noVoiceOption = document.createElement('option');
+            noVoiceOption.value = 'no-voice';
+            noVoiceOption.textContent = 'No Voice (Disable Announcements)';
+            voiceSelect.appendChild(noVoiceOption);
+            
+            voices
+                .filter(voice => !voice.name.includes('Microsoft David'))
+                .forEach((voice, i) => {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    option.textContent = `${voice.name} (${voice.lang})${voice.default ? ' (default)' : ''}`;
+                    voiceSelect.appendChild(option);
+                });
+            // Set selectedVoice to default
+            const filteredVoices = voices.filter(voice => !voice.name.includes('Microsoft David'));
+            if (filteredVoices.length > 0) {
+                selectedVoice = filteredVoices.find(v => v.default) || filteredVoices[0];
+                voiceSelect.value = selectedVoice.name;
+            }
+        }
+        
+        function setupVoiceSelectListener() {
+            const voiceSelect = document.getElementById('voiceSelect');
+            if (!voiceSelect) return;
+            voiceSelect.addEventListener('change', () => {
+                if (voiceSelect.value === 'no-voice') {
+                    selectedVoice = null;
+                } else {
+                    const voices = window.speechSynthesis.getVoices();
+                    selectedVoice = voices.find(v => v.name === voiceSelect.value);
+                }
+            });
+        }
+        
+        function emailStats() {
+            // Gather stats
+            const todaysDate = document.getElementById('todaysDate').textContent;
+            const gameType = document.getElementById('gameTypeStat').textContent;
+            const gameCount = document.getElementById('gameCountStat').textContent;
+            const totalPlayers = document.getElementById('totalPlayersStat').textContent;
+            const playerBuyInCost = document.getElementById('buyInCostDisplay').textContent;
+            const totalCashTaking = document.getElementById('totalCashTaking').textContent;
+            // Gather player cash payout
+            const playerCashPayout = document.getElementById('playerCashPayout').textContent;
+            const payout1st = document.getElementById('payout1st').textContent;
+            const payout2nd = document.getElementById('payout2nd').textContent;
+            const payout3rd = document.getElementById('payout3rd').textContent;
+            // Gather PASC cash takings
+            const pascCashTakings = document.getElementById('pascCashTakings').textContent;
+            // Gather PASC game cash (25%)
+            const pascGameCash = document.getElementById('pascGameCash').textContent;
+            
+            // Calculate ghost player status for email
+            let ghostStatus = '';
+            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
+                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
+                if (ghostPlayerPlace !== -1) {
+                    const place = players.length - ghostPlayerPlace;
+                    if (place <= 3) {
+                        ghostStatus = 'WINNER';
+                    } else {
+                        ghostStatus = 'NOT WON';
+                    }
+                }
+            }
+            
+            // Gather points table
+            const pointsRows = Array.from(document.getElementById('pointsTable').children);
+            let pointsTableText = '';
+            pointsRows.forEach(row => {
+                // The row has three children: [place+prize], [name], [points]
+                const children = Array.from(row.children);
+                let place = '', name = '', points = '', prize = '', medal = '';
+                if (children.length === 3) {
+                    // Extract place and medal from the first cell
+                    const placeCell = children[0];
+                    // Use regex to split place and medal
+                    const placeMedalMatch = placeCell.textContent.trim().match(/^(\d+(st|nd|rd|th)[^\d\s]*)/);
+                    if (placeMedalMatch) {
+                        place = placeMedalMatch[1].trim();
+                    } else {
+                        place = placeCell.textContent.trim();
+                    }
+                    // Extract prize if present
+                    const prizeSpan = placeCell.querySelector('.text-green-400');
+                    prize = prizeSpan ? prizeSpan.textContent.replace(/\$/g, '').trim() : '';
+                    name = children[1].textContent.trim();
+                    points = children[2].textContent.trim();
+                }
+                if (place && name && points) {
+                    if (prize) {
+                        pointsTableText += `${place} $${prize} - ${name} - ${points}\n`;
+                    } else {
+                        pointsTableText += `${place} - ${name} - ${points}\n`;
+                    }
+                }
+            });
+            // Compose email
+            const subject = encodeURIComponent('Poker Stats Dashboard');
+            const body = encodeURIComponent(
+                `Poker Stats Dashboard\n\n` +
+                `Date: ${todaysDate}\n` +
+                `Game Type: ${gameType}\n` +
+                `Game Count: ${gameCount}\n` +
+                `Total Players: ${totalPlayers}\n` +
+                `Player Buy-in Cost: ${playerBuyInCost}\n` +
+                `Total Buy-in Cash: ${totalCashTaking}\n` +
+                `PASC Game Cash (25%): ${pascGameCash}\n` +
+                `Total PASC Cash: ${pascCashTakings}\n` +
+                `Player Cash Payout (75%): ${playerCashPayout}\n` +
+                `  1st: ${payout1st}\n` +
+                `  2nd: ${payout2nd}\n` +
+                `  3rd: ${payout3rd}\n` +
+                `\n` +
+                `Ghost Player: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` - ${ghostStatus}` : ''}\n` +
+                `\nPoints Table:\n${pointsTableText}`
+            );
+            window.location.href = `mailto:andrew.bailey@mail.com?subject=${subject}&body=${body}`;
+        }
+
+        function smsStats() {
+            // Check if Web SMS API is available
+            if ('navigator' in window && 'share' in navigator) {
+                // Use Web Share API if available
+                const todaysDate = document.getElementById('todaysDate').textContent;
+                const gameType = document.getElementById('gameTypeStat').textContent;
+                const totalPlayers = document.getElementById('totalPlayersStat').textContent;
+                const totalCashTaking = document.getElementById('totalCashTaking').textContent;
+                const pascCashTakings = document.getElementById('pascCashTakings').textContent;
+                const playerCashPayout = document.getElementById('playerCashPayout').textContent;
+                const payout1st = document.getElementById('payout1st').textContent;
+                const payout2nd = document.getElementById('payout2nd').textContent;
+                const payout3rd = document.getElementById('payout3rd').textContent;
+                
+                // Calculate ghost player status
+                let ghostStatus = '';
+                if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
+                    const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
+                    if (ghostPlayerPlace !== -1) {
+                        const place = players.length - ghostPlayerPlace;
+                        if (place <= 3) {
+                            ghostStatus = 'WINNER';
+                        } else {
+                            ghostStatus = 'NOT WON';
+                        }
+                    }
+                }
+                
+                const smsText = `PASC Stats ${todaysDate}\n${gameType} - ${totalPlayers} players\nTotal: ${totalCashTaking}\nPASC: ${pascCashTakings}\nPayout: ${playerCashPayout}\n1st: ${payout1st} 2nd: ${payout2nd} 3rd: ${payout3rd}\nGhost: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` ${ghostStatus}` : ''}`;
+                
+                navigator.share({
+                    title: 'PASC Poker Stats',
+                    text: smsText
+                }).catch(err => {
+                    console.log('Share failed:', err);
+                    fallbackSMS();
+                });
+            } else {
+                fallbackSMS();
+            }
+        }
+        
+        function fallbackSMS() {
+            // Fallback: Copy to clipboard and show instructions
+            const todaysDate = document.getElementById('todaysDate').textContent;
+            const gameType = document.getElementById('gameTypeStat').textContent;
+            const totalPlayers = document.getElementById('totalPlayersStat').textContent;
+            const totalCashTaking = document.getElementById('totalCashTaking').textContent;
+            const pascCashTakings = document.getElementById('pascCashTakings').textContent;
+            const playerCashPayout = document.getElementById('playerCashPayout').textContent;
+            const payout1st = document.getElementById('payout1st').textContent;
+            const payout2nd = document.getElementById('payout2nd').textContent;
+            const payout3rd = document.getElementById('payout3rd').textContent;
+            
+            // Calculate ghost player status
+            let ghostStatus = '';
+            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
+                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
+                if (ghostPlayerPlace !== -1) {
+                    const place = players.length - ghostPlayerPlace;
+                    if (place <= 3) {
+                        ghostStatus = 'WINNER';
+                    } else {
+                        ghostStatus = 'NOT WON';
+                    }
+                }
+            }
+            
+            const smsText = `PASC Stats ${todaysDate}\n${gameType} - ${totalPlayers} players\nTotal: ${totalCashTaking}\nPASC: ${pascCashTakings}\nPayout: ${playerCashPayout}\n1st: ${payout1st} 2nd: ${payout2nd} 3rd: ${payout3rd}\nGhost: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` ${ghostStatus}` : ''}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(smsText).then(() => {
+                alert('SMS text copied to clipboard!\n\nPaste it into your SMS app to send.\n\nText copied:\n' + smsText);
+            }).catch(() => {
+                // Fallback if clipboard API not available
+                prompt('Copy this text to your SMS app:', smsText);
+            });
+        }
+        
+        function toggleLayoutMode() {
+            document.body.classList.toggle('compact-mode');
+            // Optionally, change icon to indicate current mode
+            const btn = document.getElementById('layoutToggleBtn');
+            if (document.body.classList.contains('compact-mode')) {
+                btn.innerHTML = '<i class="fas fa-desktop"></i>';
+                btn.title = 'Switch to Default Layout';
+            } else {
+                btn.innerHTML = '<i class="fas fa-mobile-alt"></i>';
+                btn.title = 'Switch to Compact Layout';
+            }
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('registration');
+
+            // Hide blind levels, breaks, and voice select by default on Blind Timer page
+            setTimeout(() => {
+                const voiceSection = document.getElementById('voiceSection');
+                const blindLevelsSection = document.getElementById('blindLevelsSection');
+                const breaksSection = document.getElementById('breaksSection');
+                if (voiceSection) voiceSection.classList.add('hidden');
+                if (blindLevelsSection) blindLevelsSection.classList.add('hidden');
+                if (breaksSection) breaksSection.classList.add('hidden');
+                const hideBtn = document.getElementById('hideBlindLevelsBtn');
+                if (hideBtn) {
+                    hideBtn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Blind Levels';
+                }
+            }, 0);
+            
+            // Add some sample blind levels
+            blindLevels = [               
+                { smallBlind: 100, bigBlind: 200, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 200, bigBlind: 400, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 300, bigBlind: 600, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 400, bigBlind: 800, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 500, bigBlind: 1000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 1000, bigBlind: 2000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 2000, bigBlind: 4000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 3000, bigBlind: 6000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 4000, bigBlind: 8000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 5000, bigBlind: 10000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 10000, bigBlind: 20000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 15000, bigBlind: 30000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 20000, bigBlind: 40000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 25000, bigBlind: 50000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 50000, bigBlind: 100000, levelTime: 1200, timeLeft: 1200 }
+            ];
+            currentBlindIndex = 0;
+            renderBlindLevelsList();
+            updateBlindDisplay();
+            
+            // Populate voice list and set up listener
+            if ('speechSynthesis' in window) {
+                // Some browsers require this to be called after a timeout
+                setTimeout(() => {
+                    populateVoiceList();
+                    setupVoiceSelectListener();
+                }, 100);
+                window.speechSynthesis.onvoiceschanged = () => {
+                    populateVoiceList();
+                };
+            }
+            
+            // Allow Enter key to confirm player registration
+            const playerNameInput = document.getElementById('playerName');
+            if (playerNameInput) {
+                playerNameInput.addEventListener('focus', function() {
+                    showPlayerNameDropdown(this.value);
+                });
+                playerNameInput.addEventListener('input', function() {
+                    showPlayerNameDropdown(this.value);
+                });
+                playerNameInput.addEventListener('blur', function() {
+                    setTimeout(hidePlayerNameDropdown, 150);
+                });
+                playerNameInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        moveDropdownActive(1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        moveDropdownActive(-1);
+                    } else if (e.key === 'Escape') {
+                        hidePlayerNameDropdown();
+                    } else if (e.key === 'Enter') {
+                        if (selectActiveDropdownItem()) {
+                            e.preventDefault();
+                            return;
+                        }
+                        registerPlayer();
+                    }
+                });
+            }
+            
+            // Update stats when buy-in changes
+            const buyInInput = document.getElementById('buyIn');
+            if (buyInInput) {
+                buyInInput.addEventListener('input', updateStats);
+            }
+            // Update stats when game count changes
+            const gameCountInput = document.getElementById('gameCount');
+            if (gameCountInput) {
+                gameCountInput.addEventListener('change', updateStats);
+            }
+            // Game Type input: saved-games dropdown + live stats
+            const gameTypeField = document.getElementById('gameType');
+            if (gameTypeField) {
+                gameTypeField.addEventListener('focus', function() {
+                    showGameTypeDropdown('');
+                });
+                gameTypeField.addEventListener('input', function() {
+                    showGameTypeDropdown(this.value);
+                    updateStats();
+                });
+                gameTypeField.addEventListener('blur', function() {
+                    setTimeout(hideGameTypeDropdown, 200);
+                });
+            }
+
+            // Initialize slider for timer
+            setTimeout(() => {
+                const slider = document.getElementById('timeSlider');
+                if (slider && blindLevels.length > 0) {
+                    const max = blindLevels[currentBlindIndex].levelTime;
+                    slider.min = 0;
+                    slider.max = max;
+                    slider.value = 0;
+                }
+            }, 200);
+
+            updateBreakAfterLevelSelect();
+
+            // Add Test Voice button logic
+            setTimeout(() => {
+                const testVoiceBtn = document.getElementById('testVoiceBtn');
+                if (testVoiceBtn) {
+                    testVoiceBtn.addEventListener('click', function() {
+                        if ('speechSynthesis' in window && selectedVoice !== null) {
+                            const utterance = new SpeechSynthesisUtterance('Welcome to the poker academy social club.');
+                            if (selectedVoice) utterance.voice = selectedVoice;
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    });
+                }
+            }, 200);
+        });
+
+        // Warn users before leaving/refreshing the page to prevent accidental data loss
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+
+        // Handle slider input to adjust time left
+        function onTimeSliderChange(value) {
+            if (blindLevels.length === 0) return;
+            const level = blindLevels[currentBlindIndex];
+            const max = level.type === 'break' ? level.breakTime : level.levelTime;
+            const parsedValue = parseInt(value);
+            if (isNaN(parsedValue) || isNaN(max)) return;
+            timeLeft = max - parsedValue;
+            if (timeLeft < 0) timeLeft = 0;
+            level.timeLeft = timeLeft;
+            updateTimerDisplay();
+        }
+
+        function toggleBlindLevelsVisibility() {
+            const voiceSection = document.getElementById('voiceSection');
+            const blindLevelsSection = document.getElementById('blindLevelsSection');
+            const breaksSection = document.getElementById('breaksSection');
+            const isHidden = voiceSection?.classList.contains('hidden') && blindLevelsSection?.classList.contains('hidden') && breaksSection?.classList.contains('hidden');
+            if (!isHidden) {
+                if (voiceSection) voiceSection.classList.add('hidden');
+                if (blindLevelsSection) blindLevelsSection.classList.add('hidden');
+                if (breaksSection) breaksSection.classList.add('hidden');
+                const hideBtn = document.getElementById('hideBlindLevelsBtn');
+                if (hideBtn) {
+                    hideBtn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Blind Levels';
+                }
+            } else {
+                if (voiceSection) voiceSection.classList.remove('hidden');
+                if (blindLevelsSection) blindLevelsSection.classList.remove('hidden');
+                if (breaksSection) breaksSection.classList.remove('hidden');
+                const hideBtn = document.getElementById('hideBlindLevelsBtn');
+                if (hideBtn) {
+                    hideBtn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Blind Levels';
+                }
+            }
+        }
+
+        function toggleFullscreen() {
+            const body = document.body;
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            
+            if (body.classList.contains('fullscreen-mode')) {
+                // Exit fullscreen
+                body.classList.remove('fullscreen-mode');
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand mr-2"></i>Fullscreen Timer';
+                fullscreenBtn.classList.remove('bg-purple-600');
+                fullscreenBtn.classList.add('bg-purple-700');
+                // Remove fullscreen overlay
+                const overlay = document.getElementById('fullscreenOverlay');
+                if (overlay) {
+                    overlay.remove();
+                }
+            } else {
+                // Enter fullscreen
+                body.classList.add('fullscreen-mode');
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress mr-2"></i>Exit Fullscreen';
+                fullscreenBtn.classList.remove('bg-purple-700');
+                fullscreenBtn.classList.add('bg-purple-600');
+                
+                // Create fullscreen overlay
+                const overlay = document.createElement('div');
+                overlay.id = 'fullscreenOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
+                    background: #111827;
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 2rem;
+                `;
+                
+                // Create custom fullscreen content with only essential elements
+                const fullscreenContent = document.createElement('div');
+                fullscreenContent.style.cssText = `
+                    background: transparent;
+                    box-shadow: none;
+                    border: none;
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 0;
+                    margin: 0;
+                `;
+                
+                // Get current values from the original timer
+                const currentBlindElement = document.getElementById('currentBlind');
+                const timerElement = document.getElementById('timer');
+                const timeSliderElement = document.getElementById('timeSlider');
+                
+                // Create current blind display
+                const currentBlindDisplay = document.createElement('div');
+                currentBlindDisplay.id = 'currentBlind';
+                currentBlindDisplay.className = 'blind-display font-bold mb-2 text-yellow-400 text-center w-full';
+                currentBlindDisplay.style.textAlign = 'center';
+                currentBlindDisplay.textContent = currentBlindElement ? currentBlindElement.textContent : 'Blinds: -/-';
+                
+                // Create next blind display
+                const nextBlindElement = document.getElementById('nextBlind');
+                const nextBlindDisplay = document.createElement('div');
+                nextBlindDisplay.id = 'nextBlind';
+                nextBlindDisplay.className = 'text-4xl mb-0 text-center w-full';
+                nextBlindDisplay.style.textAlign = 'center';
+                nextBlindDisplay.textContent = nextBlindElement ? nextBlindElement.textContent : 'Next: -/-';
+                
+                // Create timer display
+                const timerDisplay = document.createElement('div');
+                timerDisplay.id = 'timer';
+                timerDisplay.className = 'timer-display font-mono mb-0';
+                timerDisplay.textContent = timerElement ? timerElement.textContent : '00:00';
+                
+                // Create time slider
+                const timeSlider = document.createElement('input');
+                timeSlider.type = 'range';
+                timeSlider.id = 'timeSlider';
+                timeSlider.min = timeSliderElement ? timeSliderElement.min : '0';
+                timeSlider.max = timeSliderElement ? timeSliderElement.max : '1200';
+                timeSlider.value = timeSliderElement ? timeSliderElement.value : '1200';
+                timeSlider.step = '1';
+                timeSlider.className = 'w-full md:w-2/3 lg:w-1/2 accent-yellow-400 mb-6';
+                timeSlider.addEventListener('input', function() {
+                    onTimeSliderChange(this.value);
+                });
+                
+                // Create control buttons
+                const buttonsContainer = document.createElement('div');
+                buttonsContainer.className = 'flex flex-wrap justify-center gap-4';
+                
+                // Start button
+                const startBtn = document.createElement('button');
+                startBtn.id = 'startBtn';
+                startBtn.className = 'px-6 py-3 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white';
+                startBtn.innerHTML = '<i class="fas fa-play mr-2"></i>Start';
+                startBtn.addEventListener('click', startTimer);
+                
+                // Pause button
+                const pauseBtn = document.createElement('button');
+                pauseBtn.id = 'pauseBtn';
+                pauseBtn.className = 'px-6 py-3 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-lg transition-colors duration-300 hidden text-white';
+                pauseBtn.innerHTML = '<i class="fas fa-pause mr-2"></i>Pause';
+                pauseBtn.addEventListener('click', pauseTimer);
+                
+                // Set button visibility based on timer state
+                if (isTimerRunning) {
+                    startBtn.classList.add('hidden');
+                    pauseBtn.classList.remove('hidden');
+                } else {
+                    startBtn.classList.remove('hidden');
+                    pauseBtn.classList.add('hidden');
+                }
+                
+                // Next blind button
+                const nextBlindBtn = document.createElement('button');
+                nextBlindBtn.className = 'px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white';
+                nextBlindBtn.innerHTML = '<i class="fas fa-forward mr-2"></i>Next Blind';
+                nextBlindBtn.addEventListener('click', nextBlind);
+                
+                // Previous blind button
+                const prevBlindBtn = document.createElement('button');
+                prevBlindBtn.className = 'px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white';
+                prevBlindBtn.innerHTML = '<i class="fas fa-backward mr-2"></i>Previous Blind';
+                prevBlindBtn.addEventListener('click', prevBlind);
+                
+                // Reset button
+                const resetBtn = document.createElement('button');
+                resetBtn.className = 'px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-medium text-lg transition-colors duration-300 text-white';
+                resetBtn.innerHTML = '<i class="fas fa-redo mr-2"></i>Reset Current';
+                resetBtn.addEventListener('click', resetCurrentBlind);
+                
+                // Add buttons to container
+                buttonsContainer.appendChild(startBtn);
+                buttonsContainer.appendChild(pauseBtn);
+                buttonsContainer.appendChild(nextBlindBtn);
+                buttonsContainer.appendChild(prevBlindBtn);
+                buttonsContainer.appendChild(resetBtn);
+                
+                // Assemble the fullscreen content
+                fullscreenContent.appendChild(currentBlindDisplay);
+                fullscreenContent.appendChild(nextBlindDisplay);
+                fullscreenContent.appendChild(timerDisplay);
+                fullscreenContent.appendChild(timeSlider);
+                fullscreenContent.appendChild(buttonsContainer);
+                
+                // Add exit button
+                const exitBtn = document.createElement('button');
+                exitBtn.innerHTML = '<i class="fas fa-times"></i>';
+                exitBtn.style.cssText = `
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    background: rgba(255, 0, 0, 0.8);
+                    color: white;
+                    border: none;
+                    border-radius: 50%;
+                    width: 3rem;
+                    height: 3rem;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    z-index: 10000;
+                `;
+                exitBtn.onclick = toggleFullscreen;
+                
+                overlay.appendChild(exitBtn);
+                overlay.appendChild(fullscreenContent);
+                document.body.appendChild(overlay);
+            }
+        }
+
+        // --- BREAK FEATURE ---
+        function updateBreakAfterLevelSelect() {
+            const select = document.getElementById('breakAfterLevelSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            blindLevels.forEach((level, idx) => {
+                if (level.type !== 'break') {
+                    const opt = document.createElement('option');
+                    opt.value = idx;
+                    opt.textContent = `After Level ${idx + 1}`;
+                    select.appendChild(opt);
+                }
+            });
+        }
+        function addBreakLevel() {
+            const select = document.getElementById('breakAfterLevelSelect');
+            const breakTimeInput = document.getElementById('breakTimeInput');
+            if (!select || !breakTimeInput) return;
+            const afterIdx = parseInt(select.value);
+            const breakMinutes = parseInt(breakTimeInput.value);
+            if (isNaN(afterIdx) || isNaN(breakMinutes) || breakMinutes <= 0) {
+                alert('Please select a level and enter a valid break time.');
+                return;
+            }
+            // Insert break after the selected level (skip if next is already a break)
+            if (blindLevels[afterIdx + 1] && blindLevels[afterIdx + 1].type === 'break') {
+                alert('There is already a break after this level.');
+                return;
+            }
+            const breakLevel = {
+                type: 'break',
+                breakTime: breakMinutes * 60, // seconds
+                timeLeft: breakMinutes * 60
+            };
+            blindLevels.splice(afterIdx + 1, 0, breakLevel);
+            updateBreakAfterLevelSelect();
+            renderBlindLevelsList();
+            breakTimeInput.value = '';
+        }
+        // Patch renderBlindLevelsList to show breaks
+        const origRenderBlindLevelsList = renderBlindLevelsList;
+        renderBlindLevelsList = function() {
+            const container = document.getElementById('blindLevelsList');
+            container.innerHTML = '';
+            blindLevels.forEach((level, index) => {
+                const levelItem = document.createElement('div');
+                let content = '';
+                if (level.type === 'break') {
+                    levelItem.className = `flex justify-between items-center p-0 rounded mb-1 bg-indigo-900/40`;
+                    content = `<div><span class="font-bold text-indigo-300">Break:</span> <span>${level.breakTime / 60} min</span></div>`;
+                } else {
+                    levelItem.className = `flex justify-between items-center p-0 rounded mb-1 ${index === currentBlindIndex ? 'bg-poker-highlight/30' : 'bg-poker-primary'}`;
+                    content = `<div><span class="font-bold">Level ${index + 1}:</span> <span>${level.smallBlind}/${level.bigBlind} - ${level.levelTime / 60} min</span></div>`;
+                }
+                levelItem.innerHTML = `
+                    ${content}
+                    <button onclick="removeBlindLevel(${index})" class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(levelItem);
+            });
+            updateBreakAfterLevelSelect();
+        };
+        // Patch addBlindLevel to update break select
+        const origAddBlindLevel = addBlindLevel;
+        addBlindLevel = function() {
+            origAddBlindLevel();
+            updateBreakAfterLevelSelect();
+        };
+        // Patch removeBlindLevel to update break select
+        const origRemoveBlindLevel = removeBlindLevel;
+        removeBlindLevel = function(index) {
+            origRemoveBlindLevel(index);
+            updateBreakAfterLevelSelect();
+        };
+        // --- END BREAK FEATURE ---
+
+        function setAllBlindTimes() {
+            const input = document.getElementById('setAllBlindTimeInput');
+            if (!applyBlindTimeMinutes(input.value)) {
+                alert('Please enter a valid number of minutes.');
+                return;
+            }
+            input.value = '';
+        }
+
+        // --- ADMIN PAGE LOGIC ---
+        // Store players and settings in localStorage for persistence
+        let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75}');
+        let adminMemberStats = JSON.parse(localStorage.getItem('adminMemberStats') || '[]');
+        function renderAdminPlayersList() {
+            const container = document.getElementById('adminPlayersList');
+            if (!container) return;
+            container.innerHTML = '';
+            if (adminPlayers.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No players added yet.</div>';
+                return;
+            }
+            const table = document.createElement('table');
+            table.className = 'min-w-full text-sm';
+            table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
+                <th class='p-2'>Name</th><th class='p-2'>Email</th><th class='p-2'>Phone</th><th class='p-2'>Years</th><th class='p-2'>Member</th><th class='p-2'>Committee</th><th class='p-2'>Edit</th><th class='p-2'>Delete</th></tr></thead><tbody></tbody>`;
+            adminPlayers.forEach((p, idx) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class='p-2'>${p.name}</td>
+                    <td class='p-2'>${p.email}</td>
+                    <td class='p-2'>${p.phone}</td>
+                    <td class='p-2'>${p.years}</td>
+                    <td class='p-2'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
+                    <td class='p-2'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
+                    <td class='p-2'><button class='text-yellow-400 underline' onclick='editAdminPlayer(${idx})'>Edit</button></td>
+                    <td class='p-2'><button class='text-red-400 underline' onclick='deleteAdminPlayer(${idx})'>Delete</button></td>
+                `;
+                table.querySelector('tbody').appendChild(row);
+            });
+            container.appendChild(table);
+        }
+        let registrationNames = [];
+        let dropdownActiveIndex = -1;
+        function renderRegistrationDatalist() {
+            registrationNames = adminPlayers
+                .map(p => (p.name || '').trim())
+                .filter(name => name.length > 0)
+                .sort((a, b) => a.localeCompare(b));
+        }
+        function showPlayerNameDropdown(filter = '') {
+            const dropdown = document.getElementById('playerNameDropdown');
+            if (!dropdown) return;
+            const term = filter.trim().toLowerCase();
+            const matches = registrationNames.filter(n => n.toLowerCase().includes(term));
+            dropdown.innerHTML = '';
+            dropdownActiveIndex = -1;
+            if (matches.length === 0) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+            matches.forEach((name) => {
+                const item = document.createElement('div');
+                item.className = 'player-dropdown-item px-4 py-2 cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+                item.textContent = name;
+                item.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    const input = document.getElementById('playerName');
+                    input.value = name;
+                    hidePlayerNameDropdown();
+                });
+                dropdown.appendChild(item);
+            });
+            dropdown.classList.remove('hidden');
+        }
+        function hidePlayerNameDropdown() {
+            const dropdown = document.getElementById('playerNameDropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+            dropdownActiveIndex = -1;
+        }
+        function togglePlayerNameDropdown(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const dropdown = document.getElementById('playerNameDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                hidePlayerNameDropdown();
+            } else {
+                showPlayerNameDropdown('');
+            }
+        }
+        function moveDropdownActive(delta) {
+            const dropdown = document.getElementById('playerNameDropdown');
+            if (!dropdown || dropdown.classList.contains('hidden')) return;
+            const items = Array.from(dropdown.querySelectorAll('.player-dropdown-item'));
+            if (items.length === 0) return;
+            dropdownActiveIndex = (dropdownActiveIndex + delta + items.length) % items.length;
+            items.forEach((el, i) => {
+                el.classList.toggle('bg-poker-accent', i === dropdownActiveIndex);
+                el.classList.toggle('text-white', i === dropdownActiveIndex);
+            });
+            items[dropdownActiveIndex].scrollIntoView({ block: 'nearest' });
+        }
+        function selectActiveDropdownItem() {
+            const dropdown = document.getElementById('playerNameDropdown');
+            if (!dropdown || dropdown.classList.contains('hidden')) return false;
+            const items = Array.from(dropdown.querySelectorAll('.player-dropdown-item'));
+            if (dropdownActiveIndex >= 0 && items[dropdownActiveIndex]) {
+                document.getElementById('playerName').value = items[dropdownActiveIndex].textContent;
+                hidePlayerNameDropdown();
+                return true;
+            }
+            return false;
+        }
+        function exportAdminData() {
+            const data = {
+                version: '1.0.4',
+                type: 'pasc-admin-data',
+                exportedAt: new Date().toISOString(),
+                adminPlayers,
+                adminSettings,
+                adminMemberStats,
+                savedGames
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const stamp = new Date().toISOString().slice(0, 10);
+            a.href = url;
+            a.download = `pasc-admin-data-${stamp}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        function importAdminData(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data.adminPlayers)) {
+                        adminPlayers = data.adminPlayers;
+                        localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
+                    }
+                    if (data.adminSettings && typeof data.adminSettings === 'object') {
+                        adminSettings = data.adminSettings;
+                        localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+                    }
+                    if (Array.isArray(data.adminMemberStats)) {
+                        adminMemberStats = data.adminMemberStats;
+                        localStorage.setItem('adminMemberStats', JSON.stringify(adminMemberStats));
+                    }
+                    if (Array.isArray(data.savedGames)) {
+                        savedGames = data.savedGames;
+                        persistSavedGames();
+                    }
+                    renderAdminPlayersList();
+                    renderAdminMemberStats();
+                    renderRegistrationDatalist();
+                    const pascPercentInput = document.getElementById('adminPascPercent');
+                    const payoutInput = document.getElementById('adminPlayerPayoutPercent');
+                    if (pascPercentInput) pascPercentInput.value = adminSettings.pascPercent;
+                    if (payoutInput) payoutInput.value = adminSettings.playerPayoutPercent;
+                    updateStats();
+                    alert('Admin data imported successfully.');
+                } catch (err) {
+                    alert('Import failed: the selected file is not valid PASC admin data.');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+        function editAdminPlayer(idx) {
+            const p = adminPlayers[idx];
+            document.getElementById('adminPlayerName').value = p.name;
+            document.getElementById('adminPlayerEmail').value = p.email;
+            document.getElementById('adminPlayerPhone').value = p.phone;
+            document.getElementById('adminPlayerYears').value = p.years;
+            document.getElementById('adminPlayerMember').value = p.member;
+            document.getElementById('adminPlayerCommittee').value = p.committee;
+            document.getElementById('adminPlayerForm').setAttribute('data-edit-idx', idx);
+        }
+        function deleteAdminPlayer(idx) {
+            if (confirm('Delete this player?')) {
+                adminPlayers.splice(idx, 1);
+                localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
+                renderAdminPlayersList();
+                renderRegistrationDatalist();
+            }
+        }
+        function renderAdminMemberStats() {
+            const container = document.getElementById('adminMemberStats');
+            if (!container) return;
+            container.innerHTML = '';
+            if (adminMemberStats.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No stats yet.</div>';
+                return;
+            }
+            const table = document.createElement('table');
+            table.className = 'min-w-full text-sm';
+            table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
+                <th class='p-2'>Name</th><th class='p-2'>Points</th><th class='p-2'>Money Won</th></tr></thead><tbody></tbody>`;
+            adminMemberStats.forEach((s) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class='p-2'>${s.name}</td><td class='p-2'>${s.points}</td><td class='p-2'>$${s.moneyWon}</td>`;
+                table.querySelector('tbody').appendChild(row);
+            });
+            container.appendChild(table);
+        }
+        function saveAdminSettings() {
+            localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+        }
+        function showAdminPanel() {
+            document.getElementById('adminLoginSection').classList.add('hidden');
+            document.getElementById('adminPanelSection').classList.remove('hidden');
+            renderAdminPlayersList();
+            renderAdminMemberStats();
+            document.getElementById('adminPascPercent').value = adminSettings.pascPercent;
+            document.getElementById('adminPlayerPayoutPercent').value = adminSettings.playerPayoutPercent;
+        }
+        function hideAdminPanel() {
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+            document.getElementById('adminPanelSection').classList.add('hidden');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate the registration dropdown from saved admin players
+            renderRegistrationDatalist();
+            // Admin login logic
+            const adminLoginForm = document.getElementById('adminLoginForm');
+            if (adminLoginForm) {
+                adminLoginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('adminUsername').value;
+                    const password = document.getElementById('adminPassword').value;
+                    if (username === 'admin' && password === 'admin') {
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        showAdminPanel();
+                    } else {
+                        document.getElementById('adminLoginError').classList.remove('hidden');
+                    }
+                });
+            }
+            // Admin logout
+            const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+            if (adminLogoutBtn) {
+                adminLogoutBtn.addEventListener('click', function() {
+                    localStorage.removeItem('adminLoggedIn');
+                    hideAdminPanel();
+                    // Always clear the password field
+                    const adminPasswordInput = document.getElementById('adminPassword');
+                    if (adminPasswordInput) adminPasswordInput.value = '';
+                });
+            }
+            // Admin player add/update
+            const adminPlayerForm = document.getElementById('adminPlayerForm');
+            if (adminPlayerForm) {
+                adminPlayerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const name = document.getElementById('adminPlayerName').value.trim();
+                    const email = document.getElementById('adminPlayerEmail').value.trim();
+                    const phone = document.getElementById('adminPlayerPhone').value.trim();
+                    const years = document.getElementById('adminPlayerYears').value.trim();
+                    const member = document.getElementById('adminPlayerMember').value;
+                    const committee = document.getElementById('adminPlayerCommittee').value;
+                    if (!name) return;
+                    const editIdx = adminPlayerForm.getAttribute('data-edit-idx');
+                    if (editIdx !== null) {
+                        adminPlayers[editIdx] = { name, email, phone, years, member, committee };
+                        adminPlayerForm.removeAttribute('data-edit-idx');
+                    } else {
+                        adminPlayers.push({ name, email, phone, years, member, committee });
+                    }
+                    localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
+                    renderAdminPlayersList();
+                    renderRegistrationDatalist();
+                    adminPlayerForm.reset();
+                });
+            }
+            // Admin settings save
+            const adminSettingsForm = document.getElementById('adminSettingsForm');
+            if (adminSettingsForm) {
+                // Auto-adjust Player Cash Payout % when PASC Cash % changes
+                const pascPercentInput = document.getElementById('adminPascPercent');
+                const playerPayoutPercentInput = document.getElementById('adminPlayerPayoutPercent');
+                if (pascPercentInput && playerPayoutPercentInput) {
+                    pascPercentInput.addEventListener('input', function() {
+                        let pascVal = parseInt(this.value);
+                        if (isNaN(pascVal) || pascVal < 0) pascVal = 0;
+                        if (pascVal > 100) pascVal = 100;
+                        playerPayoutPercentInput.value = 100 - pascVal;
+                    });
+                }
+                adminSettingsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const pascPercent = parseInt(document.getElementById('adminPascPercent').value);
+                    const playerPayoutPercent = parseInt(document.getElementById('adminPlayerPayoutPercent').value);
+                    if (!isNaN(pascPercent) && !isNaN(playerPayoutPercent)) {
+                        adminSettings.pascPercent = pascPercent;
+                        adminSettings.playerPayoutPercent = playerPayoutPercent;
+                        saveAdminSettings();
+                        alert('Settings saved!');
+                        updateStats();
+                    }
+                });
+            }
+            // Show admin panel if already logged in
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showAdminPanel();
+            } else {
+                hideAdminPanel();
+            }
+        });
+
+        function printStats() {
+            // Hide navigation and non-stats content for printing
+            const mainContent = document.querySelector('#stats');
+            if (!mainContent) {
+                window.print();
+                return;
+            }
+            // Add a print-specific class to body
+            document.body.classList.add('printing-stats');
+            // Save scroll position
+            const scrollY = window.scrollY;
+            // Print only the stats section
+            const printWindow = window.open('', '', 'width=900,height=1200');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Poker Academy Social Club - Stats</title>
+                    <link rel=\"stylesheet\" href=\"https://cdn.tailwindcss.com\">
+                    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">
+                    <style>
+                        body { background: #fff !important; color: #000 !important; font-family: sans-serif; }
+                        .bg-poker-primary, .bg-poker-secondary { background: #fff !important; }
+                        .text-yellow-400, .text-green-400, .text-indigo-700 { color: #000 !important; }
+                        .shadow, .shadow-2xl { box-shadow: none !important; }
+                        .rounded-xl { border-radius: 0.5rem !important; }
+                        .rounded-lg { border-radius: 0.25rem !important; }
+                        .font-bold { font-weight: bold !important; }
+                        .font-semibold { font-weight: 600 !important; }
+                        .text-center { text-align: center !important; }
+                        .flex { display: flex !important; }
+                        .grid { display: grid !important; }
+                        .overflow-y-auto, .max-h-96 { overflow: visible !important; max-height: none !important; }
+                        /* Compact print styles */
+                        body, td, th, div, span, p, h1, h2, h3, h4, h5, h6 {
+                            font-size: 11px !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                        }
+                        h1, h2, h3, h4, h5, h6 { font-weight: bold !important; }
+                        .mb-2, .mb-4, .mb-6, .mb-8, .mt-2, .mt-4, .mt-6, .mt-8, .pt-4, .pb-4, .p-4, .p-6, .px-4, .py-4, .px-6, .py-6, .gap-4, .gap-6, .gap-2, .gap-1, .m-2, .m-4, .m-6, .m-8 {
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            gap: 0 !important;
+                        }
+                        .grid-cols-1 { grid-template-columns: 1fr !important; }
+                        .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+                        .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+                        table { border-collapse: collapse !important; width: 100% !important; }
+                        th, td { border: 1px solid #ccc !important; padding: 2px 4px !important; }
+                        .hidden { display: none !important; }
+                        .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl { font-size: 11px !important; }
+                        .font-mono { font-family: monospace !important; }
+                        /* Remove extra spacing in points table rows */
+                        .pointsTableRow, .flex.items-center.p-2.rounded.mb-1.bg-purple-600\/25 { margin-bottom: 0 !important; padding: 2px 0 !important; }
+                        /* Remove extra spacing in grid */
+                        .grid, .flex { gap: 0 !important; }
+                        /* Remove extra spacing in containers */
+                        .container, .page, .rounded-xl, .rounded-lg { padding: 0 !important; }
+                        /* Remove extra spacing in buttons */
+                        button { padding: 0 !important; margin: 0 !important; font-size: 11px !important; }
+                        /* Remove print page breaks */
+                        @media print {
+                            html, body { width: 100% !important; height: 100% !important; }
+                            .pagebreak { page-break-before: avoid !important; page-break-after: avoid !important; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1 class=\"text-3xl font-bold text-center mb-2\">Poker Academy Social Club - Stats</h1>
+                    <div>${mainContent.innerHTML}</div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+                document.body.classList.remove('printing-stats');
+                window.scrollTo(0, scrollY);
+            }, 400);
+        }
+
+        // --- PWA install ---
+        let deferredInstallPrompt = null;
+
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredInstallPrompt = event;
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.classList.remove('hidden');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.classList.add('hidden');
+        });
+
+        async function installApp() {
+            if (!deferredInstallPrompt) return;
+            deferredInstallPrompt.prompt();
+            await deferredInstallPrompt.userChoice;
+            deferredInstallPrompt = null;
+            const installBtn = document.getElementById('installAppBtn');
+            if (installBtn) installBtn.classList.add('hidden');
+        }
+
+        if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>
