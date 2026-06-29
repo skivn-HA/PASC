@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-title" content="PASC">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="Logos/Logo-S19.png">
+    <link rel="apple-touch-icon" href="Logos/Logo-S19-1.1.png">
     <title>PASC Season 19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -164,24 +164,53 @@
         }
         
         #fullscreenOverlay .timer-display {
-            /* Fill the screen: limited by width (vw) and height (vh) so it always fits */
-            font-size: min(26vw, 40vh) !important;
-            margin-bottom: 0.5vh;
+            width: 100%;
+            max-width: calc(100vw - 4rem);
+            white-space: nowrap;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            padding: 0 1rem;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         
         #fullscreenOverlay .blind-display {
-            font-size: min(16vw, 22vh) !important;
+            width: 100%;
+            max-width: calc(100vw - 4rem);
+            box-sizing: border-box;
+            padding: 0 1rem;
             margin-bottom: 1vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        #fullscreenOverlay #currentBlind .blind-label {
+            line-height: 1;
+            white-space: nowrap;
+            color: #facc15;
+        }
+
+        #fullscreenOverlay #currentBlind .blind-values {
+            line-height: 1;
+            white-space: nowrap;
+            color: #facc15;
         }
         
         #fullscreenOverlay #nextBlind {
-            font-size: min(6vw, 8vh) !important;
+            width: 100%;
+            max-width: calc(100vw - 4rem);
+            white-space: nowrap;
+            box-sizing: border-box;
+            padding: 0 1rem;
             margin-bottom: 0;
             line-height: 1;
         }
 
         #fullscreenOverlay #timer.timer-display {
-            margin-top: -3vh;
+            margin-top: 0;
         }
         
         #fullscreenOverlay .flex.flex-wrap.justify-center {
@@ -260,8 +289,10 @@
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
     <div class="w-full flex justify-center m-0 leading-none">
-        <!-- Logo Image -->
-        <img src="Logos/Logo-S19.png" alt="Poker Academy Social Club Logo" class="block" style="height:280px; width:auto; object-fit:contain;" />
+        <div class="flex items-center justify-center">
+            <img src="Logos/Logo-S19-1.1.png" alt="Poker Academy Social Club Logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
+            <img src="Logos/Logo-S19-2.png" alt="" class="block" style="height:120px; width:auto; object-fit:contain;" />
+        </div>
     </div>
     <div class="fixed top-2 right-2 z-50 flex gap-2">
         <button id="installAppBtn" onclick="installApp()" class="hidden bg-purple-600 hover:bg-orange-500 text-white rounded-full px-3 py-2 shadow-lg focus:outline-none text-sm font-semibold" title="Install as app">
@@ -320,9 +351,6 @@
                             </div>
                             <button onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
                                 <i class="fas fa-plus mr-2"></i>Add Player
-                            </button>
-                            <button onclick="startGame()" class="px-8 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition-colors duration-300 text-white shadow-lg">
-                                <i class="fas fa-play mr-2"></i>START GAME
                             </button>
                         </div>
                         <div class="mb-4">
@@ -395,9 +423,14 @@
                 </div>
                 
                 <div id="tablesContainer" class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
-                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">
-                        <i class="fas fa-users mr-2"></i>Table Assignments
-                    </h2>
+                    <div class="flex flex-wrap items-center gap-4 mb-4">
+                        <h2 class="text-2xl font-bold text-yellow-400">
+                            <i class="fas fa-users mr-2"></i>Table Assignments
+                        </h2>
+                        <button id="startGameBtn" onclick="startGame()" class="hidden px-8 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition-colors duration-300 text-white shadow-lg">
+                            <i class="fas fa-play mr-2"></i>START GAME
+                        </button>
+                    </div>
                     <div id="tablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <!-- Tables will be added here -->
                     </div>
@@ -727,6 +760,35 @@
             }
         }
 
+        function resetBlindTimerToFirstLevel() {
+            pauseTimer();
+            currentBlindIndex = 0;
+            window.timerHasStarted = false;
+            blindWarningGiven = false;
+
+            if (blindLevels.length === 0) {
+                timeLeft = 0;
+                document.querySelectorAll('#timer').forEach(timer => { timer.textContent = '00:00'; });
+                document.querySelectorAll('#currentBlind').forEach(el => setCurrentBlindOnElement(el, null));
+                document.querySelectorAll('#nextBlind').forEach(el => { el.textContent = 'Next: -/-'; });
+            } else {
+                blindLevels.forEach(level => {
+                    if (level.type === 'break') {
+                        level.timeLeft = level.breakTime;
+                    } else {
+                        level.timeLeft = level.levelTime;
+                    }
+                });
+                timeLeft = blindLevels[0].timeLeft;
+                renderBlindLevelsList();
+                updateBlindDisplay();
+                updateTimerDisplay();
+            }
+
+            document.querySelectorAll('#startBtn').forEach(btn => btn.classList.remove('hidden'));
+            document.querySelectorAll('#pauseBtn').forEach(btn => btn.classList.add('hidden'));
+        }
+
         function startGame() {
             if (blindLevels.length === 0) {
                 alert('Please add at least one blind level on the Blind Timer page');
@@ -738,21 +800,7 @@
                 return;
             }
 
-            pauseTimer();
-            currentBlindIndex = 0;
-            window.timerHasStarted = false;
-            blindWarningGiven = false;
-
-            blindLevels.forEach(level => {
-                if (level.type === 'break') {
-                    level.timeLeft = level.breakTime;
-                } else {
-                    level.timeLeft = level.levelTime;
-                }
-            });
-
-            renderBlindLevelsList();
-            updateBlindDisplay();
+            resetBlindTimerToFirstLevel();
             showPage('blind-timer');
             startTimer();
         }
@@ -1070,6 +1118,12 @@
                 `;
                 container.appendChild(tableCard);
             });
+            updateStartGameButton();
+        }
+
+        function updateStartGameButton() {
+            const btn = document.getElementById('startGameBtn');
+            if (btn) btn.classList.toggle('hidden', tables.length === 0);
         }
         
         function clearPlayers() {
@@ -1082,6 +1136,8 @@
                 window.selectedGhostPlayer = null;
                 document.getElementById('playersList').innerHTML = '';
                 document.getElementById('tablesList').innerHTML = '';
+                updateStartGameButton();
+                resetBlindTimerToFirstLevel();
                 const raffleCashEl = document.getElementById('raffleCash');
                 if (raffleCashEl) raffleCashEl.value = '0';
                 updateStats();
@@ -1137,7 +1193,7 @@
                 levelItem.innerHTML = `
                     <div>
                         <span class="font-bold">Level ${index + 1}:</span>
-                        <span>${level.smallBlind}/${level.bigBlind} - ${level.levelTime / 60} min</span>
+                        <span>${formatBlinds(level.smallBlind, level.bigBlind)} - ${level.levelTime / 60} min</span>
                     </div>
                     <button onclick="removeBlindLevel(${index})" class="text-red-400 hover:text-red-300">
                         <i class="fas fa-times"></i>
@@ -1166,8 +1222,8 @@
                 isTimerRunning = false;
                 window.timerHasStarted = false; // Reset timer start flag
                 document.getElementById('timer').textContent = '00:00';
-                document.getElementById('currentBlind').textContent = 'Blinds: -/-';
-                document.getElementById('nextBlind').textContent = 'Next: -/-';
+                document.querySelectorAll('#currentBlind').forEach(el => setCurrentBlindOnElement(el, null));
+                document.querySelectorAll('#nextBlind').forEach(el => { el.textContent = 'Next: -/-'; });
                 document.getElementById('blindLevelsList').innerHTML = '';
                 
                 // Update button states
@@ -1338,29 +1394,55 @@
                     slider.value = max - timeLeft;
                 }
             });
+            requestAnimationFrame(fitFullscreenTimerText);
         }
         
+        function formatBlindNumber(num) {
+            const value = Number(num);
+            return isNaN(value) ? num : value.toLocaleString('en-US');
+        }
+
+        function formatBlinds(smallBlind, bigBlind) {
+            return `${formatBlindNumber(smallBlind)}/${formatBlindNumber(bigBlind)}`;
+        }
+
+        function setCurrentBlindOnElement(element, level) {
+            const valuesEl = element.querySelector('.blind-values');
+            if (valuesEl) {
+                const labelEl = element.querySelector('.blind-label');
+                if (!level) {
+                    if (labelEl) labelEl.textContent = 'Blinds';
+                    valuesEl.textContent = '-/-';
+                } else if (level.type === 'break') {
+                    if (labelEl) labelEl.textContent = 'Break';
+                    valuesEl.textContent = `${level.breakTime / 60} min`;
+                } else {
+                    if (labelEl) labelEl.textContent = 'Blinds';
+                    valuesEl.textContent = formatBlinds(level.smallBlind, level.bigBlind);
+                }
+                return;
+            }
+            if (!level) {
+                element.textContent = 'Blinds: -/-';
+            } else if (level.type === 'break') {
+                element.textContent = `Break: ${level.breakTime / 60} min`;
+            } else {
+                element.textContent = `Blinds: ${formatBlinds(level.smallBlind, level.bigBlind)}`;
+            }
+        }
+
         function updateBlindDisplay() {
             if (blindLevels.length === 0) {
-                const currentBlindText = 'Blinds: -/-';
-                const nextBlindText = 'Next: -/-';
-                
                 document.querySelectorAll('#currentBlind').forEach(element => {
-                    element.textContent = currentBlindText;
+                    setCurrentBlindOnElement(element, null);
                 });
                 document.querySelectorAll('#nextBlind').forEach(element => {
-                    element.textContent = nextBlindText;
+                    element.textContent = 'Next: -/-';
                 });
                 return;
             }
             
             const currentLevel = blindLevels[currentBlindIndex];
-            let currentBlindText = '';
-            if (currentLevel.type === 'break') {
-                currentBlindText = `Break: ${currentLevel.breakTime / 60} min`;
-            } else {
-                currentBlindText = `Blinds: ${currentLevel.smallBlind}/${currentLevel.bigBlind}`;
-            }
             
             const nextIndex = (currentBlindIndex + 1) % blindLevels.length;
             const nextLevel = blindLevels[nextIndex];
@@ -1368,12 +1450,11 @@
             if (nextLevel.type === 'break') {
                 nextBlindText = `Next: Break (${nextLevel.breakTime / 60} min)`;
             } else {
-                nextBlindText = `Next: ${nextLevel.smallBlind}/${nextLevel.bigBlind}`;
+                nextBlindText = `Next: ${formatBlinds(nextLevel.smallBlind, nextLevel.bigBlind)}`;
             }
             
-            // Update all current blind elements (original and cloned)
             document.querySelectorAll('#currentBlind').forEach(element => {
-                element.textContent = currentBlindText;
+                setCurrentBlindOnElement(element, currentLevel);
             });
             
             // Update all next blind elements (original and cloned)
@@ -1382,7 +1463,71 @@
             });
             
             renderBlindLevelsList();
+            requestAnimationFrame(fitFullscreenTimerText);
         }
+
+        function getFullscreenFontCap(vw, vh) {
+            return Math.min(window.innerWidth * (vw / 100), window.innerHeight * (vh / 100));
+        }
+
+        function fitTextToWidth(element, maxFontSize, minFontSize = 14) {
+            if (!element || !maxFontSize) return;
+            const overlay = document.getElementById('fullscreenOverlay');
+            const availableWidth = (overlay ? overlay.clientWidth : window.innerWidth) - 48;
+            let fontSize = Math.floor(maxFontSize);
+            element.style.setProperty('font-size', fontSize + 'px', 'important');
+            while (fontSize > minFontSize && element.scrollWidth > availableWidth) {
+                fontSize -= 1;
+                element.style.setProperty('font-size', fontSize + 'px', 'important');
+            }
+        }
+
+        function fitFullscreenTimerText() {
+            if (!document.body.classList.contains('fullscreen-mode')) return;
+            const overlay = document.getElementById('fullscreenOverlay');
+            if (!overlay) return;
+            const currentBlind = overlay.querySelector('#currentBlind');
+            const nextBlind = overlay.querySelector('#nextBlind');
+            const timer = overlay.querySelector('#timer');
+            const slider = overlay.querySelector('#timeSlider');
+            const buttons = overlay.querySelector('.flex.flex-wrap.justify-center');
+
+            const blindLabel = currentBlind?.querySelector('.blind-label');
+            const blindValues = currentBlind?.querySelector('.blind-values');
+            if (blindLabel) fitTextToWidth(blindLabel, getFullscreenFontCap(8, 10), 12);
+            if (blindValues) fitTextToWidth(blindValues, getFullscreenFontCap(18, 24), 16);
+            else if (currentBlind) fitTextToWidth(currentBlind, getFullscreenFontCap(16, 22));
+            if (nextBlind) fitTextToWidth(nextBlind, getFullscreenFontCap(6, 8), 12);
+
+            if (!timer) return;
+
+            timer.style.setProperty('margin-top', '0', 'important');
+            timer.style.setProperty('margin-bottom', '0', 'important');
+            timer.style.lineHeight = '1';
+
+            const maxByViewport = getFullscreenFontCap(26, 40);
+            const sliderHeight = slider ? slider.offsetHeight : 20;
+            const buttonsHeight = buttons ? buttons.offsetHeight : 56;
+            const currentHeight = currentBlind ? currentBlind.offsetHeight : 0;
+            const nextHeight = nextBlind ? nextBlind.offsetHeight : 0;
+            const sectionGaps = 36;
+            const reservedHeight = currentHeight + nextHeight + sliderHeight + buttonsHeight + sectionGaps;
+            const maxByHeight = Math.max((overlay.clientHeight - reservedHeight) * 0.95, 24);
+            const maxFont = Math.max(Math.min(maxByViewport, maxByHeight), 24);
+
+            fitTextToWidth(timer, maxFont, 24);
+
+            if (nextBlind && slider) {
+                let availableHeight = slider.getBoundingClientRect().top - nextBlind.getBoundingClientRect().bottom - 8;
+                let fontSize = parseFloat(timer.style.fontSize) || maxFont;
+                while (fontSize > 24 && timer.offsetHeight > availableHeight) {
+                    fontSize -= 1;
+                    timer.style.setProperty('font-size', fontSize + 'px', 'important');
+                }
+            }
+        }
+
+        window.addEventListener('resize', fitFullscreenTimerText);
         
         // Helper function to convert numbers to words (supports up to 999,999)
         function numberToWords(num) {
@@ -2170,7 +2315,6 @@
                 `;
                 
                 // Get current values from the original timer
-                const currentBlindElement = document.getElementById('currentBlind');
                 const timerElement = document.getElementById('timer');
                 const timeSliderElement = document.getElementById('timeSlider');
                 
@@ -2179,7 +2323,7 @@
                 currentBlindDisplay.id = 'currentBlind';
                 currentBlindDisplay.className = 'blind-display font-bold mb-2 text-yellow-400 text-center w-full';
                 currentBlindDisplay.style.textAlign = 'center';
-                currentBlindDisplay.textContent = currentBlindElement ? currentBlindElement.textContent : 'Blinds: -/-';
+                currentBlindDisplay.innerHTML = '<div class="blind-label"></div><div class="blind-values"></div>';
                 
                 // Create next blind display
                 const nextBlindElement = document.getElementById('nextBlind');
@@ -2289,6 +2433,8 @@
                 overlay.appendChild(exitBtn);
                 overlay.appendChild(fullscreenContent);
                 document.body.appendChild(overlay);
+                updateBlindDisplay();
+                requestAnimationFrame(() => requestAnimationFrame(fitFullscreenTimerText));
             }
         }
 
@@ -2344,7 +2490,7 @@
                     content = `<div><span class="font-bold text-indigo-300">Break:</span> <span>${level.breakTime / 60} min</span></div>`;
                 } else {
                     levelItem.className = `flex justify-between items-center p-0 rounded mb-1 ${index === currentBlindIndex ? 'bg-poker-highlight/30' : 'bg-poker-primary'}`;
-                    content = `<div><span class="font-bold">Level ${index + 1}:</span> <span>${level.smallBlind}/${level.bigBlind} - ${level.levelTime / 60} min</span></div>`;
+                    content = `<div><span class="font-bold">Level ${index + 1}:</span> <span>${formatBlinds(level.smallBlind, level.bigBlind)} - ${level.levelTime / 60} min</span></div>`;
                 }
                 levelItem.innerHTML = `
                     ${content}
