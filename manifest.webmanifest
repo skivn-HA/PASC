@@ -16,13 +16,13 @@
       "purpose": "any"
     },
     {
-      "src": "https://www.dropbox.com/scl/fi/919t0ezqqmiz7zxmdrm2z/Logo-S19.png?rlkey=r0yb4d9a05xrpe42kvbfyx7rc&raw=1",
+      "src": "logos/Logo-S19.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://www.dropbox.com/scl/fi/919t0ezqqmiz7zxmdrm2z/Logo-S19.png?rlkey=r0yb4d9a05xrpe42kvbfyx7rc&raw=1",
+      "src": "logos/Logo-S19.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"

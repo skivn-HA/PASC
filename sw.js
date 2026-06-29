@@ -1,10 +1,11 @@
-const CACHE_NAME = 'pasc-v6';
+const CACHE_NAME = 'pasc-v7';
 
 const PRECACHE_ASSETS = [
   './index.html',
   './PASCv2026.06.28.html',
   './manifest.webmanifest',
   './icons/icon.svg',
+  './logos/Logo-S19.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
 ];
 
