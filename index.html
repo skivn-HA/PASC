@@ -652,6 +652,10 @@
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                 </select>
+                                <div id="committeeLoginFields" class="hidden col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <input type="text" id="adminCommitteeUsername" placeholder="Login Username" autocomplete="off" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <input type="password" id="adminCommitteePassword" placeholder="Login Password" autocomplete="new-password" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                </div>
                                 <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
                             </form>
                             <div id="adminPlayersList" class="overflow-x-auto">
@@ -2376,6 +2380,42 @@
         }
 
         // --- ADMIN PAGE LOGIC ---
+        // Owner login credentials (SHA-256 hashes only — default username: admin, password: pasc)
+        const OWNER_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+        const OWNER_PASS_HASH = 'b683573ac88ce4a7b5cd04d849743c2d9f1ee543f62a6c4e51e7cd8927f47869';
+
+        async function sha256(text) {
+            const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            return Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function normalizeAdminUsername(username) {
+            return username.trim().toLowerCase();
+        }
+
+        async function verifyAdminLogin(username, password) {
+            const userHash = await sha256(normalizeAdminUsername(username));
+            const passHash = await sha256(password);
+
+            if (userHash === OWNER_USER_HASH && passHash === OWNER_PASS_HASH) {
+                return true;
+            }
+
+            return adminPlayers.some(p =>
+                p.committee === 'yes' &&
+                p.loginUserHash &&
+                p.loginPasswordHash &&
+                userHash === p.loginUserHash &&
+                passHash === p.loginPasswordHash
+            );
+        }
+
+        function toggleCommitteeLoginFields() {
+            const committee = document.getElementById('adminPlayerCommittee')?.value;
+            const fields = document.getElementById('committeeLoginFields');
+            if (fields) fields.classList.toggle('hidden', committee !== 'yes');
+        }
+
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
         let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75}');
@@ -2391,9 +2431,10 @@
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
             table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
-                <th class='p-2'>Name</th><th class='p-2'>Email</th><th class='p-2'>Phone</th><th class='p-2'>Years</th><th class='p-2'>Member</th><th class='p-2'>Committee</th><th class='p-2'>Edit</th><th class='p-2'>Delete</th></tr></thead><tbody></tbody>`;
+                <th class='p-2'>Name</th><th class='p-2'>Email</th><th class='p-2'>Phone</th><th class='p-2'>Years</th><th class='p-2'>Member</th><th class='p-2'>Committee</th><th class='p-2'>Login</th><th class='p-2'>Edit</th><th class='p-2'>Delete</th></tr></thead><tbody></tbody>`;
             adminPlayers.forEach((p, idx) => {
                 const row = document.createElement('tr');
+                const loginName = p.committee === 'yes' && p.loginUsername ? p.loginUsername : '—';
                 row.innerHTML = `
                     <td class='p-2'>${p.name}</td>
                     <td class='p-2'>${p.email}</td>
@@ -2401,6 +2442,7 @@
                     <td class='p-2'>${p.years}</td>
                     <td class='p-2'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
                     <td class='p-2'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
+                    <td class='p-2'>${loginName}</td>
                     <td class='p-2'><button class='text-yellow-400 underline' onclick='editAdminPlayer(${idx})'>Edit</button></td>
                     <td class='p-2'><button class='text-red-400 underline' onclick='deleteAdminPlayer(${idx})'>Delete</button></td>
                 `;
@@ -2546,6 +2588,18 @@
             document.getElementById('adminPlayerYears').value = p.years;
             document.getElementById('adminPlayerMember').value = p.member;
             document.getElementById('adminPlayerCommittee').value = p.committee;
+            toggleCommitteeLoginFields();
+            const committeeUsername = document.getElementById('adminCommitteeUsername');
+            const committeePassword = document.getElementById('adminCommitteePassword');
+            if (p.committee === 'yes') {
+                committeeUsername.value = p.loginUsername || '';
+                committeePassword.value = '';
+                committeePassword.placeholder = 'Leave blank to keep current password';
+            } else {
+                committeeUsername.value = '';
+                committeePassword.value = '';
+                committeePassword.placeholder = 'Login Password';
+            }
             document.getElementById('adminPlayerForm').setAttribute('data-edit-idx', idx);
         }
         function deleteAdminPlayer(idx) {
@@ -2596,15 +2650,17 @@
             // Admin login logic
             const adminLoginForm = document.getElementById('adminLoginForm');
             if (adminLoginForm) {
-                adminLoginForm.addEventListener('submit', function(e) {
+                adminLoginForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     const username = document.getElementById('adminUsername').value;
                     const password = document.getElementById('adminPassword').value;
-                    if (username === 'admin' && password === 'admin') {
+                    const loginError = document.getElementById('adminLoginError');
+                    if (await verifyAdminLogin(username, password)) {
+                        loginError.classList.add('hidden');
                         localStorage.setItem('adminLoggedIn', 'true');
                         showAdminPanel();
                     } else {
-                        document.getElementById('adminLoginError').classList.remove('hidden');
+                        loginError.classList.remove('hidden');
                     }
                 });
             }
@@ -2619,10 +2675,14 @@
                     if (adminPasswordInput) adminPasswordInput.value = '';
                 });
             }
+            const adminPlayerCommittee = document.getElementById('adminPlayerCommittee');
+            if (adminPlayerCommittee) {
+                adminPlayerCommittee.addEventListener('change', toggleCommitteeLoginFields);
+            }
             // Admin player add/update
             const adminPlayerForm = document.getElementById('adminPlayerForm');
             if (adminPlayerForm) {
-                adminPlayerForm.addEventListener('submit', function(e) {
+                adminPlayerForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     const name = document.getElementById('adminPlayerName').value.trim();
                     const email = document.getElementById('adminPlayerEmail').value.trim();
@@ -2630,18 +2690,61 @@
                     const years = document.getElementById('adminPlayerYears').value.trim();
                     const member = document.getElementById('adminPlayerMember').value;
                     const committee = document.getElementById('adminPlayerCommittee').value;
+                    const loginUsername = document.getElementById('adminCommitteeUsername').value.trim();
+                    const loginPassword = document.getElementById('adminCommitteePassword').value;
                     if (!name) return;
-                    const editIdx = adminPlayerForm.getAttribute('data-edit-idx');
+
+                    const editIdxAttr = adminPlayerForm.getAttribute('data-edit-idx');
+                    const editIdx = editIdxAttr !== null && editIdxAttr !== '' ? parseInt(editIdxAttr, 10) : null;
+                    const existingPlayer = editIdx !== null ? adminPlayers[editIdx] : null;
+                    const player = { name, email, phone, years, member, committee };
+
+                    if (committee === 'yes') {
+                        if (!loginUsername) {
+                            alert('Committee members need a login username.');
+                            return;
+                        }
+                        const loginUserHash = await sha256(normalizeAdminUsername(loginUsername));
+                        if (loginUserHash === OWNER_USER_HASH) {
+                            alert('That username is reserved. Choose a different one.');
+                            return;
+                        }
+                        const duplicate = adminPlayers.some((p, i) =>
+                            i !== editIdx &&
+                            p.committee === 'yes' &&
+                            p.loginUserHash === loginUserHash
+                        );
+                        if (duplicate) {
+                            alert('That login username is already in use.');
+                            return;
+                        }
+                        let loginPasswordHash;
+                        if (editIdx !== null && !loginPassword && existingPlayer?.loginPasswordHash) {
+                            loginPasswordHash = existingPlayer.loginPasswordHash;
+                        } else {
+                            if (!loginPassword) {
+                                alert('Committee members need a login password.');
+                                return;
+                            }
+                            loginPasswordHash = await sha256(loginPassword);
+                        }
+                        player.loginUsername = loginUsername;
+                        player.loginUserHash = loginUserHash;
+                        player.loginPasswordHash = loginPasswordHash;
+                    }
+
                     if (editIdx !== null) {
-                        adminPlayers[editIdx] = { name, email, phone, years, member, committee };
+                        adminPlayers[editIdx] = player;
                         adminPlayerForm.removeAttribute('data-edit-idx');
                     } else {
-                        adminPlayers.push({ name, email, phone, years, member, committee });
+                        adminPlayers.push(player);
                     }
                     localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
                     renderAdminPlayersList();
                     renderRegistrationDatalist();
                     adminPlayerForm.reset();
+                    document.getElementById('adminCommitteePassword').placeholder = 'Login Password';
+                    toggleCommitteeLoginFields();
                 });
             }
             // Admin settings save
