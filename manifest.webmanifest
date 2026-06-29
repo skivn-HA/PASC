@@ -16,13 +16,13 @@
       "purpose": "any"
     },
     {
-      "src": "logos/Logo-S19.png",
+      "src": "Logos/Logo-S19.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "logos/Logo-S19.png",
+      "src": "Logos/Logo-S19.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
