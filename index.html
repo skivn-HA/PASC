@@ -257,8 +257,12 @@
         }
         
         /* Player dropdown styling */
-        #playerName {
-            font-size: 1.1rem;
+        #adminPlayersList table {
+            border-collapse: collapse;
+            line-height: 1.4;
+        }
+        #adminPlayersList table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .player-dropdown-item {
@@ -2577,20 +2581,20 @@
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
             table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
-                <th class='p-2'>Name</th><th class='p-2'>Email</th><th class='p-2'>Phone</th><th class='p-2'>Years</th><th class='p-2'>Member</th><th class='p-2'>Committee</th><th class='p-2'>Login</th><th class='p-2'>Edit</th><th class='p-2'>Delete</th></tr></thead><tbody></tbody>`;
+                <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Login</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
             adminPlayers.forEach((p, idx) => {
                 const row = document.createElement('tr');
                 const loginName = p.committee === 'yes' && p.loginUsername ? p.loginUsername : '—';
                 row.innerHTML = `
-                    <td class='p-2'>${p.name}</td>
-                    <td class='p-2'>${p.email}</td>
-                    <td class='p-2'>${p.phone}</td>
-                    <td class='p-2'>${p.years}</td>
-                    <td class='p-2'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
-                    <td class='p-2'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
-                    <td class='p-2'>${loginName}</td>
-                    <td class='p-2'><button class='text-yellow-400 underline' onclick='editAdminPlayer(${idx})'>Edit</button></td>
-                    <td class='p-2'><button class='text-red-400 underline' onclick='deleteAdminPlayer(${idx})'>Delete</button></td>
+                    <td class='px-2 py-0.5'>${p.name}</td>
+                    <td class='px-2 py-0.5'>${p.email}</td>
+                    <td class='px-2 py-0.5'>${p.phone}</td>
+                    <td class='px-2 py-0.5'>${p.years}</td>
+                    <td class='px-2 py-0.5'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
+                    <td class='px-2 py-0.5'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
+                    <td class='px-2 py-0.5'>${loginName}</td>
+                    <td class='px-2 py-0.5'><button class='text-yellow-400 underline' onclick='editAdminPlayer(${idx})'>Edit</button></td>
+                    <td class='px-2 py-0.5'><button class='text-red-400 underline' onclick='deleteAdminPlayer(${idx})'>Delete</button></td>
                 `;
                 table.querySelector('tbody').appendChild(row);
             });
