@@ -108,10 +108,55 @@
             font-size: 2rem !important;
             line-height: 1;
         }
-        /* Pull the timer closer to the "Next" line and slider in normal (non-fullscreen) mode */
-        body:not(.fullscreen-mode) #timer.timer-display {
-            margin-top: -2rem;
-            margin-bottom: -1.5rem;
+        /* Standard blind timer — blinds, next blind, and clock scale together */
+        body:not(.fullscreen-mode) #blind-timer .blind-display {
+            font-size: clamp(1.25rem, min(12vw, 18vh), 12rem);
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 0.15rem !important;
+            white-space: nowrap;
+            text-align: center;
+            box-sizing: border-box;
+            line-height: 1;
+        }
+        body:not(.fullscreen-mode) #blind-timer #nextBlind {
+            font-size: clamp(0.65rem, min(5vw, 7.5vh), 2.5rem) !important;
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: -0.25rem;
+            white-space: nowrap;
+            text-align: center;
+            box-sizing: border-box;
+            line-height: 1;
+        }
+        body:not(.fullscreen-mode) #blind-timer #timer.timer-display {
+            font-size: clamp(2rem, min(20vw, 30vh), 20rem);
+            display: block;
+            width: fit-content;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: -1rem;
+            margin-bottom: -0.5rem;
+            white-space: nowrap;
+            text-align: center;
+            box-sizing: border-box;
+            line-height: 1;
+        }
+        body.compact-mode:not(.fullscreen-mode) #blind-timer .blind-display {
+            font-size: clamp(1.25rem, min(10vw, 14vh), 4rem) !important;
+        }
+        body.compact-mode:not(.fullscreen-mode) #blind-timer #nextBlind {
+            font-size: clamp(0.65rem, min(4vw, 6vh), 1.75rem) !important;
+        }
+        body.compact-mode:not(.fullscreen-mode) #blind-timer #timer.timer-display {
+            font-size: clamp(2rem, min(16vw, 22vh), 6rem) !important;
         }
         body.compact-mode .player-card,
         body.compact-mode .bg-poker-primary,
@@ -728,7 +773,7 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.06.28</p>
+            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.7.1</p>
         </div>
     </div>
 
@@ -761,6 +806,9 @@
             // Update stats when showing stats page
             if (pageId === 'stats') {
                 updateStats();
+            }
+            if (pageId === 'blind-timer') {
+                requestAnimationFrame(() => requestAnimationFrame(fitStandardBlindTimer));
             }
         }
 
@@ -1467,7 +1515,66 @@
             });
             
             renderBlindLevelsList();
-            requestAnimationFrame(fitFullscreenTimerText);
+            requestAnimationFrame(() => {
+                fitFullscreenTimerText();
+                fitStandardBlindTimer();
+            });
+        }
+
+        function fitStandardBlindTimer() {
+            if (document.body.classList.contains('fullscreen-mode')) return;
+            const section = document.getElementById('blind-timer');
+            if (!section || section.classList.contains('hidden')) return;
+
+            const currentBlind = section.querySelector('#currentBlind');
+            const nextBlind = section.querySelector('#nextBlind');
+            const timer = section.querySelector('#timer');
+            const slider = section.querySelector('#timeSlider');
+            if (!timer) return;
+
+            const container = timer.parentElement;
+            const availableWidth = Math.max(container.clientWidth - 16, 120);
+            const cap = (vw, vh) => Math.min(container.clientWidth * (vw / 100), window.innerHeight * (vh / 100));
+
+            const targets = [
+                { el: currentBlind, max: cap(12, 18), min: 14 },
+                { el: nextBlind, max: cap(5, 7.5), min: 12 },
+                { el: timer, max: cap(20, 30), min: 16 }
+            ].filter(t => t.el);
+
+            targets.forEach(t => t.el.style.removeProperty('font-size'));
+            void timer.offsetHeight;
+
+            let scale = 1;
+            targets.forEach(t => {
+                const testMax = Math.floor(t.max);
+                t.el.style.setProperty('font-size', testMax + 'px', 'important');
+                if (t.el.scrollWidth > availableWidth) {
+                    scale = Math.min(scale, availableWidth / t.el.scrollWidth);
+                }
+            });
+
+            targets.forEach(t => {
+                t.el.style.setProperty('font-size', Math.floor(t.max * scale) + 'px', 'important');
+            });
+
+            if (slider && currentBlind) {
+                const stackTop = currentBlind.getBoundingClientRect().top;
+                const availableHeight = slider.getBoundingClientRect().top - stackTop - 8;
+                const stackHeight = timer.getBoundingClientRect().bottom - stackTop;
+                if (stackHeight > availableHeight && stackHeight > 0) {
+                    scale = Math.min(scale, availableHeight / stackHeight);
+                }
+            }
+
+            if (scale >= 0.99) {
+                targets.forEach(t => t.el.style.removeProperty('font-size'));
+            } else {
+                targets.forEach(t => {
+                    const size = Math.max(Math.floor(t.max * scale), t.min);
+                    t.el.style.setProperty('font-size', size + 'px', 'important');
+                });
+            }
         }
 
         function getFullscreenFontCap(vw, vh) {
@@ -1531,7 +1638,10 @@
             }
         }
 
-        window.addEventListener('resize', fitFullscreenTimerText);
+        window.addEventListener('resize', () => {
+            fitFullscreenTimerText();
+            fitStandardBlindTimer();
+        });
         
         // Helper function to convert numbers to words (supports up to 999,999)
         function numberToWords(num) {
@@ -2260,6 +2370,7 @@
                     hideBtn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Blind Levels';
                 }
             }
+            requestAnimationFrame(fitStandardBlindTimer);
         }
 
         function toggleFullscreen() {
