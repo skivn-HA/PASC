@@ -153,10 +153,11 @@
             font-size: clamp(1.25rem, min(10vw, 14vh), 4rem) !important;
         }
         body.compact-mode:not(.fullscreen-mode) #blind-timer #nextBlind {
-            font-size: clamp(0.65rem, min(4vw, 6vh), 1.75rem) !important;
+            display: none !important;
         }
         body.compact-mode:not(.fullscreen-mode) #blind-timer #timer.timer-display {
-            font-size: clamp(2rem, min(16vw, 22vh), 6rem) !important;
+            font-size: clamp(1.75rem, min(14vw, 20vh), 5rem) !important;
+            margin-top: 0.20rem !important;
         }
         body.compact-mode .player-card,
         body.compact-mode .bg-poker-primary,
@@ -324,6 +325,15 @@
         input:focus, select:focus, textarea:focus {
             border-color: #f7931a !important;
             box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.3) !important;
+        }
+        @media (max-width: 640px) {
+            body:not(.fullscreen-mode) #blind-timer #nextBlind {
+                display: none !important;
+            }
+            body:not(.fullscreen-mode) #blind-timer #timer.timer-display {
+                font-size: clamp(1.75rem, min(16vw, 24vh), 5rem) !important;
+                margin-top: 0.20rem !important;
+            }
         }
         @media (max-width: 768px) {
             #blindLevelsList .flex.items-center.p-0 {
@@ -1533,14 +1543,24 @@
             if (!timer) return;
 
             const container = timer.parentElement;
+            const hideNextBlind = document.body.classList.contains('compact-mode') || window.innerWidth <= 640;
+            if (nextBlind) {
+                if (hideNextBlind) {
+                    nextBlind.style.setProperty('display', 'none', 'important');
+                } else {
+                    nextBlind.style.removeProperty('display');
+                }
+            }
+
             const availableWidth = Math.max(container.clientWidth - 16, 120);
+            const isSmallestScreen = hideNextBlind;
             const cap = (vw, vh) => Math.min(container.clientWidth * (vw / 100), window.innerHeight * (vh / 100));
 
             const targets = [
                 { el: currentBlind, max: cap(12, 18), min: 14 },
                 { el: nextBlind, max: cap(5, 7.5), min: 12 },
-                { el: timer, max: cap(20, 30), min: 16 }
-            ].filter(t => t.el);
+                { el: timer, max: isSmallestScreen ? cap(16, 24) : cap(20, 30), min: 16 }
+            ].filter(t => t.el && getComputedStyle(t.el).display !== 'none');
 
             targets.forEach(t => t.el.style.removeProperty('font-size'));
             void timer.offsetHeight;
