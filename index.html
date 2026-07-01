@@ -615,9 +615,6 @@
                         <button onclick="printStats()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
                             <i class="fas fa-print mr-2"></i>Print Stats
                         </button>
-                        <button onclick="smsStats()" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
-                            <i class="fas fa-sms mr-2"></i>SMS Stats
-                        </button>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
@@ -2119,85 +2116,6 @@
                 `\nPoints Table:\n${pointsTableText}`
             );
             window.location.href = `mailto:andrew.bailey@mail.com?subject=${subject}&body=${body}`;
-        }
-
-        function smsStats() {
-            // Check if Web SMS API is available
-            if ('navigator' in window && 'share' in navigator) {
-                // Use Web Share API if available
-                const todaysDate = document.getElementById('todaysDate').textContent;
-                const gameType = document.getElementById('gameTypeStat').textContent;
-                const totalPlayers = document.getElementById('totalPlayersStat').textContent;
-                const totalCashTaking = document.getElementById('totalCashTaking').textContent;
-                const pascCashTakings = document.getElementById('pascCashTakings').textContent;
-                const playerCashPayout = document.getElementById('playerCashPayout').textContent;
-                const payout1st = document.getElementById('payout1st').textContent;
-                const payout2nd = document.getElementById('payout2nd').textContent;
-                const payout3rd = document.getElementById('payout3rd').textContent;
-                
-                // Calculate ghost player status
-                let ghostStatus = '';
-                if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
-                    const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
-                    if (ghostPlayerPlace !== -1) {
-                        const place = players.length - ghostPlayerPlace;
-                        if (place <= 3) {
-                            ghostStatus = 'WINNER';
-                        } else {
-                            ghostStatus = 'NOT WON';
-                        }
-                    }
-                }
-                
-                const smsText = `PASC Stats ${todaysDate}\n${gameType} - ${totalPlayers} players\nTotal: ${totalCashTaking}\nPASC: ${pascCashTakings}\nPayout: ${playerCashPayout}\n1st: ${payout1st} 2nd: ${payout2nd} 3rd: ${payout3rd}\nGhost: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` ${ghostStatus}` : ''}`;
-                
-                navigator.share({
-                    title: 'PASC Poker Stats',
-                    text: smsText
-                }).catch(err => {
-                    console.log('Share failed:', err);
-                    fallbackSMS();
-                });
-            } else {
-                fallbackSMS();
-            }
-        }
-        
-        function fallbackSMS() {
-            // Fallback: Copy to clipboard and show instructions
-            const todaysDate = document.getElementById('todaysDate').textContent;
-            const gameType = document.getElementById('gameTypeStat').textContent;
-            const totalPlayers = document.getElementById('totalPlayersStat').textContent;
-            const totalCashTaking = document.getElementById('totalCashTaking').textContent;
-            const pascCashTakings = document.getElementById('pascCashTakings').textContent;
-            const playerCashPayout = document.getElementById('playerCashPayout').textContent;
-            const payout1st = document.getElementById('payout1st').textContent;
-            const payout2nd = document.getElementById('payout2nd').textContent;
-            const payout3rd = document.getElementById('payout3rd').textContent;
-            
-            // Calculate ghost player status
-            let ghostStatus = '';
-            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
-                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
-                if (ghostPlayerPlace !== -1) {
-                    const place = players.length - ghostPlayerPlace;
-                    if (place <= 3) {
-                        ghostStatus = 'WINNER';
-                    } else {
-                        ghostStatus = 'NOT WON';
-                    }
-                }
-            }
-            
-            const smsText = `PASC Stats ${todaysDate}\n${gameType} - ${totalPlayers} players\nTotal: ${totalCashTaking}\nPASC: ${pascCashTakings}\nPayout: ${playerCashPayout}\n1st: ${payout1st} 2nd: ${payout2nd} 3rd: ${payout3rd}\nGhost: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` ${ghostStatus}` : ''}`;
-            
-            // Copy to clipboard
-            navigator.clipboard.writeText(smsText).then(() => {
-                alert('SMS text copied to clipboard!\n\nPaste it into your SMS app to send.\n\nText copied:\n' + smsText);
-            }).catch(() => {
-                // Fallback if clipboard API not available
-                prompt('Copy this text to your SMS app:', smsText);
-            });
         }
         
         function toggleLayoutMode() {
