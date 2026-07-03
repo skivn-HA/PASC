@@ -919,7 +919,7 @@
                 const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
                 const memberIcon = (player.isMember && !player.isCommittee) ? '<i class="far fa-user text-yellow-400 ml-2" title="PASC Member"></i>' : '';
                 playerCard.innerHTML = `
-                    <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>\n                </div>\n                <div class=\"flex items-center\">\n                        ${player.eliminated ? `<span class=\"text-sm bg-red-600 px-2 py-1 rounded ml-2\">Eliminated</span>` : ''}${committeeIcon}${memberIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
+                    <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>\n                </div>\n                <div class=\"flex items-center\">\n                        ${committeeIcon}${memberIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
                     </div>
             </div>\n        `;
                 container.appendChild(playerCard);
@@ -1143,27 +1143,26 @@
                 const tablePlayers = players.filter(p => p.table === tableNumber);
                 const tableCard = document.createElement('div');
                 const isFinal = tableNumber === 'final';
-                tableCard.className = `rounded-xl shadow-xl overflow-hidden border ${isFinal ? 'border-yellow-400/60' : 'border-poker-accent/40'} bg-gradient-to-b from-poker-secondary to-poker-primary transform transition-transform hover:scale-[1.01]`;
+                tableCard.className = `rounded-xl shadow border ${isFinal ? 'border-yellow-400/40' : 'border-poker-accent/10'} bg-poker-primary`;
                 // Use 'Final Table' if tableNumber is 'final'
                 const tableTitle = isFinal ? 'Final Table' : `Table ${tableNumber}`;
-                const headerGradient = isFinal
-                    ? 'from-yellow-500 via-amber-400 to-yellow-600'
-                    : 'from-poker-accent via-fuchsia-600 to-poker-highlight';
+                const headerClass = isFinal
+                    ? 'bg-yellow-600'
+                    : 'bg-[#056d78]';
                 const headerIcon = isFinal ? 'fa-trophy' : 'fa-users';
                 tableCard.innerHTML = `
-                    <div class=\"bg-gradient-to-r ${headerGradient} px-4 py-3 flex items-center justify-center gap-2 shadow-md\">
-                        <i class=\"fas ${headerIcon} text-white drop-shadow\"></i>
-                        <h3 class=\"text-xl font-extrabold text-white tracking-wide drop-shadow\">${tableTitle}</h3>
+                    <div class=\"${headerClass} px-4 py-3 flex items-center justify-center gap-2\">
+                        <i class=\"fas ${headerIcon} text-white\"></i>
+                        <h3 class=\"text-xl font-bold text-white\">${tableTitle}</h3>
                     </div>
                     <div class=\"p-4 space-y-2\">
                         ${tablePlayers.map((player, idx) => {
                             const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
                             return `
-                            <div class=\"flex justify-between items-center p-2 rounded-lg border-l-4 transition-colors ${player.eliminated ? 'bg-red-900/40 border-red-500 opacity-75' : 'bg-poker-accent/25 border-poker-highlight hover:bg-poker-accent/40'}\">
+                            <div class=\"flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors ${player.eliminated ? 'bg-red-900/30 border-red-500/50 opacity-75' : 'bg-poker-secondary hover:border-poker-highlight/40'}\">
                                 <div class=\"flex items-center gap-2\">
-                                    <span class=\"inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-xs shadow\">${idx + 1}</span>
-                                    <span class=\"font-bold text-yellow-300\">#${player.number}</span>
-                                    <span class=\"text-white font-medium ml-1\">${player.name}</span>
+                                    <span class=\"inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow\">${idx + 1}</span>
+                                    <span class=\"text-white font-medium\">${player.name}</span>
                                     ${committeeIcon}
                                 </div>
                                 <div class=\"flex items-center gap-1\">
@@ -1883,14 +1882,13 @@
             container.innerHTML = '';
             const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
             const totalPlayers = players.length;
+            const activePlayers = players.filter(p => !p.eliminated);
             // Get payout values for top 3
             const payout1st = document.getElementById('payout1st')?.textContent || '$0';
             const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
             const payout3rd = document.getElementById('payout3rd')?.textContent || '$0';
-            // eliminatedPlayers: first eliminated is at index 0 (last place)
-            for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
-                const player = eliminatedPlayers[i];
-                const place = totalPlayers - i;
+
+            function appendPointsRow(player, place) {
                 let points = 0;
                 if (place >= 1 && place <= 8) points = pointsArr[place - 1];
                 let prize = '';
@@ -1910,7 +1908,7 @@
                     medal = '<span title="Bronze" class="ml-2 text-orange-500 text-xl">&#x1F949;</span>';
                 }
                 const row = document.createElement('div');
-                row.className = 'flex items-center p-2 rounded mb-1 bg-purple-600/25';
+                row.className = 'flex items-center p-2 rounded mb-1 bg-[#056d78]/50';
                 row.innerHTML = `
     <div class=\"flex items-center min-w-[110px] w-[110px] mr-2 gap-1\">
         <span class=\"font-bold flex items-center gap-1\">${place}${(place===1)?'st':(place===2)?'nd':(place===3)?'rd':'th'}${medal}${ghostLabel}</span>
@@ -1921,11 +1919,24 @@
 `;
                 container.appendChild(row);
             }
+
+            if (totalPlayers >= 2 && activePlayers.length === 1) {
+                appendPointsRow(activePlayers[0], 1);
+            }
+
+            // eliminatedPlayers: first eliminated is at index 0 (last place)
+            for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
+                const player = eliminatedPlayers[i];
+                const place = totalPlayers - i;
+                if (place === 1) continue;
+                appendPointsRow(player, place);
+            }
         }
         
         function eliminatePlayer(playerId) {
             const player = players.find(p => p.id === playerId);
             if (!player) return;
+            const wasElimination = !player.eliminated;
             if (!player.eliminated) {
                 player.eliminated = true;
                 eliminatedPlayers.push(player);
@@ -1939,6 +1950,9 @@
             rebalanceTables();
             checkForFinalTable(); // <-- Add this line
             updateStats();
+            if (wasElimination && players.length >= 2 && players.filter(p => !p.eliminated).length === 1) {
+                showPage('stats');
+            }
         }
 
         // Automatically combine to Final Table when 8 players remain
@@ -2625,7 +2639,7 @@
             }
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
-            table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
+            table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
                 <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Login</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
             adminPlayers.forEach((p, idx) => {
                 const row = document.createElement('tr');
@@ -2673,6 +2687,7 @@
                     const input = document.getElementById('playerName');
                     input.value = name;
                     hidePlayerNameDropdown();
+                    registerPlayer();
                 });
                 dropdown.appendChild(item);
             });
@@ -2711,6 +2726,7 @@
             if (dropdownActiveIndex >= 0 && items[dropdownActiveIndex]) {
                 document.getElementById('playerName').value = items[dropdownActiveIndex].textContent;
                 hidePlayerNameDropdown();
+                registerPlayer();
                 return true;
             }
             return false;
@@ -2815,7 +2831,7 @@
             }
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
-            table.innerHTML = `<thead><tr class='bg-poker-accent/20'>
+            table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
                 <th class='p-2'>Name</th><th class='p-2'>Points</th><th class='p-2'>Money Won</th></tr></thead><tbody></tbody>`;
             adminMemberStats.forEach((s) => {
                 const row = document.createElement('tr');
@@ -3030,7 +3046,7 @@
                         .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl { font-size: 11px !important; }
                         .font-mono { font-family: monospace !important; }
                         /* Remove extra spacing in points table rows */
-                        .pointsTableRow, .flex.items-center.p-2.rounded.mb-1.bg-purple-600\/25 { margin-bottom: 0 !important; padding: 2px 0 !important; }
+                        .pointsTableRow, .flex.items-center.p-2.rounded.mb-1.bg-\[\#056d78\]\/50 { margin-bottom: 0 !important; padding: 2px 0 !important; }
                         /* Remove extra spacing in grid */
                         .grid, .flex { gap: 0 !important; }
                         /* Remove extra spacing in containers */
