@@ -353,7 +353,7 @@
             <img src="Logos/Logo-S19-2.png" alt="" class="block" style="height:120px; width:auto; object-fit:contain;" />
         </div>
     </div>
-    <div class="fixed top-2 right-2 z-50 flex gap-2">
+    <div id="appChrome" class="fixed top-2 right-2 z-50 flex gap-2 hidden">
         <button id="installAppBtn" onclick="installApp()" class="hidden bg-purple-600 hover:bg-orange-500 text-white rounded-full px-3 py-2 shadow-lg focus:outline-none text-sm font-semibold" title="Install as app">
             <i class="fas fa-download mr-1"></i>Install
         </button>
@@ -362,6 +362,22 @@
         </button>
     </div>
     <div class="container mx-auto px-4 pb-4 pt-0">
+        <!-- Login Page -->
+        <div id="login" class="page">
+            <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-sm mx-auto mt-8">
+                <h2 class="text-2xl font-bold mb-4 text-yellow-400 flex items-center justify-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>PASC Login
+                </h2>
+                <form id="appLoginForm" class="flex flex-col gap-4">
+                    <input type="text" id="appUsername" placeholder="Username" autocomplete="username" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                    <input type="password" id="appPassword" placeholder="Password" autocomplete="current-password" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                    <button type="submit" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium text-white">Login</button>
+                </form>
+                <div id="appLoginError" class="text-red-400 mt-2 text-center hidden">Invalid username or password.</div>
+            </div>
+        </div>
+
+        <div id="appShell" class="hidden">
         <!-- Navigation -->
         <nav class="mb-4 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
             <ul class="flex flex-wrap justify-center">
@@ -376,13 +392,13 @@
                     </button>
                 </li>
                 <li class="m-2">
-                    <button onclick="showPage('admin')" class="px-4 py-2 bg-red-700 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
-                        <i class="fas fa-user-shield mr-2"></i>Admin
+                    <button onclick="showPage('blind-timer')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-clock mr-2"></i>Blind Timer
                     </button>
                 </li>
                 <li class="m-2">
-                    <button onclick="showPage('blind-timer')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
-                        <i class="fas fa-clock mr-2"></i>Blind Timer
+                    <button onclick="showPage('admin')" class="px-4 py-2 bg-red-700 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-user-shield mr-2"></i>Admin
                     </button>
                 </li>
             </ul>
@@ -391,7 +407,7 @@
         <!-- Main Content -->
         <main>
             <!-- Registration Page -->
-            <div id="registration" class="page fade-in">
+            <div id="registration" class="page hidden">
                 <div class="flex flex-col md:flex-row gap-4 mb-4">
                     <!-- Player Registration Card -->
                     <div class="flex-1 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 mb-4 md:mb-0">
@@ -702,17 +718,9 @@
 
             <!-- Admin Page -->
             <div id="admin" class="page hidden">
-                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-3xl mx-auto">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-6xl mx-auto">
                     <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-user-shield mr-2"></i>Admin Panel</h2>
-                    <div id="adminLoginSection">
-                        <form id="adminLoginForm" class="flex flex-col gap-4 max-w-sm mx-auto">
-                            <input type="text" id="adminUsername" placeholder="Username" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
-                            <input type="password" id="adminPassword" placeholder="Password" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
-                            <button type="submit" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white">Login</button>
-                        </form>
-                        <div id="adminLoginError" class="text-red-400 mt-2 text-center hidden">Invalid username or password.</div>
-                    </div>
-                    <div id="adminPanelSection" class="hidden">
+                    <div id="adminPanelSection">
                         <div class="mb-6">
                             <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
                                 <h3 class="text-xl font-semibold text-yellow-400">Player Management</h3>
@@ -730,6 +738,7 @@
                                 <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                <input type="date" id="adminPlayerDob" placeholder="Date of Birth" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <input type="number" id="adminPlayerYears" placeholder="Years of Membership" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                     <option value="">Membership Status</option>
@@ -754,16 +763,32 @@
                         <div class="border-t border-poker-accent/20 mb-6"></div>
                         <div class="mb-6">
                             <h3 class="text-xl font-semibold mb-2 text-yellow-400">PASC Cash & Payout Settings</h3>
-                            <form id="adminSettingsForm" class="flex flex-col md:flex-row gap-4 items-center">
-                                <div class="flex flex-col">
-                                    <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
-                                    <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                            <form id="adminSettingsForm" class="flex flex-col gap-4">
+                                <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
+                                    <div class="flex flex-col">
+                                        <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
+                                        <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label for="adminPlayerPayoutPercent" class="text-sm font-semibold mb-1">Player Cash Payout %</label>
+                                        <input type="number" id="adminPlayerPayoutPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                    </div>
                                 </div>
-                                <div class="flex flex-col">
-                                    <label for="adminPlayerPayoutPercent" class="text-sm font-semibold mb-1">Player Cash Payout %</label>
-                                    <input type="number" id="adminPlayerPayoutPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
+                                    <div class="flex flex-col">
+                                        <label for="adminPayout1stPercent" class="text-sm font-semibold mb-1">1st Place Payout %</label>
+                                        <input type="number" id="adminPayout1stPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label for="adminPayout2ndPercent" class="text-sm font-semibold mb-1">2nd Place Payout %</label>
+                                        <input type="number" id="adminPayout2ndPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label for="adminPayout3rdPercent" class="text-sm font-semibold mb-1">3rd Place Payout %</label>
+                                        <input type="number" id="adminPayout3rdPercent" readonly class="px-3 py-2 rounded-lg bg-poker-secondary border border-poker-accent/50 text-poker-text/70 cursor-not-allowed" style="width:100px;">
+                                    </div>
+                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                                 </div>
-                                <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                             </form>
                         </div>
                         <div class="mb-6">
@@ -777,6 +802,7 @@
                 </div>
             </div>
         </main>
+        </div>
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
@@ -799,14 +825,63 @@
         let originalPlayers = [];
         let ghostEligible = false;
         
+        // App login (session only — cleared when browser/app closes)
+        const APP_LOGIN_KEY = 'pascAppLoggedIn';
+
+        function isAppLoggedIn() {
+            return sessionStorage.getItem(APP_LOGIN_KEY) === 'true';
+        }
+
+        function setAppLoggedIn(loggedIn) {
+            if (loggedIn) sessionStorage.setItem(APP_LOGIN_KEY, 'true');
+            else sessionStorage.removeItem(APP_LOGIN_KEY);
+        }
+
+        function showLoginScreen() {
+            setAppLoggedIn(false);
+            document.getElementById('appShell')?.classList.add('hidden');
+            document.getElementById('appChrome')?.classList.add('hidden');
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('fade-in');
+            });
+            const loginPage = document.getElementById('login');
+            if (loginPage) {
+                loginPage.classList.remove('hidden');
+                setTimeout(() => loginPage.classList.add('fade-in'), 10);
+            }
+            const passwordInput = document.getElementById('appPassword');
+            if (passwordInput) passwordInput.value = '';
+        }
+
+        function showAppAfterLogin() {
+            setAppLoggedIn(true);
+            document.getElementById('appShell')?.classList.remove('hidden');
+            document.getElementById('appChrome')?.classList.remove('hidden');
+            showPage('registration');
+        }
+
+        function logoutApp() {
+            if (document.body.classList.contains('fullscreen-mode')) {
+                toggleFullscreen();
+            }
+            showLoginScreen();
+        }
+
         // Page navigation
         function showPage(pageId) {
+            if (pageId !== 'login' && !isAppLoggedIn()) {
+                showLoginScreen();
+                return;
+            }
+
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.add('hidden');
                 page.classList.remove('fade-in');
             });
             
             const page = document.getElementById(pageId);
+            if (!page) return;
             page.classList.remove('hidden');
             setTimeout(() => page.classList.add('fade-in'), 10);
             
@@ -816,6 +891,9 @@
             }
             if (pageId === 'blind-timer') {
                 requestAnimationFrame(() => requestAnimationFrame(fitStandardBlindTimer));
+            }
+            if (pageId === 'admin') {
+                showAdminPanel();
             }
         }
 
@@ -910,6 +988,24 @@
             updateStats();
         }
         
+        function getAdminRecordForPlayer(name) {
+            if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return null;
+            return adminPlayers.find(p => (p.name || '').trim().toLowerCase() === (name || '').trim().toLowerCase()) || null;
+        }
+
+        function isBirthdayMonth(name) {
+            const record = getAdminRecordForPlayer(name);
+            if (!record?.dob) return false;
+            const parts = record.dob.split('-');
+            if (parts.length !== 3) return false;
+            return parseInt(parts[1], 10) === new Date().getMonth() + 1;
+        }
+
+        function getBirthdayIcon(name) {
+            if (!isBirthdayMonth(name)) return '';
+            return '<i class="fas fa-birthday-cake text-pink-400 ml-2" title="Birthday this month"></i>';
+        }
+
         function renderPlayersList() {
             const container = document.getElementById('playersList');
             container.innerHTML = '';
@@ -917,9 +1013,9 @@
                 const playerCard = document.createElement('div');
                 playerCard.className = `player-card bg-poker-primary rounded-lg p-4 shadow ${player.eliminated ? 'eliminated' : ''}`;
                 const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
-                const memberIcon = (player.isMember && !player.isCommittee) ? '<i class="far fa-user text-yellow-400 ml-2" title="PASC Member"></i>' : '';
+                const birthdayIcon = getBirthdayIcon(player.name);
                 playerCard.innerHTML = `
-                    <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>\n                </div>\n                <div class=\"flex items-center\">\n                        ${committeeIcon}${memberIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
+                    <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>${birthdayIcon}\n                </div>\n                <div class=\"flex items-center\">\n                        ${committeeIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
                     </div>
             </div>\n        `;
                 container.appendChild(playerCard);
@@ -1158,12 +1254,12 @@
                     <div class=\"p-4 space-y-2\">
                         ${tablePlayers.map((player, idx) => {
                             const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
+                            const birthdayIcon = getBirthdayIcon(player.name);
                             return `
                             <div class=\"flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors ${player.eliminated ? 'bg-red-900/30 border-red-500/50 opacity-75' : 'bg-poker-secondary hover:border-poker-highlight/40'}\">
                                 <div class=\"flex items-center gap-2\">
                                     <span class=\"inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow\">${idx + 1}</span>
-                                    <span class=\"text-white font-medium\">${player.name}</span>
-                                    ${committeeIcon}
+                                    <span class=\"text-white font-medium\">${player.name}</span>${birthdayIcon}${committeeIcon}
                                 </div>
                                 <div class=\"flex items-center gap-1\">
                                     ${player.eliminated
@@ -1793,15 +1889,20 @@
             // Player Cash Payout calculation - adjusted to ensure total equals totalCash
             const playerCashPayout = totalCash - pascGameCashRounded;
             document.getElementById('playerCashPayout').textContent = `$${playerCashPayout.toFixed(2)}`;
-            // 1st place: 50% of playerCashPayout - rounded to nearest $5
-            const payout1stRaw = playerCashPayout * 0.5;
+            let payout1stPercent = 50;
+            let payout2ndPercent = 30;
+            if (typeof adminSettings !== 'undefined') {
+                payout1stPercent = parseInt(adminSettings.payout1stPercent);
+                payout2ndPercent = parseInt(adminSettings.payout2ndPercent);
+                if (isNaN(payout1stPercent)) payout1stPercent = 50;
+                if (isNaN(payout2ndPercent)) payout2ndPercent = 30;
+            }
+            const payout1stRaw = playerCashPayout * (payout1stPercent / 100);
             const payout1stRounded = Math.round(payout1stRaw / 5) * 5;
             document.getElementById('payout1st').textContent = `$${payout1stRounded.toFixed(2)}`;
-            // 2nd place: 30% of playerCashPayout - rounded to nearest $5
-            const payout2ndRaw = playerCashPayout * 0.3;
+            const payout2ndRaw = playerCashPayout * (payout2ndPercent / 100);
             const payout2ndRounded = Math.round(payout2ndRaw / 5) * 5;
             document.getElementById('payout2nd').textContent = `$${payout2ndRounded.toFixed(2)}`;
-            // 3rd place: 20% of playerCashPayout - adjusted to ensure total equals playerCashPayout
             const payout3rd = playerCashPayout - payout1stRounded - payout2ndRounded;
             document.getElementById('payout3rd').textContent = `$${payout3rd.toFixed(2)}`;
             renderPointsTable();
@@ -2147,7 +2248,11 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            showPage('registration');
+            if (isAppLoggedIn()) {
+                showAppAfterLogin();
+            } else {
+                showLoginScreen();
+            }
 
             // Hide blind levels, breaks, and voice select by default on Blind Timer page
             setTimeout(() => {
@@ -2627,8 +2732,45 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30}');
+        function normalizeAdminSettings() {
+            if (!adminSettings || typeof adminSettings !== 'object') {
+                adminSettings = { pascPercent: 25, playerPayoutPercent: 75, payout1stPercent: 50, payout2ndPercent: 30 };
+            }
+            if (adminSettings.pascPercent == null) adminSettings.pascPercent = 25;
+            if (adminSettings.playerPayoutPercent == null) adminSettings.playerPayoutPercent = 75;
+            if (adminSettings.payout1stPercent == null) adminSettings.payout1stPercent = 50;
+            if (adminSettings.payout2ndPercent == null) adminSettings.payout2ndPercent = 30;
+        }
+        normalizeAdminSettings();
+        function populateAdminSettingsForm() {
+            normalizeAdminSettings();
+            const pascPercentInput = document.getElementById('adminPascPercent');
+            const playerPayoutPercentInput = document.getElementById('adminPlayerPayoutPercent');
+            const payout1stInput = document.getElementById('adminPayout1stPercent');
+            const payout2ndInput = document.getElementById('adminPayout2ndPercent');
+            if (pascPercentInput) pascPercentInput.value = adminSettings.pascPercent;
+            if (playerPayoutPercentInput) playerPayoutPercentInput.value = adminSettings.playerPayoutPercent;
+            if (payout1stInput) payout1stInput.value = adminSettings.payout1stPercent;
+            if (payout2ndInput) payout2ndInput.value = adminSettings.payout2ndPercent;
+            updatePayout3rdPercentDisplay();
+        }
+        function updatePayout3rdPercentDisplay() {
+            const payout1stInput = document.getElementById('adminPayout1stPercent');
+            const payout2ndInput = document.getElementById('adminPayout2ndPercent');
+            const payout3rdInput = document.getElementById('adminPayout3rdPercent');
+            if (!payout3rdInput) return;
+            const first = parseInt(payout1stInput?.value) || 0;
+            const second = parseInt(payout2ndInput?.value) || 0;
+            payout3rdInput.value = Math.max(0, 100 - first - second);
+        }
         let adminMemberStats = JSON.parse(localStorage.getItem('adminMemberStats') || '[]');
+        function formatAdminDob(dob) {
+            if (!dob) return '—';
+            const parts = dob.split('-');
+            if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            return dob;
+        }
         function renderAdminPlayersList() {
             const container = document.getElementById('adminPlayersList');
             if (!container) return;
@@ -2640,14 +2782,16 @@
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
             table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
-                <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Login</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
+                <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>DOB</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Login</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
             adminPlayers.forEach((p, idx) => {
                 const row = document.createElement('tr');
                 const loginName = p.committee === 'yes' && p.loginUsername ? p.loginUsername : '—';
+                const dobDisplay = p.dob ? formatAdminDob(p.dob) : '—';
                 row.innerHTML = `
                     <td class='px-2 py-0.5'>${p.name}</td>
                     <td class='px-2 py-0.5'>${p.email}</td>
                     <td class='px-2 py-0.5'>${p.phone}</td>
+                    <td class='px-2 py-0.5'>${dobDisplay}</td>
                     <td class='px-2 py-0.5'>${p.years}</td>
                     <td class='px-2 py-0.5'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
                     <td class='px-2 py-0.5'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
@@ -2765,6 +2909,7 @@
                     }
                     if (data.adminSettings && typeof data.adminSettings === 'object') {
                         adminSettings = data.adminSettings;
+                        normalizeAdminSettings();
                         localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
                     }
                     if (Array.isArray(data.adminMemberStats)) {
@@ -2778,10 +2923,7 @@
                     renderAdminPlayersList();
                     renderAdminMemberStats();
                     renderRegistrationDatalist();
-                    const pascPercentInput = document.getElementById('adminPascPercent');
-                    const payoutInput = document.getElementById('adminPlayerPayoutPercent');
-                    if (pascPercentInput) pascPercentInput.value = adminSettings.pascPercent;
-                    if (payoutInput) payoutInput.value = adminSettings.playerPayoutPercent;
+                    populateAdminSettingsForm();
                     updateStats();
                     alert('Admin data imported successfully.');
                 } catch (err) {
@@ -2796,6 +2938,7 @@
             document.getElementById('adminPlayerName').value = p.name;
             document.getElementById('adminPlayerEmail').value = p.email;
             document.getElementById('adminPlayerPhone').value = p.phone;
+            document.getElementById('adminPlayerDob').value = p.dob || '';
             document.getElementById('adminPlayerYears').value = p.years;
             document.getElementById('adminPlayerMember').value = p.member;
             document.getElementById('adminPlayerCommittee').value = p.committee;
@@ -2844,47 +2987,34 @@
             localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
         }
         function showAdminPanel() {
-            document.getElementById('adminLoginSection').classList.add('hidden');
-            document.getElementById('adminPanelSection').classList.remove('hidden');
             renderAdminPlayersList();
             renderAdminMemberStats();
-            document.getElementById('adminPascPercent').value = adminSettings.pascPercent;
-            document.getElementById('adminPlayerPayoutPercent').value = adminSettings.playerPayoutPercent;
-        }
-        function hideAdminPanel() {
-            document.getElementById('adminLoginSection').classList.remove('hidden');
-            document.getElementById('adminPanelSection').classList.add('hidden');
+            populateAdminSettingsForm();
         }
         document.addEventListener('DOMContentLoaded', () => {
             // Populate the registration dropdown from saved admin players
             renderRegistrationDatalist();
-            // Admin login logic
-            const adminLoginForm = document.getElementById('adminLoginForm');
-            if (adminLoginForm) {
-                adminLoginForm.addEventListener('submit', async function(e) {
+
+            const appLoginForm = document.getElementById('appLoginForm');
+            if (appLoginForm) {
+                appLoginForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
-                    const username = document.getElementById('adminUsername').value;
-                    const password = document.getElementById('adminPassword').value;
-                    const loginError = document.getElementById('adminLoginError');
+                    const username = document.getElementById('appUsername').value;
+                    const password = document.getElementById('appPassword').value;
+                    const loginError = document.getElementById('appLoginError');
                     if (await verifyAdminLogin(username, password)) {
                         loginError.classList.add('hidden');
-                        localStorage.setItem('adminLoggedIn', 'true');
-                        showAdminPanel();
+                        showAppAfterLogin();
                     } else {
                         loginError.classList.remove('hidden');
                     }
                 });
             }
+
             // Admin logout
             const adminLogoutBtn = document.getElementById('adminLogoutBtn');
             if (adminLogoutBtn) {
-                adminLogoutBtn.addEventListener('click', function() {
-                    localStorage.removeItem('adminLoggedIn');
-                    hideAdminPanel();
-                    // Always clear the password field
-                    const adminPasswordInput = document.getElementById('adminPassword');
-                    if (adminPasswordInput) adminPasswordInput.value = '';
-                });
+                adminLogoutBtn.addEventListener('click', logoutApp);
             }
             const adminPlayerCommittee = document.getElementById('adminPlayerCommittee');
             if (adminPlayerCommittee) {
@@ -2898,6 +3028,7 @@
                     const name = document.getElementById('adminPlayerName').value.trim();
                     const email = document.getElementById('adminPlayerEmail').value.trim();
                     const phone = document.getElementById('adminPlayerPhone').value.trim();
+                    const dob = document.getElementById('adminPlayerDob').value;
                     const years = document.getElementById('adminPlayerYears').value.trim();
                     const member = document.getElementById('adminPlayerMember').value;
                     const committee = document.getElementById('adminPlayerCommittee').value;
@@ -2908,7 +3039,7 @@
                     const editIdxAttr = adminPlayerForm.getAttribute('data-edit-idx');
                     const editIdx = editIdxAttr !== null && editIdxAttr !== '' ? parseInt(editIdxAttr, 10) : null;
                     const existingPlayer = editIdx !== null ? adminPlayers[editIdx] : null;
-                    const player = { name, email, phone, years, member, committee };
+                    const player = { name, email, phone, dob, years, member, committee };
 
                     if (committee === 'yes') {
                         if (!loginUsername) {
@@ -2972,24 +3103,33 @@
                         playerPayoutPercentInput.value = 100 - pascVal;
                     });
                 }
+                const payout1stInput = document.getElementById('adminPayout1stPercent');
+                const payout2ndInput = document.getElementById('adminPayout2ndPercent');
+                if (payout1stInput) payout1stInput.addEventListener('input', updatePayout3rdPercentDisplay);
+                if (payout2ndInput) payout2ndInput.addEventListener('input', updatePayout3rdPercentDisplay);
                 adminSettingsForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const pascPercent = parseInt(document.getElementById('adminPascPercent').value);
                     const playerPayoutPercent = parseInt(document.getElementById('adminPlayerPayoutPercent').value);
-                    if (!isNaN(pascPercent) && !isNaN(playerPayoutPercent)) {
-                        adminSettings.pascPercent = pascPercent;
-                        adminSettings.playerPayoutPercent = playerPayoutPercent;
-                        saveAdminSettings();
-                        alert('Settings saved!');
-                        updateStats();
+                    const payout1stPercent = parseInt(document.getElementById('adminPayout1stPercent').value);
+                    const payout2ndPercent = parseInt(document.getElementById('adminPayout2ndPercent').value);
+                    if (isNaN(pascPercent) || isNaN(playerPayoutPercent) || isNaN(payout1stPercent) || isNaN(payout2ndPercent)) {
+                        alert('Please enter valid percentage values.');
+                        return;
                     }
+                    if (payout1stPercent + payout2ndPercent >= 100) {
+                        alert('1st and 2nd place percentages must total less than 100% so 3rd place receives the remainder.');
+                        return;
+                    }
+                    adminSettings.pascPercent = pascPercent;
+                    adminSettings.playerPayoutPercent = playerPayoutPercent;
+                    adminSettings.payout1stPercent = payout1stPercent;
+                    adminSettings.payout2ndPercent = payout2ndPercent;
+                    saveAdminSettings();
+                    updatePayout3rdPercentDisplay();
+                    alert('Settings saved!');
+                    updateStats();
                 });
-            }
-            // Show admin panel if already logged in
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
-                showAdminPanel();
-            } else {
-                hideAdminPanel();
             }
         });
 
