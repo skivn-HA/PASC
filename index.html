@@ -57,6 +57,17 @@
             border-color: #f7931a;
             box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.3);
         }
+
+        .numbers-input {
+            border: 2px solid #056d78 !important;
+            transition: all 0.3s ease;
+        }
+
+        .numbers-input:focus {
+            border-color: #056d78 !important;
+            box-shadow: 0 0 0 3px rgba(5, 109, 120, 0.45);
+            outline: none;
+        }
         
         .timer-display {
             /* Auto-scales to the viewport: as big as possible while fitting width & height */
@@ -102,6 +113,11 @@
         }
         body.compact-mode #nextBlind {
             font-size: 2rem !important;
+        }
+        .numbers-display {
+            font-size: clamp(4rem, min(25vw, 35vh), 14rem);
+            line-height: 1;
+            color: #f7931a;
         }
         
         #nextBlind {
@@ -394,6 +410,11 @@
                 <li class="m-2">
                     <button onclick="showPage('blind-timer')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-clock mr-2"></i>Blind Timer
+                    </button>
+                </li>
+                <li class="m-2">
+                    <button onclick="showPage('numbers')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-dice mr-2"></i>Numbers
                     </button>
                 </li>
                 <li class="m-2">
@@ -716,6 +737,34 @@
                 </div>
             </div>
 
+            <!-- Numbers Page -->
+            <div id="numbers" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-6 text-yellow-400 text-center">
+                        <i class="fas fa-dice mr-2"></i>Random Number Generator
+                    </h2>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8 justify-center items-end">
+                        <div class="w-full sm:w-32">
+                            <label for="numbersMin" class="block text-center font-bold text-gray-200 mb-1 pl-3">Lowest</label>
+                            <input type="number" id="numbersMin" value="1" class="numbers-input w-full px-4 py-3 rounded-lg bg-poker-primary text-poker-text text-xl text-center">
+                        </div>
+                        <div class="w-full sm:w-32">
+                            <label for="numbersMax" class="block text-center font-bold text-gray-200 mb-1 pl-3">Highest</label>
+                            <input type="number" id="numbersMax" value="100" class="numbers-input w-full px-4 py-3 rounded-lg bg-poker-primary text-poker-text text-xl text-center">
+                        </div>
+                    </div>
+                    <div class="text-center mb-8">
+                        <button type="button" onclick="generateRandomNumber()" id="numbersGoBtn" class="px-16 py-6 bg-green-600 hover:bg-green-700 rounded-2xl font-bold text-3xl transition-colors duration-300 text-white shadow-lg">
+                            GO
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <div id="numbersResult" class="numbers-display font-mono font-bold">—</div>
+                        <p id="numbersError" class="text-red-400 mt-4 hidden"></p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Admin Page -->
             <div id="admin" class="page hidden">
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-6xl mx-auto">
@@ -896,6 +945,63 @@
                 showAdminPanel();
             }
         }
+
+        function randomIntInclusive(min, max) {
+            min = Math.trunc(min);
+            max = Math.trunc(max);
+            if (min > max) [min, max] = [max, min];
+            const range = max - min + 1;
+            if (range <= 0) return min;
+            const buf = new Uint32Array(1);
+            const limit = Math.floor(0x100000000 / range) * range;
+            let x;
+            do {
+                crypto.getRandomValues(buf);
+                x = buf[0];
+            } while (x >= limit);
+            return min + (x % range);
+        }
+
+        function generateRandomNumber() {
+            const minInput = document.getElementById('numbersMin');
+            const maxInput = document.getElementById('numbersMax');
+            const resultEl = document.getElementById('numbersResult');
+            const errorEl = document.getElementById('numbersError');
+            if (!minInput || !maxInput || !resultEl || !errorEl) return;
+
+            const min = Number(minInput.value);
+            const max = Number(maxInput.value);
+            errorEl.classList.add('hidden');
+            errorEl.textContent = '';
+
+            if (!Number.isFinite(min) || !Number.isFinite(max)) {
+                errorEl.textContent = 'Please enter valid numbers for both lowest and highest.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (min < -999999999 || max > 999999999) {
+                errorEl.textContent = 'Numbers must be between -999,999,999 and 999,999,999.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const picked = randomIntInclusive(min, max);
+            resultEl.textContent = String(picked);
+            resultEl.classList.remove('fade-in');
+            void resultEl.offsetWidth;
+            resultEl.classList.add('fade-in');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ['numbersMin', 'numbersMax'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('keydown', e => {
+                        if (e.key === 'Enter') generateRandomNumber();
+                    });
+                }
+            });
+        });
 
         function resetBlindTimerToFirstLevel() {
             pauseTimer();
