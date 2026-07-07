@@ -123,9 +123,172 @@
             padding-top: clamp(0.5rem, 2vh, 1.5rem);
         }
 
-        .admin-section-divider {
+        #admin #adminPanelSection .admin-section-divider {
             border-top: 1px solid rgba(209, 213, 219, 0.4);
-            margin-bottom: 1.5rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.75rem !important;
+        }
+
+        #admin #adminPanelSection > .mb-6 {
+            margin-bottom: 0.75rem !important;
+        }
+
+        #admin #adminPanelSection h3 {
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminPanelSection h4 {
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminPlayerManagement {
+            margin-bottom: 0.75rem !important;
+        }
+
+        #admin #adminPlayerForm {
+            gap: 0.5rem !important;
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminPlayersList {
+            margin-top: 0.125rem;
+        }
+
+        #admin #adminPlayersList table th,
+        #admin #adminPlayersList table td {
+            padding-top: 0.125rem !important;
+            padding-bottom: 0.125rem !important;
+        }
+
+        #admin #adminSettingsForm {
+            gap: 0.5rem !important;
+        }
+
+        #admin #adminSettingsForm > div {
+            gap: 0.75rem !important;
+        }
+
+        #admin #adminGhostCashForm {
+            gap: 0.5rem !important;
+        }
+
+        #admin #adminGhostCashForm p {
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminBlindTimerSettings > .flex.mb-4 {
+            margin-bottom: 0.5rem !important;
+            gap: 0.5rem !important;
+        }
+
+        #admin #voiceSection,
+        #admin #blindLevelsSection {
+            margin-bottom: 0.75rem !important;
+        }
+
+        #admin #blindLevelsSection .flex.mb-4,
+        #admin #blindLevelsSection .flex.items-center.gap-2.mb-2 {
+            margin-bottom: 0.375rem !important;
+            gap: 0.5rem !important;
+        }
+
+        #admin #breaksSection {
+            margin-top: 0.375rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+
+        #admin #blindLevelsList {
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminMemberStats table th,
+        #admin #adminMemberStats table td {
+            padding: 0.125rem 0.5rem !important;
+        }
+
+        #admin #adminLogoutBtn {
+            margin-top: 0.25rem;
+        }
+        
+        #stats > .bg-poker-secondary {
+            padding: 1rem !important;
+        }
+
+        #stats h2 {
+            margin-bottom: 0.5rem !important;
+        }
+
+        #stats .grid {
+            gap: 0.5rem !important;
+        }
+
+        #stats .grid.mb-4,
+        #stats .flex.justify-end.mb-4,
+        #stats .mb-4:not(#pointsTable *) {
+            margin-bottom: 0.5rem !important;
+        }
+
+        #stats .bg-poker-primary.rounded-xl {
+            padding: 0.625rem 0.75rem !important;
+        }
+
+        #stats h3 {
+            margin-bottom: 0.125rem !important;
+            line-height: 1.25;
+        }
+
+        #stats .text-2xl {
+            font-size: 1.25rem !important;
+            line-height: 1.2;
+        }
+
+        #stats .text-xl {
+            font-size: 1.125rem !important;
+            line-height: 1.2;
+        }
+
+        #stats .text-sm {
+            line-height: 1.3;
+        }
+
+        #stats .text-sm > div + div {
+            margin-top: 0.0625rem;
+        }
+
+        #stats .mt-2 {
+            margin-top: 0.25rem !important;
+        }
+
+        #stats .mt-3 {
+            margin-top: 0.375rem !important;
+        }
+
+        #stats .mb-4:not(h2):not(.grid) {
+            margin-bottom: 0.375rem !important;
+        }
+
+        #stats .border-t {
+            margin-top: 0.375rem !important;
+            padding-top: 0.375rem !important;
+        }
+
+        #stats #ghostPlayerSection {
+            margin-bottom: 0 !important;
+            gap: 0.75rem !important;
+            padding: 0.625rem 0.75rem !important;
+        }
+
+        #stats #ghostPlayerSection h3 {
+            margin-bottom: 0 !important;
+        }
+
+        #stats #pointsTable > div {
+            padding: 0.25rem 0.5rem !important;
+            margin-bottom: 0.125rem !important;
+        }
+
+        #stats .col-span-2 .mb-4 {
+            margin-bottom: 0.375rem !important;
         }
         
         .timer-display {
@@ -703,6 +866,13 @@
                             
                             <h3 class="text-lg font-semibold mb-2">Total Buy-in Cash</h3>
                             <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
+                            <div class="border-t border-poker-accent/20 pt-2 mt-3">
+                                <div class="text-sm font-semibold text-white mb-1">Raffle Cash</div>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
+                                    <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="updateStats()" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                </div>
+                            </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
                             <h3 class="text-lg font-semibold mb-2">Player Cash Payout <span id="playerCashPayoutPercent">(75%)</span></h3>
@@ -714,17 +884,11 @@
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
-                            <h3 class="text-lg font-semibold mb-2">PASC Cash</h3>
-                            <div class="mb-3">
-                                <div class="text-sm font-semibold text-white mb-1">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></div>
-                                <div class="text-xl font-bold text-green-400" id="pascGameCash">$0</div>
-                            </div>
-                            <div class="border-t border-poker-accent/20 pt-2">
-                                <div class="text-sm font-semibold text-white mb-1">Cash Taken from Raffle</div>
-                                <div class="relative">
-                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
-                                    <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="updateStats()" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
-                                </div>
+                            <h3 class="text-lg font-semibold mb-2">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></h3>
+                            <div class="text-2xl font-bold text-green-400" id="pascGameCash">$0</div>
+                            <div class="border-t border-poker-accent/20 pt-2 mt-3">
+                                <div class="text-sm font-semibold text-white mb-1">Cash for Ghost Player</div>
+                                <div class="text-xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
@@ -733,6 +897,7 @@
                             <div class="mt-2 text-sm text-poker-text">
                                 <div>PASC Game Cash: <span id="pascGameCashSummary">$0</span></div>
                                 <div>Raffle: <span id="raffleCashSummary">$0</span></div>
+                                <div>Ghost Player: <span id="ghostPlayerCashSummary">$20</span></div>
                             </div>
                         </div>
                         <!-- Ghost Player Section (now in grid) -->
@@ -797,7 +962,7 @@
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-6xl mx-auto">
                     <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-user-shield mr-2"></i>Admin Panel</h2>
                     <div id="adminPanelSection">
-                        <div class="mb-6">
+                        <div class="mb-6" id="adminPlayerManagement">
                             <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
                                 <h3 class="text-xl font-semibold text-yellow-400">Player Management</h3>
                                 <div class="flex flex-wrap gap-2">
@@ -810,7 +975,7 @@
                                     <input type="file" id="adminImportFile" accept="application/json,.json" class="hidden" onchange="importAdminData(event)">
                                 </div>
                             </div>
-                            <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                                 <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
                                 <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
@@ -868,13 +1033,31 @@
                             </form>
                         </div>
                         <div class="admin-section-divider"></div>
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">Cash for Ghost Player</h3>
+                            <p class="text-sm text-poker-text/70 mb-3">Amount taken from each game before the percentage split.</p>
+                            <form id="adminGhostCashForm" class="flex flex-wrap items-end gap-4">
+                                <div class="flex flex-col">
+                                    <label for="adminGhostPlayerCash" class="text-sm font-semibold mb-1">Amount ($)</label>
+                                    <input type="number" id="adminGhostPlayerCash" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                </div>
+                                <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                            </form>
+                        </div>
+                        <div class="admin-section-divider"></div>
                         <div class="mb-6" id="adminBlindTimerSettings">
-                            <h3 class="text-xl font-semibold mb-4 text-yellow-400">Blind Timer Settings</h3>
+                            <div class="flex flex-wrap items-center gap-3 mb-4">
+                                <h3 class="text-xl font-semibold text-yellow-400">Blind Timer Settings</h3>
+                                <button type="button" onclick="toggleAdminBlindTimerSettings()" id="toggleAdminBlindTimerBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                    <i class="fas fa-eye mr-2"></i>Show Blind Settings
+                                </button>
+                            </div>
+                            <div id="adminBlindTimerSettingsContent" class="hidden">
                             <div class="mb-6" id="voiceSection">
                                 <label for="voiceSelect" class="block mb-1 font-medium">Voice for Announcements:</label>
                                 <div class="flex items-center gap-2">
                                     <select id="voiceSelect" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text"></select>
-                                    <button id="testVoiceBtn" type="button" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium text-white">Test Voice</button>
+                                    <button id="testVoiceBtn" type="button" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Test Voice</button>
                                 </div>
                             </div>
                             <div class="mb-6" id="blindLevelsSection">
@@ -883,14 +1066,14 @@
                                     <input type="number" id="smallBlindInput" placeholder="Small Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
                                     <input type="number" id="bigBlindInput" placeholder="Big Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
                                     <select id="blindAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
-                                    <button onclick="addBlindLevel()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                    <button onclick="addBlindLevel()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
                                         <i class="fas fa-plus mr-2"></i>Add Level
                                     </button>
                                 </div>
                                 <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Set Blind Times</h4>
                                 <div class="flex items-center gap-2 mb-2">
                                     <input type="number" id="setAllBlindTimeInput" placeholder="Blind Time (min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:180px;">
-                                    <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                    <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
                                         <i class="fas fa-clock mr-2"></i>Set Blind Times
                                     </button>
                                 </div>
@@ -907,6 +1090,7 @@
                                 <div id="blindLevelsList" class="mb-4 max-h-60 overflow-y-auto">
                                     <!-- Blind levels will be added here -->
                                 </div>
+                            </div>
                             </div>
                         </div>
                         <div class="admin-section-divider"></div>
@@ -939,6 +1123,7 @@
         let timeLeft = 0;
         let isTimerRunning = false;
         let eliminatedPlayers = [];
+        let declaredWinner = null;
         let blindWarningGiven = false;
         let selectedVoice = null;
         let originalPlayers = [];
@@ -1120,6 +1305,34 @@
         }
         
         // Player registration functions
+        function registerPlayerByName(name, idSuffix = 0) {
+            const trimmedName = (name || '').trim();
+            if (!trimmedName) return 'empty';
+
+            const existingPlayer = players.find(p => p.name.toLowerCase() === trimmedName.toLowerCase());
+            if (existingPlayer) return 'duplicate';
+
+            const playerNumber = players.length + 1;
+            const adminRecord = getAdminRecordForPlayer(trimmedName);
+            const isMember = adminRecord
+                ? adminRecord.member === 'yes'
+                : ['David Bailey', 'Cindy', 'Andrew Bailey'].includes(trimmedName);
+            const isCommittee = adminRecord ? adminRecord.committee === 'yes' : false;
+            const player = {
+                id: Date.now() + idSuffix,
+                number: playerNumber,
+                name: trimmedName,
+                table: null,
+                eliminated: false,
+                isMember: isMember,
+                isCommittee: isCommittee
+            };
+
+            players.push(player);
+            originalPlayers.push({ ...player });
+            return 'added';
+        }
+
         function registerPlayer() {
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
@@ -1128,40 +1341,38 @@
                 alert('Please enter a player name');
                 return;
             }
-            
-            // Check if player with this name already exists
-            const existingPlayer = players.find(p => p.name.toLowerCase() === name.toLowerCase());
-            if (existingPlayer) {
-                alert(`Player "${name}" is already registered in this game.`);
+
+            if (name.toLowerCase() === 'all') {
+                renderRegistrationDatalist();
+                if (registrationNames.length === 0) {
+                    alert('No players in Player Management to add.');
+                    return;
+                }
+
+                let added = 0;
+                registrationNames.forEach((playerName, index) => {
+                    if (registerPlayerByName(playerName, index) === 'added') added++;
+                });
+
+                hidePlayerNameDropdown();
+                nameInput.value = '';
+                renderPlayersList();
+                updateStats();
+
+                if (added === 0) {
+                    alert('All players from the list are already registered.');
+                }
                 return;
             }
             
-            const playerNumber = players.length + 1;
-            const adminRecord = (typeof adminPlayers !== 'undefined')
-                ? adminPlayers.find(p => (p.name || '').trim().toLowerCase() === name.toLowerCase())
-                : null;
-            const isMember = adminRecord
-                ? adminRecord.member === 'yes'
-                : ['David Bailey', 'Cindy', 'Andrew Bailey'].includes(name);
-            const isCommittee = adminRecord ? adminRecord.committee === 'yes' : false;
-            const player = {
-                id: Date.now(),
-                number: playerNumber,
-                name: name,
-                table: null,
-                eliminated: false,
-                isMember: isMember,
-                isCommittee: isCommittee
-            };
-            
-            players.push(player);
-            // Save original players if this is the first registration or after clear
-            if (originalPlayers.length === 0) {
-                originalPlayers = [];
+            if (registerPlayerByName(name) === 'duplicate') {
+                alert(`Player "${name}" is already registered in this game.`);
+                return;
             }
-            originalPlayers.push({...player});
+
             renderPlayersList();
             nameInput.value = '';
+            hidePlayerNameDropdown();
             updateStats();
         }
         
@@ -1206,6 +1417,9 @@
             players = players.filter(p => p.id !== id);
             originalPlayers = originalPlayers.filter(p => p.id !== id);
             eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== id);
+            if (declaredWinner && declaredWinner.id === id) {
+                declaredWinner = null;
+            }
             if (window.selectedGhostPlayer && window.selectedGhostPlayer.id === id) {
                 window.selectedGhostPlayer = null;
             }
@@ -1462,6 +1676,7 @@
                 players = [];
                 tables = [];
                 eliminatedPlayers = [];
+                declaredWinner = null;
                 originalPlayers = [];
                 ghostEligible = false;
                 window.selectedGhostPlayer = null;
@@ -2042,6 +2257,26 @@
             return box;
         }
 
+        function getGhostPlayerStatus() {
+            if (!window.selectedGhostPlayer) return '';
+            const ghostId = window.selectedGhostPlayer.id;
+            const activePlayers = players.filter(p => !p.eliminated);
+
+            if (activePlayers.length === 1 && activePlayers[0].id === ghostId) {
+                return 'WINNER';
+            }
+
+            const ghostIdx = eliminatedPlayers.findIndex(p => p.id === ghostId);
+            if (ghostIdx === -1) return '';
+
+            const place = players.length - ghostIdx;
+            return place <= 3 ? 'WINNER' : 'NOT WON';
+        }
+
+        function formatGhostPlayerDisplay(name, status) {
+            return status ? `${name} - ${status}` : name;
+        }
+
         function updateStats() {
             // Today's date
             const today = new Date();
@@ -2094,8 +2329,19 @@
             if (pascPercentSpan) pascPercentSpan.textContent = `(${pascPercent}%)`;
             const payoutPercentSpan = document.getElementById('playerCashPayoutPercent');
             if (payoutPercentSpan) payoutPercentSpan.textContent = `(${playerPayoutPercent}%)`;
-            // PASC Game Cash (pascPercent% of total buy-in cash) - rounded to nearest $5
-            const pascGameCashRaw = totalCash * (pascPercent / 100);
+
+            const ghostPlayerCashSetting = (typeof adminSettings !== 'undefined' && adminSettings.ghostPlayerCash != null)
+                ? Math.max(0, parseFloat(adminSettings.ghostPlayerCash) || 0)
+                : 20;
+            const ghostPlayerCash = Math.min(ghostPlayerCashSetting, totalCash);
+            const cashForSplit = Math.max(0, totalCash - ghostPlayerCash);
+            const ghostPlayerCashEl = document.getElementById('ghostPlayerCash');
+            if (ghostPlayerCashEl) ghostPlayerCashEl.textContent = `$${ghostPlayerCash.toFixed(2)}`;
+            const ghostPlayerCashSummary = document.getElementById('ghostPlayerCashSummary');
+            if (ghostPlayerCashSummary) ghostPlayerCashSummary.textContent = `$${ghostPlayerCash.toFixed(2)}`;
+
+            // PASC Game Cash (% of buy-in cash after ghost player deduction) - rounded to nearest $5
+            const pascGameCashRaw = cashForSplit * (pascPercent / 100);
             const pascGameCashRounded = Math.round(pascGameCashRaw / 5) * 5;
             document.getElementById('pascGameCash').textContent = `$${pascGameCashRounded.toFixed(2)}`;
 
@@ -2103,16 +2349,16 @@
             const raffleCashInput = document.getElementById('raffleCash');
             const raffleCash = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
 
-            // Total PASC Cash Takings calculation (PASC Game Cash + Raffle Cash)
-            const pascCashTakings = pascGameCashRounded + raffleCash;
+            // Total PASC Cash Takings calculation (PASC Game Cash + Raffle + Ghost Player)
+            const pascCashTakings = pascGameCashRounded + raffleCash + ghostPlayerCash;
             document.getElementById('pascCashTakings').textContent = `$${pascCashTakings.toFixed(2)}`;
             const pascGameCashSummary = document.getElementById('pascGameCashSummary');
             if (pascGameCashSummary) pascGameCashSummary.textContent = `$${pascGameCashRounded.toFixed(2)}`;
             const raffleCashSummary = document.getElementById('raffleCashSummary');
             if (raffleCashSummary) raffleCashSummary.textContent = `$${raffleCash.toFixed(2)}`;
 
-            // Player Cash Payout calculation - adjusted to ensure total equals totalCash
-            const playerCashPayout = totalCash - pascGameCashRounded;
+            // Player Cash Payout calculation - remainder after PASC game cash and ghost player cash
+            const playerCashPayout = totalCash - pascGameCashRounded - ghostPlayerCash;
             document.getElementById('playerCashPayout').textContent = `$${playerCashPayout.toFixed(2)}`;
             let payout1stPercent = 50;
             let payout2ndPercent = 30;
@@ -2139,28 +2385,15 @@
             const blindTimerGhostSection = document.getElementById('blindTimerGhostPlayer');
             const blindTimerGhostNameDiv = document.getElementById('blindTimerGhostPlayerName');
             const activePlayers = players.filter(p => !p.eliminated);
-            
-            // Check if ghost player is in top 3
-            let ghostStatus = '';
-            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
-                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
-                if (ghostPlayerPlace !== -1) {
-                    const place = players.length - ghostPlayerPlace;
-                    if (place <= 3) {
-                        ghostStatus = 'WINNER';
-                    } else {
-                        ghostStatus = 'NOT WON';
-                    }
-                }
-            }
+            const ghostStatus = getGhostPlayerStatus();
             
             if (window.selectedGhostPlayer) {
                 ghostSection.classList.remove('hidden');
-                ghostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
                 // Also show in blind timer
                 if (blindTimerGhostSection && blindTimerGhostNameDiv) {
                     blindTimerGhostSection.classList.remove('hidden');
-                    blindTimerGhostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                    blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
                 }
             } else if (ghostEligible && activePlayers.length === 3 && originalPlayers.length > 0) {
                 // Only select ghost once per game
@@ -2179,6 +2412,7 @@
                 }
                 
                 window.selectedGhostPlayer = ghostCandidates[finalRandomIdx];
+                const newGhostStatus = getGhostPlayerStatus();
                 // Announce
                 if ('speechSynthesis' in window) {
                     const msg = new SpeechSynthesisUtterance(`Players, the ghost player today is ${window.selectedGhostPlayer.name}`);
@@ -2186,11 +2420,11 @@
                     window.speechSynthesis.speak(msg);
                 }
                 ghostSection.classList.remove('hidden');
-                ghostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
                 // Also show in blind timer
                 if (blindTimerGhostSection && blindTimerGhostNameDiv) {
                     blindTimerGhostSection.classList.remove('hidden');
-                    blindTimerGhostNameDiv.textContent = `${window.selectedGhostPlayer.name} - ${ghostStatus}`;
+                    blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
                 }
             } else {
                 ghostSection.classList.add('hidden');
@@ -2204,12 +2438,21 @@
             }
         }
         
+        function getPointsTableWinner() {
+            const activePlayers = players.filter(p => !p.eliminated);
+            if (activePlayers.length === 1) return activePlayers[0];
+            if (activePlayers.length === 2 && declaredWinner && activePlayers.some(p => p.id === declaredWinner.id)) {
+                return declaredWinner;
+            }
+            return null;
+        }
+
         function renderPointsTable() {
             const container = document.getElementById('pointsTable');
             container.innerHTML = '';
             const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
             const totalPlayers = players.length;
-            const activePlayers = players.filter(p => !p.eliminated);
+            const winner = getPointsTableWinner();
             // Get payout values for top 3
             const payout1st = document.getElementById('payout1st')?.textContent || '$0';
             const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
@@ -2247,15 +2490,16 @@
                 container.appendChild(row);
             }
 
-            if (totalPlayers >= 2 && activePlayers.length === 1) {
-                appendPointsRow(activePlayers[0], 1);
+            if (totalPlayers >= 2 && winner) {
+                appendPointsRow(winner, 1);
             }
 
             // eliminatedPlayers: first eliminated is at index 0 (last place)
             for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
                 const player = eliminatedPlayers[i];
+                if (!player.eliminated) continue;
                 const place = totalPlayers - i;
-                if (place === 1) continue;
+                if (winner && (place === 1 || player.id === winner.id)) continue;
                 appendPointsRow(player, place);
             }
         }
@@ -2272,6 +2516,21 @@
                 // Remove from eliminatedPlayers
                 eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== playerId);
             }
+
+            const activeAfter = players.filter(p => !p.eliminated);
+            if (wasElimination) {
+                if (declaredWinner && declaredWinner.id === playerId) {
+                    declaredWinner = null;
+                }
+                if (activeAfter.length === 1) {
+                    declaredWinner = activeAfter[0];
+                }
+            } else if (activeAfter.length === 1) {
+                declaredWinner = activeAfter[0];
+            } else if (activeAfter.length > 2) {
+                declaredWinner = null;
+            }
+
             renderPlayersList();
             renderTables();
             rebalanceTables();
@@ -2373,92 +2632,106 @@
             });
         }
         
+        function getAdminPlayerEmails() {
+            if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return [];
+            const seen = new Set();
+            const emails = [];
+            adminPlayers.forEach(player => {
+                const email = (player.email || '').trim();
+                if (!email || !email.includes('@')) return;
+                const key = email.toLowerCase();
+                if (seen.has(key)) return;
+                seen.add(key);
+                emails.push(email);
+            });
+            return emails;
+        }
+
+        function formatEmailMoney(value, forceDecimals = false) {
+            const num = parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0;
+            if (forceDecimals) return '$' + num.toFixed(2);
+            return Number.isInteger(num) ? '$' + num : '$' + num.toFixed(2);
+        }
+
+        function buildEmailPointsTableText() {
+            const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
+            const totalPlayers = players.length;
+            const winner = getPointsTableWinner();
+            const payout1st = document.getElementById('payout1st')?.textContent || '$0';
+            const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
+            const payout3rd = document.getElementById('payout3rd')?.textContent || '$0';
+            const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
+            const placeSuffix = (place) => (place === 1 ? 'st' : place === 2 ? 'nd' : place === 3 ? 'rd' : 'th');
+            const rows = [];
+
+            function formatRow(player, place) {
+                let points = 0;
+                if (place >= 1 && place <= 8) points = pointsArr[place - 1];
+                const placeLabel = `${place}${placeSuffix(place)}${medals[place] || ''}`;
+                if (place <= 3) {
+                    const prizes = { 1: payout1st, 2: payout2nd, 3: payout3rd };
+                    return `${placeLabel} ${formatEmailMoney(prizes[place], true)} - ${player.name} - ${points} pts`;
+                }
+                return `${placeLabel} - ${player.name} - ${points} pts`;
+            }
+
+            if (totalPlayers >= 2 && winner) {
+                rows.push(formatRow(winner, 1));
+            }
+            for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
+                const player = eliminatedPlayers[i];
+                if (!player.eliminated) continue;
+                const place = totalPlayers - i;
+                if (winner && (place === 1 || player.id === winner.id)) continue;
+                rows.push(formatRow(player, place));
+            }
+            return rows.join('\n');
+        }
+
         function emailStats() {
-            // Gather stats
             const todaysDate = document.getElementById('todaysDate').textContent;
             const gameType = document.getElementById('gameTypeStat').textContent;
             const gameCount = document.getElementById('gameCountStat').textContent;
             const totalPlayers = document.getElementById('totalPlayersStat').textContent;
-            const playerBuyInCost = document.getElementById('buyInCostDisplay').textContent;
-            const totalCashTaking = document.getElementById('totalCashTaking').textContent;
-            // Gather player cash payout
-            const playerCashPayout = document.getElementById('playerCashPayout').textContent;
-            const payout1st = document.getElementById('payout1st').textContent;
-            const payout2nd = document.getElementById('payout2nd').textContent;
-            const payout3rd = document.getElementById('payout3rd').textContent;
-            // Gather PASC cash takings
-            const pascCashTakings = document.getElementById('pascCashTakings').textContent;
-            // Gather PASC game cash (25%)
-            const pascGameCash = document.getElementById('pascGameCash').textContent;
-            const raffleCash = document.getElementById('raffleCashSummary')?.textContent || '$0';
-            
-            // Calculate ghost player status for email
-            let ghostStatus = '';
-            if (window.selectedGhostPlayer && eliminatedPlayers.length > 0) {
-                const ghostPlayerPlace = eliminatedPlayers.findIndex(p => p.id === window.selectedGhostPlayer.id);
-                if (ghostPlayerPlace !== -1) {
-                    const place = players.length - ghostPlayerPlace;
-                    if (place <= 3) {
-                        ghostStatus = 'WINNER';
-                    } else {
-                        ghostStatus = 'NOT WON';
-                    }
-                }
-            }
-            
-            // Gather points table
-            const pointsRows = Array.from(document.getElementById('pointsTable').children);
-            let pointsTableText = '';
-            pointsRows.forEach(row => {
-                // The row has three children: [place+prize], [name], [points]
-                const children = Array.from(row.children);
-                let place = '', name = '', points = '', prize = '', medal = '';
-                if (children.length === 3) {
-                    // Extract place and medal from the first cell
-                    const placeCell = children[0];
-                    // Use regex to split place and medal
-                    const placeMedalMatch = placeCell.textContent.trim().match(/^(\d+(st|nd|rd|th)[^\d\s]*)/);
-                    if (placeMedalMatch) {
-                        place = placeMedalMatch[1].trim();
-                    } else {
-                        place = placeCell.textContent.trim();
-                    }
-                    // Extract prize if present
-                    const prizeSpan = placeCell.querySelector('.text-green-400');
-                    prize = prizeSpan ? prizeSpan.textContent.replace(/\$/g, '').trim() : '';
-                    name = children[1].textContent.trim();
-                    points = children[2].textContent.trim();
-                }
-                if (place && name && points) {
-                    if (prize) {
-                        pointsTableText += `${place} $${prize} - ${name} - ${points}\n`;
-                    } else {
-                        pointsTableText += `${place} - ${name} - ${points}\n`;
-                    }
-                }
-            });
-            // Compose email
-            const subject = encodeURIComponent('Poker Stats Dashboard');
+            const playerBuyInCost = formatEmailMoney(document.getElementById('buyInCostDisplay').textContent);
+            const totalCashTaking = formatEmailMoney(document.getElementById('totalCashTaking').textContent);
+            const playerCashPayout = formatEmailMoney(document.getElementById('playerCashPayout').textContent, true);
+            const pascCashTakings = formatEmailMoney(document.getElementById('pascCashTakings').textContent, true);
+            const pascGameCash = formatEmailMoney(document.getElementById('pascGameCash').textContent, true);
+            const raffleCash = formatEmailMoney(document.getElementById('raffleCashSummary')?.textContent || '$0', true);
+            const ghostPlayerCashAmount = formatEmailMoney(document.getElementById('ghostPlayerCashSummary')?.textContent || '$20', true);
+            const pascPercent = document.getElementById('pascGameCashPercent')?.textContent || '(25%)';
+            const payoutPercent = document.getElementById('playerCashPayoutPercent')?.textContent || '(75%)';
+            const ghostStatus = getGhostPlayerStatus();
+            const ghostPlayerLine = window.selectedGhostPlayer
+                ? formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus)
+                : '-';
+            const pointsTableText = buildEmailPointsTableText();
+
+            const subject = encodeURIComponent('PASC Stats Dashboard');
             const body = encodeURIComponent(
-                `Poker Stats Dashboard\n\n` +
-                `Date: ${todaysDate}\n` +
-                `Game Type: ${gameType}\n` +
-                `Game Count: ${gameCount}\n` +
-                `Total Players: ${totalPlayers}\n` +
-                `Player Buy-in Cost: ${playerBuyInCost}\n` +
-                `Total Buy-in Cash: ${totalCashTaking}\n` +
-                `PASC Game Cash (25%): ${pascGameCash}\n` +
-                `Raffle Cash: ${raffleCash}\n` +
+                `PASC Stats Dashboard \n\n` +
+                `Date: ${todaysDate} \n` +
+                `Game Type: ${gameType} \n` +
+                `Game Count: ${gameCount} \n` +
+                `Total Players: ${totalPlayers} \n\n` +
+                `Player Buy-in Cost: ${playerBuyInCost} \n` +
+                `Total Buy-in Cash: ${totalCashTaking} \n\n` +
                 `Total PASC Cash: ${pascCashTakings}\n` +
-                `Player Cash Payout (75%): ${playerCashPayout}\n` +
-                `  1st: ${payout1st}\n` +
-                `  2nd: ${payout2nd}\n` +
-                `  3rd: ${payout3rd}\n` +
-                `\n` +
-                `Ghost Player: ${window.selectedGhostPlayer?.name || '-'}${window.selectedGhostPlayer && eliminatedPlayers.length > 0 ? ` - ${ghostStatus}` : ''}\n` +
-                `\nPoints Table:\n${pointsTableText}`
+                `Raffle Cash: ${raffleCash} \n` +
+                `Cash for Ghost Player: ${ghostPlayerCashAmount}\n` +
+                `PASC Game Cash ${pascPercent}: ${pascGameCash}\n\n` +
+                `Ghost Player: ${ghostPlayerLine}\n\n` +
+                `Player Cash Payout ${payoutPercent}: ${playerCashPayout} \n\n` +
+                `Points Table: \n${pointsTableText}`
             );
-            window.location.href = `mailto:andrew.bailey@mail.com?subject=${subject}&body=${body}`;
+            const recipientEmails = getAdminPlayerEmails();
+            if (recipientEmails.length === 0) {
+                alert('No email addresses found in Admin > Player Management.');
+                return;
+            }
+            const recipients = recipientEmails.join('; ');
+            window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
         }
         
         function toggleLayoutMode() {
@@ -2928,15 +3201,16 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"ghostPlayerCash":20}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
-                adminSettings = { pascPercent: 25, playerPayoutPercent: 75, payout1stPercent: 50, payout2ndPercent: 30 };
+                adminSettings = { pascPercent: 25, playerPayoutPercent: 75, payout1stPercent: 50, payout2ndPercent: 30, ghostPlayerCash: 20 };
             }
             if (adminSettings.pascPercent == null) adminSettings.pascPercent = 25;
             if (adminSettings.playerPayoutPercent == null) adminSettings.playerPayoutPercent = 75;
             if (adminSettings.payout1stPercent == null) adminSettings.payout1stPercent = 50;
             if (adminSettings.payout2ndPercent == null) adminSettings.payout2ndPercent = 30;
+            if (adminSettings.ghostPlayerCash == null) adminSettings.ghostPlayerCash = 20;
         }
         normalizeAdminSettings();
         function populateAdminSettingsForm() {
@@ -2945,10 +3219,12 @@
             const playerPayoutPercentInput = document.getElementById('adminPlayerPayoutPercent');
             const payout1stInput = document.getElementById('adminPayout1stPercent');
             const payout2ndInput = document.getElementById('adminPayout2ndPercent');
+            const ghostPlayerCashInput = document.getElementById('adminGhostPlayerCash');
             if (pascPercentInput) pascPercentInput.value = adminSettings.pascPercent;
             if (playerPayoutPercentInput) playerPayoutPercentInput.value = adminSettings.playerPayoutPercent;
             if (payout1stInput) payout1stInput.value = adminSettings.payout1stPercent;
             if (payout2ndInput) payout2ndInput.value = adminSettings.payout2ndPercent;
+            if (ghostPlayerCashInput) ghostPlayerCashInput.value = adminSettings.ghostPlayerCash;
             updatePayout3rdPercentDisplay();
         }
         function updatePayout3rdPercentDisplay() {
@@ -3190,6 +3466,20 @@
             updateAfterLevelSelects();
             populateVoiceList();
         }
+
+        function toggleAdminBlindTimerSettings() {
+            const content = document.getElementById('adminBlindTimerSettingsContent');
+            const btn = document.getElementById('toggleAdminBlindTimerBtn');
+            if (!content || !btn) return;
+            const isHidden = content.classList.contains('hidden');
+            if (isHidden) {
+                content.classList.remove('hidden');
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Blind Settings';
+            } else {
+                content.classList.add('hidden');
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Blind Settings';
+            }
+        }
         document.addEventListener('DOMContentLoaded', () => {
             // Populate the registration dropdown from saved admin players
             renderRegistrationDatalist();
@@ -3326,6 +3616,21 @@
                     adminSettings.payout2ndPercent = payout2ndPercent;
                     saveAdminSettings();
                     updatePayout3rdPercentDisplay();
+                    alert('Settings saved!');
+                    updateStats();
+                });
+            }
+            const adminGhostCashForm = document.getElementById('adminGhostCashForm');
+            if (adminGhostCashForm) {
+                adminGhostCashForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const ghostPlayerCash = parseFloat(document.getElementById('adminGhostPlayerCash').value);
+                    if (isNaN(ghostPlayerCash) || ghostPlayerCash < 0) {
+                        alert('Please enter a valid ghost player cash amount.');
+                        return;
+                    }
+                    adminSettings.ghostPlayerCash = ghostPlayerCash;
+                    saveAdminSettings();
                     alert('Settings saved!');
                     updateStats();
                 });
