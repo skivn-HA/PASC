@@ -733,9 +733,176 @@
                 padding-bottom: 0 !important;
             }
         }
+
+        .pasc-toast-container {
+            position: fixed;
+            top: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: min(92vw, 28rem);
+            pointer-events: none;
+        }
+
+        .pasc-toast {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            background: rgba(17, 24, 39, 0.97);
+            border: 1px solid rgba(138, 43, 226, 0.45);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 18px rgba(138, 43, 226, 0.2);
+            color: #f9fafb;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            pointer-events: auto;
+            animation: pascToastIn 0.28s ease-out;
+        }
+
+        .pasc-toast.pasc-toast-out {
+            animation: pascToastOut 0.22s ease-in forwards;
+        }
+
+        .pasc-toast-icon {
+            flex-shrink: 0;
+            font-size: 1.1rem;
+            margin-top: 0.1rem;
+        }
+
+        .pasc-toast-message {
+            flex: 1;
+            white-space: pre-line;
+        }
+
+        .pasc-toast-success { border-color: rgba(74, 222, 128, 0.45); }
+        .pasc-toast-error { border-color: rgba(248, 113, 113, 0.5); }
+        .pasc-toast-warning { border-color: rgba(250, 204, 21, 0.5); }
+        .pasc-toast-info { border-color: rgba(5, 109, 120, 0.55); }
+
+        @keyframes pascToastIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pascToastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        .pasc-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 30000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .pasc-modal-overlay.hidden {
+            display: none;
+        }
+
+        .pasc-modal {
+            width: min(92vw, 26rem);
+            background: linear-gradient(160deg, #1f2937 0%, #111827 100%);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 24px rgba(138, 43, 226, 0.25);
+            text-align: center;
+            animation: pascModalIn 0.25s ease-out;
+        }
+
+        .pasc-modal-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: #f7931a;
+        }
+
+        .pasc-modal-icon.pasc-modal-icon-danger {
+            color: #f87171;
+        }
+
+        .pasc-modal-message {
+            color: #f9fafb;
+            font-size: 1rem;
+            line-height: 1.55;
+            white-space: pre-line;
+            margin-bottom: 1.25rem;
+        }
+
+        .pasc-modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .pasc-modal-btn {
+            min-width: 6.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background-color 0.2s ease, transform 0.15s ease;
+        }
+
+        .pasc-modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        .pasc-modal-btn-cancel {
+            background: #374151;
+            color: #f9fafb;
+        }
+
+        .pasc-modal-btn-cancel:hover {
+            background: #4b5563;
+        }
+
+        .pasc-modal-btn-confirm {
+            background: #056d78;
+            color: #fff;
+        }
+
+        .pasc-modal-btn-confirm:hover {
+            background: #f7931a;
+        }
+
+        .pasc-modal-btn-danger {
+            background: #b91c1c;
+            color: #fff;
+        }
+
+        .pasc-modal-btn-danger:hover {
+            background: #dc2626;
+        }
+
+        @keyframes pascModalIn {
+            from { opacity: 0; transform: scale(0.94) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div id="pascToastContainer" class="pasc-toast-container" aria-live="polite" aria-atomic="true"></div>
+    <div id="pascModalOverlay" class="pasc-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pascModalMessage">
+        <div class="pasc-modal">
+            <div id="pascModalIcon" class="pasc-modal-icon" aria-hidden="true"><i class="fas fa-question-circle"></i></div>
+            <p id="pascModalMessage" class="pasc-modal-message"></p>
+            <div id="pascModalActions" class="pasc-modal-actions"></div>
+        </div>
+    </div>
     <div class="w-full flex justify-center m-0 leading-none">
         <div class="flex items-center justify-center">
             <img src="Logos/Logo-S19-1.1.png" alt="Poker Academy Social Club Logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
@@ -1462,6 +1629,124 @@
         const APP_LOGIN_KEY = 'pascAppLoggedIn';
         const APP_LOGIN_ROLE_KEY = 'pascAppLoginRole';
 
+        const PASC_TOAST_ICONS = {
+            success: 'fa-check-circle text-green-400',
+            error: 'fa-exclamation-circle text-red-400',
+            warning: 'fa-exclamation-triangle text-yellow-400',
+            info: 'fa-info-circle text-cyan-400'
+        };
+
+        let pascModalResolve = null;
+        let pascModalKeyHandler = null;
+
+        function showToast(message, type = 'info', duration = 4000) {
+            const container = document.getElementById('pascToastContainer');
+            if (!container || !message) return;
+
+            const toast = document.createElement('div');
+            toast.className = `pasc-toast pasc-toast-${type}`;
+            toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+            const icon = document.createElement('i');
+            icon.className = `pasc-toast-icon fas ${PASC_TOAST_ICONS[type] || PASC_TOAST_ICONS.info}`;
+            icon.setAttribute('aria-hidden', 'true');
+
+            const text = document.createElement('div');
+            text.className = 'pasc-toast-message';
+            text.textContent = message;
+
+            toast.appendChild(icon);
+            toast.appendChild(text);
+            container.appendChild(toast);
+
+            const dismiss = () => {
+                if (!toast.isConnected) return;
+                toast.classList.add('pasc-toast-out');
+                setTimeout(() => toast.remove(), 220);
+            };
+
+            const timeout = setTimeout(dismiss, duration);
+            toast.addEventListener('click', () => {
+                clearTimeout(timeout);
+                dismiss();
+            });
+        }
+
+        function closePascModal(result) {
+            const overlay = document.getElementById('pascModalOverlay');
+            if (pascModalKeyHandler) {
+                document.removeEventListener('keydown', pascModalKeyHandler);
+                pascModalKeyHandler = null;
+            }
+            if (overlay) overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            const resolve = pascModalResolve;
+            pascModalResolve = null;
+            if (resolve) resolve(result);
+        }
+
+        function showConfirm(message, options = {}) {
+            const {
+                confirmText = 'Confirm',
+                cancelText = 'Cancel',
+                danger = false
+            } = options;
+
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('pascModalOverlay');
+                const messageEl = document.getElementById('pascModalMessage');
+                const iconEl = document.getElementById('pascModalIcon');
+                const actionsEl = document.getElementById('pascModalActions');
+                if (!overlay || !messageEl || !iconEl || !actionsEl) {
+                    resolve(false);
+                    return;
+                }
+
+                if (pascModalResolve) {
+                    closePascModal(false);
+                }
+
+                pascModalResolve = resolve;
+                messageEl.textContent = message;
+                iconEl.className = `pasc-modal-icon${danger ? ' pasc-modal-icon-danger' : ''}`;
+                iconEl.innerHTML = danger
+                    ? '<i class="fas fa-exclamation-triangle"></i>'
+                    : '<i class="fas fa-question-circle"></i>';
+
+                actionsEl.innerHTML = '';
+                const cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'pasc-modal-btn pasc-modal-btn-cancel';
+                cancelBtn.textContent = cancelText;
+                cancelBtn.addEventListener('click', () => closePascModal(false));
+
+                const confirmBtn = document.createElement('button');
+                confirmBtn.type = 'button';
+                confirmBtn.className = `pasc-modal-btn ${danger ? 'pasc-modal-btn-danger' : 'pasc-modal-btn-confirm'}`;
+                confirmBtn.textContent = confirmText;
+                confirmBtn.addEventListener('click', () => closePascModal(true));
+
+                actionsEl.appendChild(cancelBtn);
+                actionsEl.appendChild(confirmBtn);
+
+                pascModalKeyHandler = (event) => {
+                    if (event.key === 'Escape') {
+                        event.preventDefault();
+                        closePascModal(false);
+                    }
+                };
+                document.addEventListener('keydown', pascModalKeyHandler);
+
+                overlay.onclick = (event) => {
+                    if (event.target === overlay) closePascModal(false);
+                };
+
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                cancelBtn.focus();
+            });
+        }
+
         function isAppLoggedIn() {
             return sessionStorage.getItem(APP_LOGIN_KEY) === 'true';
         }
@@ -1656,11 +1941,11 @@
         function startGame() {
             const gameType = (document.getElementById('gameType')?.value || '').trim();
             if (!gameType) {
-                alert('Please select a game type in Game Details before starting.');
+                showToast('Please select a game type in Game Details before starting.', 'error');
                 return;
             }
             if (blindLevels.length === 0) {
-                alert('Please add at least one blind level in Settings > Blind Timer.');
+                showToast('Please add at least one blind level in Settings > Blind Timer.', 'error');
                 return;
             }
 
@@ -1709,14 +1994,14 @@
             const name = nameInput.value.trim();
             
             if (name === '') {
-                alert('Please enter a player name');
+                showToast('Please enter a player name', 'error');
                 return;
             }
 
             if (name.toLowerCase() === 'all') {
                 renderRegistrationDatalist();
                 if (registrationNames.length === 0) {
-                    alert('No players in Player Management to add.');
+                    showToast('No players in Player Management to add.', 'error');
                     return;
                 }
 
@@ -1731,13 +2016,13 @@
                 updateStats();
 
                 if (added === 0) {
-                    alert('All players from the list are already registered.');
+                    showToast('All players from the list are already registered.', 'error');
                 }
                 return;
             }
             
             if (registerPlayerByName(name) === 'duplicate') {
-                alert(`Player "${name}" is already registered in this game.`);
+                showToast(`Player "${name}" is already registered in this game.`, 'error');
                 return;
             }
 
@@ -1851,10 +2136,10 @@
             });
         }
 
-        function removePlayer(id) {
+        async function removePlayer(id) {
             const player = players.find(p => p.id === id);
             if (!player) return;
-            if (!confirm(`Remove ${player.name} from the game?`)) return;
+            if (!(await showConfirm(`Remove ${player.name} from the game?`, { danger: true }))) return;
             players = players.filter(p => p.id !== id);
             originalPlayers = originalPlayers.filter(p => p.id !== id);
             eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== id);
@@ -1973,7 +2258,7 @@
         function saveGameType() {
             const gameType = document.getElementById('gameType').value.trim();
             if (!gameType) {
-                alert('Please enter a game type name first.');
+                showToast('Please enter a game type name first.', 'error');
                 return;
             }
             const entry = {
@@ -1992,12 +2277,12 @@
             }
             savedGames.sort((a, b) => (a.gameType || '').localeCompare(b.gameType || ''));
             persistSavedGames();
-            alert(`Game "${gameType}" saved.`);
+            showToast(`Game "${gameType}" saved.`, 'success');
         }
-        function deleteSavedGame(idx) {
+        async function deleteSavedGame(idx) {
             const g = savedGames[idx];
             if (!g) return;
-            if (confirm(`Delete game type "${g.gameType}"?`)) {
+            if (await showConfirm(`Delete game type "${g.gameType}"?`, { danger: true })) {
                 savedGames.splice(idx, 1);
                 persistSavedGames();
                 showGameTypeDropdown(document.getElementById('gameType').value);
@@ -2006,7 +2291,7 @@
 
         function assignTables() {
             if (players.length === 0) {
-                alert('No players to assign to tables');
+                showToast('No players to assign to tables', 'error');
                 return;
             }
             
@@ -2118,8 +2403,8 @@
             btn.title = gameType ? '' : 'Select a game type in Game Details before starting';
         }
         
-        function clearPlayers() {
-            if (confirm('Are you sure you want to clear all players?')) {
+        async function clearPlayers() {
+            if (await showConfirm('Are you sure you want to clear all players?', { danger: true })) {
                 players = [];
                 tables = [];
                 eliminatedPlayers = [];
@@ -2159,12 +2444,12 @@
             const levelTime = getDefaultBlindLevelMinutes();
             
             if (isNaN(smallBlind) || isNaN(bigBlind) || smallBlind <= 0 || bigBlind <= 0) {
-                alert('Please enter valid values for small and big blind');
+                showToast('Please enter valid values for small and big blind', 'error');
                 return;
             }
             
             if (bigBlind < smallBlind) {
-                alert('Big blind must be equal to or greater than small blind');
+                showToast('Big blind must be equal to or greater than small blind', 'error');
                 return;
             }
             
@@ -2180,7 +2465,7 @@
             if (hasBlindLevels && afterSelect) {
                 const afterIdx = parseInt(afterSelect.value);
                 if (isNaN(afterIdx)) {
-                    alert('Please select which level to insert after.');
+                    showToast('Please select which level to insert after.', 'error');
                     return;
                 }
                 blindLevels.splice(afterIdx + 1, 0, level);
@@ -2228,10 +2513,10 @@
             updateBlindDisplay();
         }
         
-        function clearBlindLevels() {
+        async function clearBlindLevels() {
             if (blindLevels.length === 0) return;
             
-            if (confirm('Are you sure you want to clear all blind levels?')) {
+            if (await showConfirm('Are you sure you want to clear all blind levels?', { danger: true })) {
                 blindLevels = [];
                 currentBlindIndex = 0;
                 clearInterval(timerInterval);
@@ -2250,7 +2535,7 @@
         
         function startTimer() {
             if (blindLevels.length === 0) {
-                alert('Please add at least one blind level');
+                showToast('Please add at least one blind level', 'error');
                 return;
             }
             
@@ -3089,8 +3374,8 @@
             updateStats();
         }
 
-        function resetGhostPlayerPool() {
-            if (!confirm('Mark the ghost player as won and reset the pool to $0?')) {
+        async function resetGhostPlayerPool() {
+            if (!(await showConfirm('Mark the ghost player as won and reset the pool to $0?', { danger: true }))) {
                 return;
             }
             recordSeasonPoolManualPayout('ghostPlayerManualPaidOut', ghostPlayerPool);
@@ -3101,7 +3386,7 @@
             populateAdminGhostCashForm();
             updateStats();
             renderAdminSeasonStatistics();
-            alert('Ghost player cash pool reset to $0.');
+            showToast('Ghost player cash pool reset to $0.', 'success');
         }
 
         function getBonusHandSettings() {
@@ -3147,8 +3432,8 @@
             updateStats();
         }
 
-        function resetBonusHandPool() {
-            if (!confirm('Mark the bonus hand as won and reset the pool to $0?')) {
+        async function resetBonusHandPool() {
+            if (!(await showConfirm('Mark the bonus hand as won and reset the pool to $0?', { danger: true }))) {
                 return;
             }
             recordSeasonPoolManualPayout('bonusHandManualPaidOut', bonusHandPool);
@@ -3159,7 +3444,7 @@
             populateAdminBonusHandForm();
             updateStats();
             renderAdminSeasonStatistics();
-            alert('Bonus hand pool reset to $0.');
+            showToast('Bonus hand pool reset to $0.', 'success');
         }
 
         function getBadBeatBonusSettings() {
@@ -3202,8 +3487,8 @@
             updateStats();
         }
 
-        function resetBadBeatBonusPool() {
-            if (!confirm('Mark the bad beat bonus as won and reset the pool to $0?')) {
+        async function resetBadBeatBonusPool() {
+            if (!(await showConfirm('Mark the bad beat bonus as won and reset the pool to $0?', { danger: true }))) {
                 return;
             }
             recordSeasonPoolManualPayout('badBeatBonusManualPaidOut', badBeatBonusPool);
@@ -3214,7 +3499,7 @@
             populateAdminBadBeatBonusForm();
             updateStats();
             renderAdminSeasonStatistics();
-            alert('Bad beat bonus pool reset to $0.');
+            showToast('Bad beat bonus pool reset to $0.', 'success');
         }
 
         function parseMoneyAmount(value) {
@@ -3419,19 +3704,28 @@
             };
         }
 
-        function saveGameToPointsTable() {
+        async function saveGameToPointsTable() {
             if (!isGameResultsReady()) {
-                alert('Game results are not ready yet. Finish the tournament so a winner is declared before saving.');
+                showToast('Game results are not ready yet. Finish the tournament so a winner is declared before saving.', 'error');
                 return;
             }
             if (currentGameSaved) {
-                alert('This game has already been saved.');
+                showToast('This game has already been saved.', 'error');
                 return;
             }
             updateStats();
             const results = getGameResults();
             const stats = collectStatsDashboardSnapshot(results);
-            if (!confirm(`Save this game to the Points Table?\n\n${stats.date}\n${stats.gameType}\n${stats.totalPlayers} players`)) {
+            const raffleCashGross = getStatsInputNumber('raffleCash', 0);
+            if (raffleCashGross <= 0) {
+                if (!(await showConfirm('You have not entered the raffle cash amount. Do you want to continue?', {
+                    confirmText: 'Continue',
+                    cancelText: 'Cancel'
+                }))) {
+                    return;
+                }
+            }
+            if (!(await showConfirm(`Save this game to the Points Table?\n\n${stats.date}\n${stats.gameType}\n${stats.totalPlayers} players`))) {
                 return;
             }
 
@@ -3499,7 +3793,7 @@
             currentGameSaved = true;
             updateStats();
             updateSaveGameButton();
-            alert('Game saved to Points Table with full Stats Dashboard data.');
+            showToast('Game saved to Points Table with full Stats Dashboard data.', 'success');
         }
 
         function getPointsTableAggregates() {
@@ -3757,7 +4051,7 @@
             if (!input) return;
             const clubExpenses = parseFloat(input.value);
             if (isNaN(clubExpenses) || clubExpenses < 0) {
-                alert('Please enter a valid club expenses amount.');
+                showToast('Please enter a valid club expenses amount.', 'error');
                 return;
             }
             adminSettings.clubExpenses = clubExpenses;
@@ -3868,11 +4162,11 @@
             container.appendChild(table);
         }
 
-        function deleteSavedGameFromPointsTable(gameId) {
+        async function deleteSavedGameFromPointsTable(gameId) {
             const game = pointsTableHistory.find((g) => String(g.id) === String(gameId));
             if (!game) return;
             const label = `${game.date || 'Unknown date'} — ${game.gameType || 'Unknown game'}`;
-            if (!confirm(`Delete this game from Game Management and the Points Table?\n\n${label}`)) {
+            if (!(await showConfirm(`Delete this game from Game Management and the Points Table?\n\n${label}`, { danger: true }))) {
                 return;
             }
             pointsTableHistory = pointsTableHistory.filter((g) => String(g.id) !== String(gameId));
@@ -4144,12 +4438,12 @@
 
         function emailStats() {
             if (!currentGameSaved || currentSavedGameId == null) {
-                alert('Please save the game before emailing stats.');
+                showToast('Please save the game before emailing stats.', 'info');
                 return;
             }
             const seasonGameNumber = getCurrentSavedSeasonGameNumber();
             if (!seasonGameNumber) {
-                alert('Could not find the saved game number. Please save the game again.');
+                showToast('Could not find the saved game number. Please save the game again.', 'error');
                 return;
             }
             const todaysDate = document.getElementById('todaysDate').textContent;
@@ -4248,7 +4542,7 @@
             const body = encodeURIComponent(bodyLines.join('\n'));
             const recipientEmails = getAdminPlayerEmails();
             if (recipientEmails.length === 0) {
-                alert('No email addresses found in Settings > Player Management.');
+                showToast('No email addresses found in Settings > Player Management.', 'error');
                 return;
             }
             const recipients = recipientEmails.join('; ');
@@ -4590,12 +4884,12 @@
             const afterIdx = parseInt(select.value);
             const breakMinutes = parseInt(breakTimeInput.value);
             if (isNaN(afterIdx) || isNaN(breakMinutes) || breakMinutes <= 0) {
-                alert('Please select a level and enter a valid break time.');
+                showToast('Please select a level and enter a valid break time.', 'error');
                 return;
             }
             // Insert break after the selected level (skip if next is already a break)
             if (blindLevels[afterIdx + 1] && blindLevels[afterIdx + 1].type === 'break') {
-                alert('There is already a break after this level.');
+                showToast('There is already a break after this level.', 'error');
                 return;
             }
             const breakLevel = {
@@ -4644,7 +4938,7 @@
         function setAllBlindTimes() {
             const input = document.getElementById('setAllBlindTimeInput');
             if (!applyBlindTimeMinutes(input.value)) {
-                alert('Please enter a valid number of minutes.');
+                showToast('Please enter a valid number of minutes.', 'error');
                 return;
             }
             input.value = '';
@@ -4692,7 +4986,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":true,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -4703,7 +4997,7 @@
             if (adminSettings.payout2ndPercent == null) adminSettings.payout2ndPercent = 30;
             if (adminSettings.seasonNumber == null) adminSettings.seasonNumber = 19;
             if (adminSettings.ghostPlayerCash == null) adminSettings.ghostPlayerCash = 20;
-            if (adminSettings.ghostPlayerEnabled == null) adminSettings.ghostPlayerEnabled = true;
+            if (adminSettings.ghostPlayerEnabled == null) adminSettings.ghostPlayerEnabled = false;
             if (adminSettings.bonusHandEnabled == null) adminSettings.bonusHandEnabled = false;
             if (adminSettings.bonusHandDescription == null) adminSettings.bonusHandDescription = '';
             if (adminSettings.bonusHandAmountPerGame == null) adminSettings.bonusHandAmountPerGame = 20;
@@ -4950,7 +5244,7 @@
         function emailAdminData() {
             const recipientEmails = getCommitteeMemberEmails();
             if (recipientEmails.length === 0) {
-                alert('No committee member email addresses found in Player Management.');
+                showToast('No committee member email addresses found in Player Management.', 'info');
                 return;
             }
             const { data, filename, stamp } = exportAdminData();
@@ -4964,7 +5258,7 @@
                 `Recipients can save the attachment and use Settings > Backup / Restore to import.`
             );
             window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
-            alert(`"${filename}" has been downloaded.\n\nAn email to committee members will open next — attach that downloaded JSON file to the email, then send.`);
+            showToast(`"${filename}" has been downloaded.\n\nAn email to committee members will open next — attach that downloaded JSON file to the email, then send.`, 'success');
         }
 
         function importAdminData(event) {
@@ -5022,9 +5316,9 @@
                     updateStats();
                     renderPointsTablePage();
                     renderAdminGameManagement();
-                    alert('Admin data imported successfully.');
+                    showToast('Admin data imported successfully.', 'success');
                 } catch (err) {
-                    alert('Import failed: the selected file is not valid PASC admin data.');
+                    showToast('Import failed: the selected file is not valid PASC admin data.', 'error');
                 }
             };
             reader.readAsText(file);
@@ -5042,8 +5336,8 @@
             document.getElementById('adminPlayerCommittee').value = p.committee;
             document.getElementById('adminPlayerForm').setAttribute('data-edit-idx', idx);
         }
-        function deleteAdminPlayer(idx) {
-            if (confirm('Delete this player?')) {
+        async function deleteAdminPlayer(idx) {
+            if (await showConfirm('Delete this player?', { danger: true })) {
                 adminPlayers.splice(idx, 1);
                 localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
                 renderAdminPlayersList();
@@ -5086,7 +5380,7 @@
                 payout2ndPercent: 30,
                 seasonNumber: 19,
                 ghostPlayerCash: 20,
-                ghostPlayerEnabled: true,
+                ghostPlayerEnabled: false,
                 bonusHandEnabled: false,
                 bonusHandDescription: '',
                 bonusHandAmountPerGame: 20,
@@ -5141,11 +5435,11 @@
             if (breakTimeInput) breakTimeInput.value = '';
         }
 
-        function resetSeasonGameData() {
-            if (!confirm('Clear all Game Management / Points Table history for a new season?\n\nThis does NOT remove players, settings, or saved game types.')) {
+        async function resetSeasonGameData() {
+            if (!(await showConfirm('Clear all Game Management / Points Table history for a new season?\n\nThis does NOT remove players, settings, or saved game types.', { danger: true }))) {
                 return;
             }
-            if (!confirm('Confirm: permanently delete all saved season games and points history?')) {
+            if (!(await showConfirm('Confirm: permanently delete all saved season games and points history?', { danger: true }))) {
                 return;
             }
             pointsTableHistory = [];
@@ -5170,14 +5464,14 @@
             populateAdminBonusHandForm();
             populateAdminGhostCashForm();
             populateAdminBadBeatBonusForm();
-            alert('Season game data cleared. Ready for a new season.');
+            showToast('Season game data cleared. Ready for a new season.', 'info');
         }
 
-        function resetAppToDefaults() {
-            if (!confirm('Factory reset the entire app?\n\nThis clears players, settings, saved games, points history, and the current tournament, then restores defaults.')) {
+        async function resetAppToDefaults() {
+            if (!(await showConfirm('Factory reset the entire app?\n\nThis clears players, settings, saved games, points history, and the current tournament, then restores defaults.', { danger: true }))) {
                 return;
             }
-            if (!confirm('Final confirmation: permanently clear ALL app data?')) {
+            if (!(await showConfirm('Final confirmation: permanently clear ALL app data?', { danger: true }))) {
                 return;
             }
 
@@ -5216,7 +5510,7 @@
             populateAdminBadBeatBonusForm();
             updateAfterLevelSelects();
             updateStats();
-            alert('App reset complete. All data cleared and defaults restored.');
+            showToast('App reset complete. All data cleared and defaults restored.', 'success');
         }
 
         function showAdminSettingsSection(sectionId) {
@@ -5284,13 +5578,22 @@
                     const username = document.getElementById('appUsername').value;
                     const password = document.getElementById('appPassword').value;
                     const loginError = document.getElementById('appLoginError');
-                    const result = await verifyAdminLogin(username, password);
-                    if (result.ok) {
-                        setAppLoggedIn(true, result.role);
-                        loginError.classList.add('hidden');
-                        showAppAfterLogin();
-                    } else {
-                        loginError.classList.remove('hidden');
+                    try {
+                        if (!window.crypto?.subtle) {
+                            showToast('Login requires a secure connection (HTTPS) or localhost.', 'error');
+                            return;
+                        }
+                        const result = await verifyAdminLogin(username, password);
+                        if (result.ok) {
+                            setAppLoggedIn(true, result.role);
+                            loginError.classList.add('hidden');
+                            showAppAfterLogin();
+                        } else {
+                            loginError.classList.remove('hidden');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        showToast('Login failed. Please reload and try again.', 'error');
                     }
                 });
             }
@@ -5311,13 +5614,13 @@
                     const existingPlayer = adminPlayers[editIdx];
 
                     if (!loginUsername) {
-                        alert('Please enter a username.');
+                        showToast('Please enter a username.', 'error');
                         return;
                     }
 
                     const loginUserHash = await sha256(normalizeAdminUsername(loginUsername));
                     if (loginUserHash === OWNER_USER_HASH) {
-                        alert('That username is reserved. Choose a different one.');
+                        showToast('That username is reserved. Choose a different one.', 'error');
                         return;
                     }
 
@@ -5327,7 +5630,7 @@
                         p.loginUserHash === loginUserHash
                     );
                     if (duplicate) {
-                        alert('That login username is already in use.');
+                        showToast('That login username is already in use.', 'error');
                         return;
                     }
 
@@ -5336,7 +5639,7 @@
                         loginPasswordHash = existingPlayer.loginPasswordHash;
                     } else {
                         if (!loginPassword) {
-                            alert('Please enter a password.');
+                            showToast('Please enter a password.', 'error');
                             return;
                         }
                         loginPasswordHash = await sha256(loginPassword);
@@ -5351,7 +5654,7 @@
                     localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
                     cancelAdminSecurityEdit();
                     renderAdminSecurityList();
-                    alert('Login details saved!');
+                    showToast('Login details saved!', 'success');
                 });
             }
             // Admin player add/update
@@ -5399,14 +5702,14 @@
                     e.preventDefault();
                     const seasonNumber = parseInt(document.getElementById('adminSeasonNumber').value, 10);
                     if (isNaN(seasonNumber) || seasonNumber < 1) {
-                        alert('Please enter a valid season number.');
+                        showToast('Please enter a valid season number.', 'error');
                         return;
                     }
                     adminSettings.seasonNumber = seasonNumber;
                     saveAdminSettings();
                     populateAdminSeasonNumberForm();
                     renderAdminSeasonStatistics();
-                    alert('Season number saved!');
+                    showToast('Season number saved!', 'success');
                 });
             }
             // Admin settings save
@@ -5434,11 +5737,11 @@
                     const payout1stPercent = parseInt(document.getElementById('adminPayout1stPercent').value);
                     const payout2ndPercent = parseInt(document.getElementById('adminPayout2ndPercent').value);
                     if (isNaN(pascPercent) || isNaN(playerPayoutPercent) || isNaN(payout1stPercent) || isNaN(payout2ndPercent)) {
-                        alert('Please enter valid percentage values.');
+                        showToast('Please enter valid percentage values.', 'error');
                         return;
                     }
                     if (payout1stPercent + payout2ndPercent >= 100) {
-                        alert('1st and 2nd place percentages must total less than 100% so 3rd place receives the remainder.');
+                        showToast('1st and 2nd place percentages must total less than 100% so 3rd place receives the remainder.', 'info');
                         return;
                     }
                     adminSettings.pascPercent = pascPercent;
@@ -5447,7 +5750,7 @@
                     adminSettings.payout2ndPercent = payout2ndPercent;
                     saveAdminSettings();
                     updatePayout3rdPercentDisplay();
-                    alert('Settings saved!');
+                    showToast('Settings saved!', 'success');
                     updateStats();
                 });
             }
@@ -5457,13 +5760,13 @@
                     e.preventDefault();
                     const ghostPlayerCash = parseFloat(document.getElementById('adminGhostPlayerCash').value);
                     if (isNaN(ghostPlayerCash) || ghostPlayerCash < 0) {
-                        alert('Please enter a valid ghost player cash amount.');
+                        showToast('Please enter a valid ghost player cash amount.', 'error');
                         return;
                     }
                     adminSettings.ghostPlayerCash = ghostPlayerCash;
                     saveAdminSettings();
                     populateAdminGhostCashForm();
-                    alert('Settings saved!');
+                    showToast('Settings saved!', 'success');
                     updateStats();
                 });
             }
@@ -5474,14 +5777,14 @@
                     const description = document.getElementById('adminBonusHandDescription').value.trim();
                     const amount = parseFloat(document.getElementById('adminBonusHandAmount').value);
                     if (isNaN(amount) || amount < 0) {
-                        alert('Please enter a valid bonus hand amount.');
+                        showToast('Please enter a valid bonus hand amount.', 'error');
                         return;
                     }
                     adminSettings.bonusHandDescription = description;
                     adminSettings.bonusHandAmountPerGame = amount;
                     saveAdminSettings();
                     populateAdminBonusHandForm();
-                    alert('Bonus hand settings saved!');
+                    showToast('Bonus hand settings saved!', 'success');
                     updateStats();
                 });
             }
@@ -5491,13 +5794,13 @@
                     e.preventDefault();
                     const amount = parseFloat(document.getElementById('adminBadBeatBonusAmount').value);
                     if (isNaN(amount) || amount < 0) {
-                        alert('Please enter a valid bad beat bonus amount.');
+                        showToast('Please enter a valid bad beat bonus amount.', 'error');
                         return;
                     }
                     adminSettings.badBeatBonusAmountPerGame = amount;
                     saveAdminSettings();
                     populateAdminBadBeatBonusForm();
-                    alert('Bad beat bonus settings saved!');
+                    showToast('Bad beat bonus settings saved!', 'success');
                     updateStats();
                 });
             }
