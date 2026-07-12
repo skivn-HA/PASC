@@ -123,6 +123,74 @@
             padding-top: clamp(0.5rem, 2vh, 1.5rem);
         }
 
+        #registrationGameDetailsCard,
+        #registrationRaffleCashCard {
+            padding: 0.75rem !important;
+            gap: 0.25rem !important;
+        }
+
+        #registrationGameDetailsCard h2,
+        #registrationRaffleCashCard h2 {
+            font-size: 1.125rem;
+            line-height: 1.35;
+            margin-bottom: 0.25rem;
+        }
+
+        #registrationGameDetailsCard h2 + div,
+        #registrationGameDetailsCard > div,
+        #registrationRaffleCashCard > div {
+            margin-bottom: 0;
+        }
+
+        #registrationGameDetailsCard label,
+        #registrationRaffleCashCard label {
+            margin-bottom: 0.125rem;
+            font-size: 0.8125rem;
+        }
+
+        #registrationGameDetailsCard input,
+        #registrationGameDetailsCard select,
+        #registrationRaffleCashCard input {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+        }
+
+        #registrationGameDetailsCard > button {
+            margin-top: 0.25rem;
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+        }
+
+        #gameTypeDropdown .game-type-dropdown-item {
+            padding: 0.125rem 0.5rem;
+            line-height: 1.2;
+            font-size: 0.875rem;
+            min-height: 0;
+        }
+
+        #gameTypeDropdown button {
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+        }
+
+        #registrationSideColumn {
+            gap: 0.5rem;
+        }
+
+        #appShell > nav {
+            margin-bottom: 0.5rem;
+        }
+
+        #appShell > nav ul li {
+            margin: 0.25rem;
+        }
+
+        #registrationTopRow {
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
         #admin #adminPanelSection .admin-section-divider {
             border-top: 1px solid rgba(209, 213, 219, 0.4);
             margin-top: 0.25rem;
@@ -201,9 +269,93 @@
             margin-bottom: 0.375rem !important;
         }
 
-        #admin #adminMemberStats table th,
-        #admin #adminMemberStats table td {
-            padding: 0.125rem 0.5rem !important;
+        #admin #adminGameManagementList table th,
+        #admin #adminGameManagementList table td {
+            padding: 0.375rem 0.5rem !important;
+            text-align: left;
+            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+        }
+
+        #admin #adminGameManagementList table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #admin #adminGameManagementList table thead th {
+            background: rgba(5, 109, 120, 0.5);
+            font-weight: 600;
+        }
+
+        #admin .admin-settings-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 1024px) {
+            #admin .admin-settings-layout {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        #admin #adminSettingsNav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            flex-shrink: 0;
+        }
+
+        @media (min-width: 1024px) {
+            #admin #adminSettingsNav {
+                width: 13rem;
+            }
+        }
+
+        #admin .admin-settings-nav-btn {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            background: rgba(5, 109, 120, 0.35);
+            color: #e5e7eb;
+            font-weight: 500;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        #admin .admin-settings-nav-btn:hover {
+            background: rgba(5, 109, 120, 0.55);
+        }
+
+        #admin .admin-settings-nav-btn.active {
+            background: #b91c1c;
+            color: #fff;
+        }
+
+        #admin #adminSettingsBody {
+            flex: 1;
+            min-width: 0;
+            background: rgba(5, 109, 120, 0.12);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            border: 1px solid rgba(209, 213, 219, 0.15);
+        }
+
+        #admin .admin-section-intro {
+            font-size: 0.875rem;
+            color: rgba(209, 213, 219, 0.75);
+            margin-bottom: 1rem;
+        }
+
+        #admin .admin-settings-section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #facc15;
+            margin-bottom: 0.375rem !important;
+        }
+
+        #admin #adminSecurityList table th,
+        #admin #adminSecurityList table td {
+            text-align: left;
         }
 
         #admin #adminLogoutBtn {
@@ -268,6 +420,7 @@
         }
 
         #stats .border-t {
+            border-top-color: rgba(209, 213, 219, 0.4) !important;
             margin-top: 0.375rem !important;
             padding-top: 0.375rem !important;
         }
@@ -289,6 +442,66 @@
 
         #stats .col-span-2 .mb-4 {
             margin-bottom: 0.375rem !important;
+        }
+
+        #points-table > .bg-poker-secondary {
+            padding: 1rem 1.25rem !important;
+        }
+
+        #points-table h2 {
+            margin-bottom: 0.75rem !important;
+        }
+
+        #points-table .points-table-page-intro {
+            color: rgba(249, 250, 251, 0.7);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        #points-table table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #points-table table th,
+        #points-table table td {
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+        }
+
+        #points-table table thead th {
+            background: rgba(5, 109, 120, 0.5);
+            font-weight: 600;
+        }
+
+        #points-table .points-history-row td {
+            background: rgba(17, 24, 39, 0.55);
+            padding-top: 0.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+        }
+
+        #points-table .points-history-list {
+            margin: 0;
+            padding: 0.25rem 0 0.25rem 1rem;
+            list-style: none;
+        }
+
+        #points-table .points-history-list li {
+            padding: 0.125rem 0;
+            font-size: 0.875rem;
+            color: rgba(249, 250, 251, 0.85);
+        }
+
+        #points-table .points-toggle-btn {
+            color: #facc15;
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.875rem;
         }
         
         .timer-display {
@@ -325,16 +538,6 @@
         .animate-sparkle {
             animation: sparkle 1.4s infinite ease-in-out;
             color: #f7931a;
-        }
-        /* Compact mode styles */
-        body.compact-mode .timer-display {
-            font-size: 6rem !important;
-        }
-        body.compact-mode .blind-display {
-            font-size: 4rem !important;
-        }
-        body.compact-mode #nextBlind {
-            font-size: 2rem !important;
         }
         .numbers-display {
             font-size: clamp(4rem, min(25vw, 35vh), 14rem);
@@ -386,61 +589,6 @@
             text-align: center;
             box-sizing: border-box;
             line-height: 1;
-        }
-        body.compact-mode:not(.fullscreen-mode) #blind-timer .blind-display {
-            font-size: clamp(1.25rem, min(10vw, 14vh), 4rem) !important;
-        }
-        body.compact-mode:not(.fullscreen-mode) #blind-timer #nextBlind {
-            display: none !important;
-        }
-        body.compact-mode:not(.fullscreen-mode) #blind-timer #timer.timer-display {
-            font-size: clamp(1.75rem, min(14vw, 20vh), 5rem) !important;
-            margin-top: 0.20rem !important;
-        }
-        body.compact-mode .player-card,
-        body.compact-mode .bg-poker-primary,
-        body.compact-mode .bg-poker-secondary {
-            padding: 0.5rem !important;
-        }
-        body.compact-mode .container,
-        body.compact-mode .page {
-            padding: 0.5rem !important;
-        }
-        body.compact-mode h1,
-        body.compact-mode h2,
-        body.compact-mode h3 {
-            font-size: 1.2rem !important;
-        }
-        body.compact-mode .grid,
-        body.compact-mode .flex {
-            gap: 0.25rem !important;
-        }
-        body.compact-mode .mb-8,
-        body.compact-mode .mb-6,
-        body.compact-mode .mb-4,
-        body.compact-mode .mb-2 {
-            margin-bottom: 0.5rem !important;
-        }
-        body.compact-mode .gap-6 {
-            gap: 0.25rem !important;
-        }
-        body.compact-mode .gap-4 {
-            gap: 0.25rem !important;
-        }
-        body.compact-mode .gap-2 {
-            gap: 0.125rem !important;
-        }
-        body.compact-mode button,
-        body.compact-mode input,
-        body.compact-mode select {
-            font-size: 1rem !important;
-            padding: 0.5rem 0.75rem !important;
-        }
-        body.compact-mode .hide-in-compact {
-            display: none !important;
-        }
-        body.compact-mode #buyIn {
-            padding-left: 2rem !important;
         }
         /* Fullscreen mode styles */
         body.fullscreen-mode {
@@ -551,6 +699,9 @@
         
         .player-dropdown-item {
             font-size: 1.1rem;
+            padding: 0.125rem 0.5rem;
+            line-height: 1.2;
+            min-height: 0;
         }
         
         /* Bitcoin theme input styling */
@@ -582,9 +733,6 @@
                 padding-bottom: 0 !important;
             }
         }
-        body.compact-mode #blindLevelsList .bg-poker-primary {
-            padding: 0 !important;
-        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
@@ -597,9 +745,6 @@
     <div id="appChrome" class="fixed top-2 right-2 z-50 flex gap-2 hidden">
         <button id="installAppBtn" onclick="installApp()" class="hidden bg-purple-600 hover:bg-orange-500 text-white rounded-full px-3 py-2 shadow-lg focus:outline-none text-sm font-semibold" title="Install as app">
             <i class="fas fa-download mr-1"></i>Install
-        </button>
-        <button id="layoutToggleBtn" onclick="toggleLayoutMode()" class="bg-poker-secondary hover:bg-poker-accent text-yellow-400 rounded-full p-2 shadow-lg focus:outline-none" title="Toggle Compact Layout">
-            <i class="fas fa-mobile-alt"></i>
         </button>
     </div>
     <div class="container mx-auto px-4 pb-4 pt-0">
@@ -620,31 +765,41 @@
 
         <div id="appShell" class="hidden">
         <!-- Navigation -->
-        <nav class="mb-4 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
+        <nav class="mb-2 py-1 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
             <ul class="flex flex-wrap justify-center">
-                <li class="m-2">
+                <li data-requires-full-access>
                     <button onclick="showPage('registration')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-user-plus mr-2"></i>Registration
                     </button>
                 </li>
-                <li class="m-2">
+                <li data-requires-full-access>
                     <button onclick="showPage('stats')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-chart-bar mr-2"></i>Stats Dashboard
                     </button>
                 </li>
-                <li class="m-2">
+                <li>
                     <button onclick="showPage('blind-timer')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-clock mr-2"></i>Blind Timer
                     </button>
                 </li>
-                <li class="m-2">
+                <li>
                     <button onclick="showPage('numbers')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-dice mr-2"></i>Numbers
                     </button>
                 </li>
-                <li class="m-2">
+                <li>
+                    <button onclick="showPage('points-table')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-trophy mr-2"></i>Points Table
+                    </button>
+                </li>
+                <li data-requires-full-access>
                     <button onclick="showPage('admin')" class="px-4 py-2 bg-red-700 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
-                        <i class="fas fa-user-shield mr-2"></i>Admin
+                        <i class="fas fa-cog mr-2"></i>Settings
+                    </button>
+                </li>
+                <li>
+                    <button type="button" id="appLogoutBtn" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
                 </li>
             </ul>
@@ -654,9 +809,9 @@
         <main>
             <!-- Registration Page -->
             <div id="registration" class="page hidden">
-                <div class="flex flex-col md:flex-row gap-4 mb-4">
+                <div id="registrationTopRow" class="flex flex-col md:flex-row gap-2 mb-2">
                     <!-- Player Registration Card -->
-                    <div class="flex-1 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 mb-4 md:mb-0">
+                    <div class="flex-1 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
                         <h2 class="text-2xl font-bold mb-4 text-yellow-400">
                             <i class="fas fa-user-plus mr-2"></i>Player Registration
                         </h2>
@@ -667,7 +822,7 @@
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                                 <div id="playerNameDropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-96 overflow-y-auto">
-                                    <!-- Options populated from Admin > Player Management -->
+                                    <!-- Options populated from Settings > Player Management -->
                                 </div>
                             </div>
                             <button onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
@@ -690,8 +845,9 @@
                         </div>
                     </div>
                     <!-- Game Type & Buy In Card -->
-                    <div class="w-full md:w-80 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 flex flex-col gap-2">
-                        <h2 class="text-2xl font-bold mb-1 text-yellow-400">
+                    <div id="registrationSideColumn" class="w-full md:w-80 flex flex-col gap-2">
+                        <div id="registrationGameDetailsCard" class="w-full bg-poker-secondary rounded-xl shadow-2xl p-4 border border-poker-accent/20 flex flex-col gap-1">
+                        <h2 class="text-xl font-bold mb-0.5 text-yellow-400">
                             <i class="fas fa-coins mr-2"></i>Game Details
                         </h2>
                         <div>
@@ -740,6 +896,18 @@
                         <button type="button" onclick="saveGameType()" class="mt-2 px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white">
                             <i class="fas fa-save mr-2"></i>Save Game
                         </button>
+                        </div>
+                        <div id="registrationRaffleCashCard" class="w-full bg-poker-secondary rounded-xl shadow-2xl p-4 border border-poker-accent/20 flex flex-col gap-1">
+                        <h2 class="text-xl font-bold mb-0.5 text-yellow-400">
+                            <i class="fas fa-ticket mr-2"></i>Raffle Cash
+                        </h2>
+                        <div>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
+                                <input type="number" id="raffleCashRegistration" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCashRegistration')" class="w-full pl-7 pr-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                            </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -748,7 +916,7 @@
                         <h2 class="text-2xl font-bold text-yellow-400">
                             <i class="fas fa-users mr-2"></i>Table Assignments
                         </h2>
-                        <button id="startGameBtn" onclick="startGame()" class="hidden px-8 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition-colors duration-300 text-white shadow-lg">
+                        <button id="startGameBtn" onclick="startGame()" class="hidden px-8 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-bold text-lg transition-colors duration-300 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600">
                             <i class="fas fa-play mr-2"></i>START GAME
                         </button>
                     </div>
@@ -836,7 +1004,10 @@
                     </h2>
                     
                     <div class="flex justify-end mb-4 gap-2">
-                        <button onclick="emailStats()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
+                        <button onclick="saveGameToPointsTable()" id="saveGameBtn" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold shadow transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fas fa-save mr-2"></i>Save Game
+                        </button>
+                        <button onclick="emailStats()" id="emailStatsBtn" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold shadow transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-yellow-600" disabled title="Save the game before emailing stats">
                             <i class="fas fa-envelope mr-2"></i>Email Stats
                         </button>
                         <button onclick="printStats()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
@@ -870,7 +1041,7 @@
                                 <div class="text-sm font-semibold text-white mb-1">Raffle Cash</div>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
-                                    <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="updateStats()" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                    <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCash')" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
                                 </div>
                             </div>
                         </div>
@@ -882,13 +1053,39 @@
                                 <div>2nd: <span id="payout2nd">$0</span></div>
                                 <div>3rd: <span id="payout3rd">$0</span></div>
                             </div>
+                            <div class="border-t pt-2 mt-3">
+                                <h3 class="text-lg font-semibold mb-2">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></h3>
+                                <div class="text-2xl font-bold text-green-400" id="pascGameCash">$0</div>
+                            </div>
                         </div>
-                        <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
-                            <h3 class="text-lg font-semibold mb-2">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></h3>
-                            <div class="text-2xl font-bold text-green-400" id="pascGameCash">$0</div>
-                            <div class="border-t border-poker-accent/20 pt-2 mt-3">
-                                <div class="text-sm font-semibold text-white mb-1">Cash for Ghost Player</div>
-                                <div class="text-xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
+                        <div id="statsPoolsCard" class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10 hidden">
+                            <div id="ghostPlayerCashCardSection">
+                                <h3 class="text-lg font-semibold mb-2">Ghost Player Cash</h3>
+                                <div class="text-2xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
+                                <div id="ghostPlayerCashStatsSection" class="pt-2 mt-2">
+                                    <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
+                                        <input type="checkbox" id="ghostPlayerWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
+                                        <span>Ghost Player won this game (resets pool on save)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div id="bonusHandStatsSection" class="border-t pt-2 mt-3 hidden">
+                                <h3 class="text-lg font-semibold mb-2">Bonus Hand</h3>
+                                <div class="text-sm text-poker-text/80 mb-1" id="bonusHandDescriptionDisplay">-</div>
+                                <div class="text-2xl font-bold text-green-400 mb-1" id="bonusHandPoolDisplay">$0.00</div>
+                                <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
+                                    <input type="checkbox" id="bonusHandWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
+                                    <span>Bonus Hand won this game (resets pool on save)</span>
+                                </label>
+                            </div>
+                            <div id="badBeatBonusStatsSection" class="border-t pt-2 mt-3 hidden">
+                                <h3 class="text-lg font-semibold mb-2">Bad Beat Bonus</h3>
+                                <div class="text-sm text-poker-text/80 mb-1">Quads beaten by a higher hand</div>
+                                <div class="text-2xl font-bold text-green-400 mb-1" id="badBeatBonusPoolDisplay">$0.00</div>
+                                <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
+                                    <input type="checkbox" id="badBeatBonusWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
+                                    <span>Bad Beat Bonus won this game (resets pool on save)</span>
+                                </label>
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
@@ -897,7 +1094,6 @@
                             <div class="mt-2 text-sm text-poker-text">
                                 <div>PASC Game Cash: <span id="pascGameCashSummary">$0</span></div>
                                 <div>Raffle: <span id="raffleCashSummary">$0</span></div>
-                                <div>Ghost Player: <span id="ghostPlayerCashSummary">$20</span></div>
                             </div>
                         </div>
                         <!-- Ghost Player Section (now in grid) -->
@@ -919,10 +1115,10 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         <div class="bg-poker-primary rounded-xl p-4 shadow col-span-2 border border-poker-accent/10">
                             <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold">Points Table</h3>
+                                <h3 class="text-lg font-semibold">Game Results</h3>
                             </div>
                             <div id="pointsTable" class="overflow-y-auto max-h-96">
-                                <!-- Points table will be added here -->
+                                <!-- Game results will be added here -->
                             </div>
                         </div>
                     </div>
@@ -957,150 +1153,276 @@
                 </div>
             </div>
 
-            <!-- Admin Page -->
-            <div id="admin" class="page hidden">
+            <!-- Points Table Page -->
+            <div id="points-table" class="page hidden">
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-6xl mx-auto">
-                    <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-user-shield mr-2"></i>Admin Panel</h2>
-                    <div id="adminPanelSection">
-                        <div class="mb-6" id="adminPlayerManagement">
-                            <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
-                                <h3 class="text-xl font-semibold text-yellow-400">Player Management</h3>
+                    <h2 class="text-2xl font-bold mb-2 text-yellow-400">
+                        <i class="fas fa-trophy mr-2"></i>Points Table
+                    </h2>
+                    <p class="points-table-page-intro">Season standings across all saved games. Players are ranked by total points, highest first.</p>
+                    <div id="pointsTableLeaderboard" class="overflow-x-auto">
+                        <!-- Leaderboard populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="admin" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-7xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-cog mr-2"></i>Settings</h2>
+                    <div id="adminPanelSection" class="admin-settings-layout">
+                        <nav id="adminSettingsNav" aria-label="Settings sections">
+                            <button type="button" class="admin-settings-nav-btn active" data-admin-section="backup-restore" onclick="showAdminSettingsSection('backup-restore')">Backup / Restore</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">PASC Cash &amp; Payout</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player Cash</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="season-number" onclick="showAdminSettingsSection('season-number')">Season Number</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="game-management" onclick="showAdminSettingsSection('game-management')">Game Management</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="season-statistics" onclick="showAdminSettingsSection('season-statistics')">Season Statistics</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="reset-app" onclick="showAdminSettingsSection('reset-app')">Reset App</button>
+                        </nav>
+                        <div id="adminSettingsBody">
+                            <div id="adminSection-player-management" class="admin-settings-section hidden">
+                                <h3>Player Management</h3>
+                                <p class="admin-section-intro">Add and maintain player records used for registration, emails, birthdays, and committee membership.</p>
+                                <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <input type="date" id="adminPlayerDob" placeholder="Date of Birth" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <input type="number" id="adminPlayerYears" placeholder="Years of Membership" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                        <option value="">Membership Status</option>
+                                        <option value="yes">Member</option>
+                                        <option value="no">Non-Member</option>
+                                    </select>
+                                    <select id="adminPlayerCommittee" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                        <option value="">Committee Member?</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                    <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
+                                </form>
+                                <div id="adminPlayersList" class="overflow-x-auto"></div>
+                            </div>
+                            <div id="adminSection-security" class="admin-settings-section hidden">
+                                <h3>Security</h3>
+                                <p class="admin-section-intro">Set login usernames and passwords for all members. Committee members can access the full app; other members can access Points Table, Blind Timer, and Numbers only.</p>
+                                <div id="adminSecurityList" class="overflow-x-auto mb-4"></div>
+                                <form id="adminSecurityForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                                    <input type="hidden" id="adminSecurityEditIdx">
+                                    <div class="md:col-span-2 text-sm font-semibold text-yellow-400" id="adminSecurityEditName"></div>
+                                    <div class="flex flex-col">
+                                        <label for="adminSecurityUsername" class="text-sm font-semibold mb-1">Username</label>
+                                        <input type="text" id="adminSecurityUsername" placeholder="Login Username" autocomplete="off" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label for="adminSecurityPassword" class="text-sm font-semibold mb-1">Password</label>
+                                        <input type="password" id="adminSecurityPassword" placeholder="Leave blank to keep current password" autocomplete="new-password" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="md:col-span-2 flex flex-wrap gap-2">
+                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Login</button>
+                                        <button type="button" onclick="cancelAdminSecurityEdit()" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium text-white">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="adminSection-backup-restore" class="admin-settings-section">
+                                <h3>Backup / Restore</h3>
+                                <p class="admin-section-intro">Export, email, or import a backup of all app data including players, settings, pools, and saved game history.</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <button type="button" onclick="exportAdminData()" class="px-3 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white text-sm">
+                                    <button type="button" onclick="exportAdminData()" class="px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white">
                                         <i class="fas fa-file-export mr-2"></i>Export Data
                                     </button>
-                                    <button type="button" onclick="document.getElementById('adminImportFile').click()" class="px-3 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white text-sm">
+                                    <button type="button" onclick="emailAdminData()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">
+                                        <i class="fas fa-envelope mr-2"></i>Email Data
+                                    </button>
+                                    <button type="button" onclick="document.getElementById('adminImportFile').click()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">
                                         <i class="fas fa-file-import mr-2"></i>Import Data
                                     </button>
                                     <input type="file" id="adminImportFile" accept="application/json,.json" class="hidden" onchange="importAdminData(event)">
                                 </div>
                             </div>
-                            <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                                <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                <input type="date" id="adminPlayerDob" placeholder="Date of Birth" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                <input type="number" id="adminPlayerYears" placeholder="Years of Membership" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <option value="">Membership Status</option>
-                                    <option value="yes">Member</option>
-                                    <option value="no">Non-Member</option>
-                                </select>
-                                <select id="adminPlayerCommittee" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <option value="">Committee Member?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-                                <div id="committeeLoginFields" class="hidden col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <input type="text" id="adminCommitteeUsername" placeholder="Login Username" autocomplete="off" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <input type="password" id="adminCommitteePassword" placeholder="Login Password" autocomplete="new-password" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                </div>
-                                <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
-                            </form>
-                            <div id="adminPlayersList" class="overflow-x-auto">
-                                <!-- List of players will appear here -->
-                            </div>
-                        </div>
-                        <div class="admin-section-divider"></div>
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">PASC Cash & Payout Settings</h3>
-                            <form id="adminSettingsForm" class="flex flex-col gap-4">
-                                <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
+                            <div id="adminSection-season-number" class="admin-settings-section hidden">
+                                <h3>Season Number</h3>
+                                <p class="admin-section-intro">The current season number used in Email Stats subject lines and headings.</p>
+                                <form id="adminSeasonNumberForm" class="flex flex-wrap items-end gap-4">
                                     <div class="flex flex-col">
-                                        <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
-                                        <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label for="adminPlayerPayoutPercent" class="text-sm font-semibold mb-1">Player Cash Payout %</label>
-                                        <input type="number" id="adminPlayerPayoutPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
-                                    </div>
-                                </div>
-                                <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
-                                    <div class="flex flex-col">
-                                        <label for="adminPayout1stPercent" class="text-sm font-semibold mb-1">1st Place Payout %</label>
-                                        <input type="number" id="adminPayout1stPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label for="adminPayout2ndPercent" class="text-sm font-semibold mb-1">2nd Place Payout %</label>
-                                        <input type="number" id="adminPayout2ndPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <label for="adminPayout3rdPercent" class="text-sm font-semibold mb-1">3rd Place Payout %</label>
-                                        <input type="number" id="adminPayout3rdPercent" readonly class="px-3 py-2 rounded-lg bg-poker-secondary border border-poker-accent/50 text-poker-text/70 cursor-not-allowed" style="width:100px;">
+                                        <label for="adminSeasonNumber" class="text-sm font-semibold mb-1">Season Number</label>
+                                        <input type="number" id="adminSeasonNumber" min="1" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
                                     </div>
                                     <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="admin-section-divider"></div>
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">Cash for Ghost Player</h3>
-                            <p class="text-sm text-poker-text/70 mb-3">Amount taken from each game before the percentage split.</p>
-                            <form id="adminGhostCashForm" class="flex flex-wrap items-end gap-4">
-                                <div class="flex flex-col">
-                                    <label for="adminGhostPlayerCash" class="text-sm font-semibold mb-1">Amount ($)</label>
-                                    <input type="number" id="adminGhostPlayerCash" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                </div>
-                                <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                            </form>
-                        </div>
-                        <div class="admin-section-divider"></div>
-                        <div class="mb-6" id="adminBlindTimerSettings">
-                            <div class="flex flex-wrap items-center gap-3 mb-4">
-                                <h3 class="text-xl font-semibold text-yellow-400">Blind Timer Settings</h3>
-                                <button type="button" onclick="toggleAdminBlindTimerSettings()" id="toggleAdminBlindTimerBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
-                                    <i class="fas fa-eye mr-2"></i>Show Blind Settings
-                                </button>
+                                </form>
                             </div>
-                            <div id="adminBlindTimerSettingsContent" class="hidden">
-                            <div class="mb-6" id="voiceSection">
-                                <label for="voiceSelect" class="block mb-1 font-medium">Voice for Announcements:</label>
-                                <div class="flex items-center gap-2">
-                                    <select id="voiceSelect" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text"></select>
-                                    <button id="testVoiceBtn" type="button" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Test Voice</button>
-                                </div>
+                            <div id="adminSection-pasc-cash" class="admin-settings-section hidden">
+                                <h3>PASC Cash &amp; Payout Settings</h3>
+                                <p class="admin-section-intro">Configure how buy-in cash is split between PASC funds and player payouts, and the top-three prize percentages.</p>
+                                <form id="adminSettingsForm" class="flex flex-col gap-4">
+                                    <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
+                                        <div class="flex flex-col">
+                                            <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
+                                            <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <label for="adminPlayerPayoutPercent" class="text-sm font-semibold mb-1">Player Cash Payout %</label>
+                                            <input type="number" id="adminPlayerPayoutPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
+                                        <div class="flex flex-col">
+                                            <label for="adminPayout1stPercent" class="text-sm font-semibold mb-1">1st Place Payout %</label>
+                                            <input type="number" id="adminPayout1stPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <label for="adminPayout2ndPercent" class="text-sm font-semibold mb-1">2nd Place Payout %</label>
+                                            <input type="number" id="adminPayout2ndPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <label for="adminPayout3rdPercent" class="text-sm font-semibold mb-1">3rd Place Payout %</label>
+                                            <input type="number" id="adminPayout3rdPercent" readonly class="px-3 py-2 rounded-lg bg-poker-secondary border border-poker-accent/50 text-poker-text/70 cursor-not-allowed" style="width:100px;">
+                                        </div>
+                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="mb-6" id="blindLevelsSection">
-                                <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Blind Levels</h4>
-                                <div class="flex flex-col md:flex-row gap-4 mb-4">
-                                    <input type="number" id="smallBlindInput" placeholder="Small Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
-                                    <input type="number" id="bigBlindInput" placeholder="Big Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
-                                    <select id="blindAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
-                                    <button onclick="addBlindLevel()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
-                                        <i class="fas fa-plus mr-2"></i>Add Level
+                            <div id="adminSection-ghost-player-cash" class="admin-settings-section hidden">
+                                <h3>Ghost Player Cash</h3>
+                                <p class="admin-section-intro">Amount taken from each game before the percentage split. Builds up each game until the ghost player wins, then resets.</p>
+                                <div class="flex flex-wrap items-center gap-3 mb-3">
+                                    <button type="button" onclick="toggleGhostPlayerCashEnabled()" id="toggleGhostPlayerCashBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                        <i class="fas fa-toggle-off mr-2"></i>Disabled
                                     </button>
                                 </div>
-                                <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Set Blind Times</h4>
-                                <div class="flex items-center gap-2 mb-2">
-                                    <input type="number" id="setAllBlindTimeInput" placeholder="Blind Time (min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:180px;">
-                                    <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
-                                        <i class="fas fa-clock mr-2"></i>Set Blind Times
+                                <div class="text-base text-poker-text mb-3">
+                                    Current pool: <span id="adminGhostPlayerPoolDisplay" class="font-bold text-green-400">$0.00</span>
+                                </div>
+                                <form id="adminGhostCashForm" class="flex flex-col gap-4">
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col">
+                                            <label for="adminGhostPlayerCash" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                            <input type="number" id="adminGhostPlayerCash" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                        </div>
+                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                        <button type="button" onclick="resetGhostPlayerPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="adminSection-bonus-hand" class="admin-settings-section hidden">
+                                <h3>Bonus Hand</h3>
+                                <p class="admin-section-intro">Season bonus hand (e.g. Straight Flush 6–10). Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
+                                <div class="flex flex-wrap items-center gap-3 mb-3">
+                                    <button type="button" onclick="toggleBonusHandEnabled()" id="toggleBonusHandBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                        <i class="fas fa-toggle-off mr-2"></i>Disabled
                                     </button>
                                 </div>
-                                <div id="breaksSection" class="mb-2 mt-4">
-                                    <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-coffee"></i>Breaks</h4>
-                                    <div class="flex flex-wrap gap-2 items-center">
-                                        <select id="breakAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
-                                        <input type="number" id="breakTimeInput" placeholder="(min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:90px;">
-                                        <button onclick="addBreakLevel()" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-medium transition-colors duration-300 text-white">
-                                            <i class="fas fa-coffee mr-2"></i>Add Break
-                                        </button>
+                                <div class="text-base text-poker-text mb-3">
+                                    Current pool: <span id="adminBonusHandPoolDisplay" class="font-bold text-green-400">$0.00</span>
+                                </div>
+                                <form id="adminBonusHandForm" class="flex flex-col gap-4">
+                                    <div class="flex flex-col md:flex-row gap-4 flex-wrap">
+                                        <div class="flex flex-col w-1/3 min-w-[140px]">
+                                            <label for="adminBonusHandDescription" class="text-sm font-semibold mb-1">Bonus Hand</label>
+                                            <input type="text" id="adminBonusHandDescription" placeholder="e.g. Straight Flush 6-10" class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <label for="adminBonusHandAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                            <input type="number" id="adminBonusHandAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap items-center gap-4">
+                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                        <button type="button" onclick="resetBonusHandPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="adminSection-bad-beat-bonus" class="admin-settings-section hidden">
+                                <h3>Bad Beat Bonus</h3>
+                                <p class="admin-section-intro">When a player holding quads loses to a higher hand, they win the bad beat bonus. Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
+                                <div class="flex flex-wrap items-center gap-3 mb-3">
+                                    <button type="button" onclick="toggleBadBeatBonusEnabled()" id="toggleBadBeatBonusBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                        <i class="fas fa-toggle-off mr-2"></i>Disabled
+                                    </button>
+                                </div>
+                                <div class="text-base text-poker-text mb-3">
+                                    Current pool: <span id="adminBadBeatBonusPoolDisplay" class="font-bold text-green-400">$0.00</span>
+                                </div>
+                                <form id="adminBadBeatBonusForm" class="flex flex-col gap-4">
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col">
+                                            <label for="adminBadBeatBonusAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                            <input type="number" id="adminBadBeatBonusAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                        </div>
+                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                        <button type="button" onclick="resetBadBeatBonusPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="adminSection-blind-timer" class="admin-settings-section hidden">
+                                <h3>Blind Timer Settings</h3>
+                                <p class="admin-section-intro">Configure blind levels, break times, and the voice used for timer announcements.</p>
+                                <div class="mb-6" id="voiceSection">
+                                    <label for="voiceSelect" class="block mb-1 font-medium">Voice for Announcements:</label>
+                                    <div class="flex items-center gap-2">
+                                        <select id="voiceSelect" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text"></select>
+                                        <button id="testVoiceBtn" type="button" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Test Voice</button>
                                     </div>
                                 </div>
-                                <div id="blindLevelsList" class="mb-4 max-h-60 overflow-y-auto">
-                                    <!-- Blind levels will be added here -->
+                                <div class="mb-6" id="blindLevelsSection">
+                                    <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Blind Levels</h4>
+                                    <div class="flex flex-col md:flex-row gap-4 mb-4">
+                                        <input type="number" id="smallBlindInput" placeholder="Small Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                        <input type="number" id="bigBlindInput" placeholder="Big Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                        <select id="blindAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
+                                        <button onclick="addBlindLevel()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
+                                            <i class="fas fa-plus mr-2"></i>Add Level
+                                        </button>
+                                    </div>
+                                    <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Set Blind Times</h4>
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <input type="number" id="setAllBlindTimeInput" placeholder="Blind Time (min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:180px;">
+                                        <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
+                                            <i class="fas fa-clock mr-2"></i>Set Blind Times
+                                        </button>
+                                    </div>
+                                    <div id="breaksSection" class="mb-2 mt-4">
+                                        <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-coffee"></i>Breaks</h4>
+                                        <div class="flex flex-wrap gap-2 items-center">
+                                            <select id="breakAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
+                                            <input type="number" id="breakTimeInput" placeholder="(min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:90px;">
+                                            <button onclick="addBreakLevel()" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                                <i class="fas fa-coffee mr-2"></i>Add Break
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="blindLevelsList" class="mb-4 max-h-60 overflow-y-auto"></div>
                                 </div>
                             </div>
+                            <div id="adminSection-game-management" class="admin-settings-section hidden">
+                                <h3>Game Management</h3>
+                                <p class="admin-section-intro">Saved games in the order they were played. Deleting a game also removes it from the Points Table.</p>
+                                <div id="adminGameManagementList" class="overflow-x-auto"></div>
+                            </div>
+                            <div id="adminSection-season-statistics" class="admin-settings-section hidden">
+                                <h3>Season Statistics</h3>
+                                <p class="admin-section-intro">Season totals from saved games. Enter club expenses for the season on the right.</p>
+                                <div id="adminSeasonStatisticsContent" class="text-sm"></div>
+                            </div>
+                            <div id="adminSection-reset-app" class="admin-settings-section hidden">
+                                <h3>Reset App</h3>
+                                <p class="admin-section-intro">Use these carefully. Season reset clears saved game history only. Factory reset clears everything and restores defaults.</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <button type="button" onclick="resetSeasonGameData()" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg font-medium text-white">
+                                        <i class="fas fa-calendar-alt mr-2"></i>Clear Season Data
+                                    </button>
+                                    <button type="button" onclick="resetAppToDefaults()" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white">
+                                        <i class="fas fa-trash-alt mr-2"></i>Clear All Data / Factory Reset
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="admin-section-divider"></div>
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-2 text-yellow-400">Member Points & Winnings</h3>
-                            <div id="adminMemberStats" class="overflow-x-auto">
-                                <!-- Member stats table will appear here -->
-                            </div>
-                        </div>
-                        <button id="adminLogoutBtn" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white">Logout</button>
                     </div>
                 </div>
             </div>
@@ -1109,7 +1431,7 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.7.6</p>
+            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.7.12</p>
         </div>
     </div>
 
@@ -1124,6 +1446,13 @@
         let isTimerRunning = false;
         let eliminatedPlayers = [];
         let declaredWinner = null;
+        let currentGameSaved = false;
+        let currentSavedGameId = null;
+        let pointsTableHistory = JSON.parse(localStorage.getItem('pointsTableHistory') || '[]');
+        let bonusHandPool = parseFloat(localStorage.getItem('bonusHandPool') || '0') || 0;
+        let ghostPlayerPool = parseFloat(localStorage.getItem('ghostPlayerPool') || '0') || 0;
+        let badBeatBonusPool = parseFloat(localStorage.getItem('badBeatBonusPool') || '0') || 0;
+        let birthdayBonusPaidSeason = JSON.parse(localStorage.getItem('birthdayBonusPaidSeason') || '{}');
         let blindWarningGiven = false;
         let selectedVoice = null;
         let originalPlayers = [];
@@ -1131,14 +1460,37 @@
         
         // App login (session only — cleared when browser/app closes)
         const APP_LOGIN_KEY = 'pascAppLoggedIn';
+        const APP_LOGIN_ROLE_KEY = 'pascAppLoginRole';
 
         function isAppLoggedIn() {
             return sessionStorage.getItem(APP_LOGIN_KEY) === 'true';
         }
 
-        function setAppLoggedIn(loggedIn) {
-            if (loggedIn) sessionStorage.setItem(APP_LOGIN_KEY, 'true');
-            else sessionStorage.removeItem(APP_LOGIN_KEY);
+        function getLoggedInRole() {
+            return sessionStorage.getItem(APP_LOGIN_ROLE_KEY);
+        }
+
+        function hasFullAppAccess() {
+            const role = getLoggedInRole();
+            if (!role) return true;
+            return role === 'owner' || role === 'committee';
+        }
+
+        function setAppLoggedIn(loggedIn, role = null) {
+            if (loggedIn) {
+                sessionStorage.setItem(APP_LOGIN_KEY, 'true');
+                if (role) sessionStorage.setItem(APP_LOGIN_ROLE_KEY, role);
+            } else {
+                sessionStorage.removeItem(APP_LOGIN_KEY);
+                sessionStorage.removeItem(APP_LOGIN_ROLE_KEY);
+            }
+        }
+
+        function updateAppNavigation() {
+            const fullAccess = hasFullAppAccess();
+            document.querySelectorAll('[data-requires-full-access]').forEach((item) => {
+                item.classList.toggle('hidden', !fullAccess);
+            });
         }
 
         function showLoginScreen() {
@@ -1159,10 +1511,14 @@
         }
 
         function showAppAfterLogin() {
-            setAppLoggedIn(true);
+            updateAppNavigation();
             document.getElementById('appShell')?.classList.remove('hidden');
             document.getElementById('appChrome')?.classList.remove('hidden');
-            showPage('registration');
+            if (hasFullAppAccess()) {
+                showPage('registration');
+            } else {
+                showPage('points-table');
+            }
         }
 
         function logoutApp() {
@@ -1176,6 +1532,12 @@
         function showPage(pageId) {
             if (pageId !== 'login' && !isAppLoggedIn()) {
                 showLoginScreen();
+                return;
+            }
+
+            const restrictedPages = ['registration', 'stats', 'admin'];
+            if (!hasFullAppAccess() && restrictedPages.includes(pageId)) {
+                showPage('points-table');
                 return;
             }
 
@@ -1199,6 +1561,9 @@
             }
             if (pageId === 'admin') {
                 showAdminPanel();
+            }
+            if (pageId === 'points-table') {
+                renderPointsTablePage();
             }
         }
 
@@ -1289,8 +1654,13 @@
         }
 
         function startGame() {
+            const gameType = (document.getElementById('gameType')?.value || '').trim();
+            if (!gameType) {
+                alert('Please select a game type in Game Details before starting.');
+                return;
+            }
             if (blindLevels.length === 0) {
-                alert('Please add at least one blind level in Admin > Blind Timer Settings');
+                alert('Please add at least one blind level in Settings > Blind Timer.');
                 return;
             }
 
@@ -1325,7 +1695,8 @@
                 table: null,
                 eliminated: false,
                 isMember: isMember,
-                isCommittee: isCommittee
+                isCommittee: isCommittee,
+                birthdayBonusPaid: false
             };
 
             players.push(player);
@@ -1389,9 +1760,79 @@
             return parseInt(parts[1], 10) === new Date().getMonth() + 1;
         }
 
-        function getBirthdayIcon(name) {
+        function normalizePlayerNameKey(name) {
+            return (name || '').trim().toLowerCase();
+        }
+
+        function persistBirthdayBonusPaidSeason() {
+            localStorage.setItem('birthdayBonusPaidSeason', JSON.stringify(birthdayBonusPaidSeason));
+        }
+
+        function hasBirthdayBonusBeenPaidSeason(name) {
+            return !!birthdayBonusPaidSeason[normalizePlayerNameKey(name)];
+        }
+
+        function setBirthdayBonusPaidSeason(name) {
+            const key = normalizePlayerNameKey(name);
+            if (!key) return;
+            birthdayBonusPaidSeason[key] = true;
+            persistBirthdayBonusPaidSeason();
+        }
+
+        function getBirthdayIcon(player) {
+            const name = typeof player === 'string' ? player : player?.name;
+            const playerId = typeof player === 'object' ? player.id : null;
+            const paidThisGame = typeof player === 'object' && player.birthdayBonusPaid;
             if (!isBirthdayMonth(name)) return '';
-            return '<i class="fas fa-birthday-cake text-pink-400 ml-2" title="Birthday this month"></i>';
+            if (hasBirthdayBonusBeenPaidSeason(name) && !paidThisGame) return '';
+
+            const cakeIcon = '<i class="fas fa-birthday-cake text-pink-400" title="Birthday this month"></i>';
+            const paidIcon = '<i class="fas fa-usd text-green-400 ml-1" title="Birthday bonus paid"></i>';
+            if (paidThisGame) {
+                return `<span class="inline-flex items-center ml-2">${cakeIcon}${paidIcon}</span>`;
+            }
+            return `<button type="button" onclick="markBirthdayBonusPaid(${playerId})" class="inline-flex items-center ml-2 text-pink-400 hover:text-pink-300" title="Click to mark birthday bonus paid">${cakeIcon}</button>`;
+        }
+
+        function markBirthdayBonusPaid(playerId) {
+            const player = players.find(p => p.id === playerId);
+            if (!player || !isBirthdayMonth(player.name) || player.birthdayBonusPaid) return;
+            player.birthdayBonusPaid = true;
+            setBirthdayBonusPaidSeason(player.name);
+            const original = originalPlayers.find(p => p.id === playerId);
+            if (original) original.birthdayBonusPaid = true;
+            renderPlayersList();
+            renderTables();
+        }
+
+        function getBirthdayPlayersThisMonth() {
+            if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return [];
+            const currentMonth = new Date().getMonth() + 1;
+            const seen = new Set();
+            const birthdayPlayers = [];
+            adminPlayers.forEach((player) => {
+                const name = (player.name || '').trim();
+                const key = name.toLowerCase();
+                if (!key || seen.has(key) || !player.dob) return;
+                const parts = player.dob.split('-');
+                if (parts.length !== 3 || parseInt(parts[1], 10) !== currentMonth) return;
+                seen.add(key);
+                birthdayPlayers.push({
+                    name,
+                    bonusReceived: hasBirthdayBonusBeenPaidSeason(name)
+                });
+            });
+            return birthdayPlayers.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        function buildEmailBirthdayText() {
+            const birthdayPlayers = getBirthdayPlayersThisMonth();
+            if (birthdayPlayers.length === 0) {
+                return 'None';
+            }
+            return birthdayPlayers.map((player) => {
+                return player.bonusReceived ? `${player.name} (bonus received)` : player.name;
+            }).join('\n');
         }
 
         function renderPlayersList() {
@@ -1401,7 +1842,7 @@
                 const playerCard = document.createElement('div');
                 playerCard.className = `player-card bg-poker-primary rounded-lg p-4 shadow ${player.eliminated ? 'eliminated' : ''}`;
                 const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
-                const birthdayIcon = getBirthdayIcon(player.name);
+                const birthdayIcon = getBirthdayIcon(player);
                 playerCard.innerHTML = `
                     <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>${birthdayIcon}\n                </div>\n                <div class=\"flex items-center\">\n                        ${committeeIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
                     </div>
@@ -1453,7 +1894,7 @@
             matches.forEach((g) => {
                 const realIdx = savedGames.indexOf(g);
                 const item = document.createElement('div');
-                item.className = 'flex justify-between items-center px-4 py-2 cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+                item.className = 'game-type-dropdown-item flex justify-between items-center cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'flex-grow truncate';
                 nameSpan.textContent = g.gameType;
@@ -1527,6 +1968,7 @@
             if (blindTime) blindTime.value = g.blindTime || '';
             syncBlindTimeToTimer();
             updateStats();
+            updateStartGameButton();
         }
         function saveGameType() {
             const gameType = document.getElementById('gameType').value.trim();
@@ -1645,7 +2087,7 @@
                     <div class=\"p-4 space-y-2\">
                         ${tablePlayers.map((player, idx) => {
                             const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
-                            const birthdayIcon = getBirthdayIcon(player.name);
+                            const birthdayIcon = getBirthdayIcon(player);
                             return `
                             <div class=\"flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors ${player.eliminated ? 'bg-red-900/30 border-red-500/50 opacity-75' : 'bg-poker-secondary hover:border-poker-highlight/40'}\">
                                 <div class=\"flex items-center gap-2\">
@@ -1668,7 +2110,12 @@
 
         function updateStartGameButton() {
             const btn = document.getElementById('startGameBtn');
-            if (btn) btn.classList.toggle('hidden', tables.length === 0);
+            if (!btn) return;
+            const hasTables = tables.length > 0;
+            const gameType = (document.getElementById('gameType')?.value || '').trim();
+            btn.classList.toggle('hidden', !hasTables);
+            btn.disabled = !gameType;
+            btn.title = gameType ? '' : 'Select a game type in Game Details before starting';
         }
         
         function clearPlayers() {
@@ -1677,6 +2124,8 @@
                 tables = [];
                 eliminatedPlayers = [];
                 declaredWinner = null;
+                currentGameSaved = false;
+                currentSavedGameId = null;
                 originalPlayers = [];
                 ghostEligible = false;
                 window.selectedGhostPlayer = null;
@@ -1684,8 +2133,13 @@
                 document.getElementById('tablesList').innerHTML = '';
                 updateStartGameButton();
                 resetBlindTimerToFirstLevel();
-                const raffleCashEl = document.getElementById('raffleCash');
-                if (raffleCashEl) raffleCashEl.value = '0';
+                resetRaffleCashInputs();
+                const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
+                if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
+                const ghostPlayerWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
+                if (ghostPlayerWonCheckbox) ghostPlayerWonCheckbox.checked = false;
+                const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
+                if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
                 updateStats();
             }
         }
@@ -2043,7 +2497,7 @@
             if (!timer) return;
 
             const container = timer.parentElement;
-            const hideNextBlind = document.body.classList.contains('compact-mode') || window.innerWidth <= 640;
+            const hideNextBlind = window.innerWidth <= 640;
             if (nextBlind) {
                 if (hideNextBlind) {
                     nextBlind.style.setProperty('display', 'none', 'important');
@@ -2277,6 +2731,32 @@
             return status ? `${name} - ${status}` : name;
         }
 
+        function syncRaffleCashInput(sourceId) {
+            const source = document.getElementById(sourceId);
+            if (!source) return;
+            const value = source.value;
+            const raffleCashEl = document.getElementById('raffleCash');
+            const raffleCashRegistrationEl = document.getElementById('raffleCashRegistration');
+            if (raffleCashEl && raffleCashEl.id !== sourceId) raffleCashEl.value = value;
+            if (raffleCashRegistrationEl && raffleCashRegistrationEl.id !== sourceId) {
+                raffleCashRegistrationEl.value = value;
+            }
+            updateStats();
+        }
+
+        function resetRaffleCashInputs() {
+            const raffleCashEl = document.getElementById('raffleCash');
+            const raffleCashRegistrationEl = document.getElementById('raffleCashRegistration');
+            if (raffleCashEl) raffleCashEl.value = '0';
+            if (raffleCashRegistrationEl) raffleCashRegistrationEl.value = '0';
+        }
+
+        function getPoolDisplayTotal(pool, contributionThisGame) {
+            const contribution = Math.max(0, parseFloat(contributionThisGame) || 0);
+            const poolAmount = Math.max(0, parseFloat(pool) || 0);
+            return currentGameSaved ? poolAmount : poolAmount + contribution;
+        }
+
         function updateStats() {
             // Today's date
             const today = new Date();
@@ -2333,12 +2813,30 @@
             const ghostPlayerCashSetting = (typeof adminSettings !== 'undefined' && adminSettings.ghostPlayerCash != null)
                 ? Math.max(0, parseFloat(adminSettings.ghostPlayerCash) || 0)
                 : 20;
-            const ghostPlayerCash = Math.min(ghostPlayerCashSetting, totalCash);
+            const ghostSettings = getGhostPlayerCashSettings();
+            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            let ghostContributionThisGame = 0;
+            if (ghostSettings.enabled) {
+                ghostContributionThisGame = Math.min(ghostPlayerCashSetting, totalCash);
+            }
+            const ghostPlayerCash = ghostContributionThisGame;
             const cashForSplit = Math.max(0, totalCash - ghostPlayerCash);
             const ghostPlayerCashEl = document.getElementById('ghostPlayerCash');
-            if (ghostPlayerCashEl) ghostPlayerCashEl.textContent = `$${ghostPlayerCash.toFixed(2)}`;
-            const ghostPlayerCashSummary = document.getElementById('ghostPlayerCashSummary');
-            if (ghostPlayerCashSummary) ghostPlayerCashSummary.textContent = `$${ghostPlayerCash.toFixed(2)}`;
+            const ghostPlayerCashCardSection = document.getElementById('ghostPlayerCashCardSection');
+            const statsPoolsCard = document.getElementById('statsPoolsCard');
+            if (ghostPlayerCashEl) {
+                if (ghostSettings.enabled) {
+                    const totalGhostPayout = getPoolDisplayTotal(ghostPlayerPool, ghostContributionThisGame);
+                    ghostPlayerCashEl.textContent = ghostWonThisGame && !currentGameSaved
+                        ? `$${totalGhostPayout.toFixed(2)} (won — resets on save)`
+                        : `$${totalGhostPayout.toFixed(2)}`;
+                } else {
+                    ghostPlayerCashEl.textContent = '$0.00';
+                }
+            }
+            if (ghostPlayerCashCardSection) {
+                ghostPlayerCashCardSection.classList.toggle('hidden', !ghostSettings.enabled);
+            }
 
             // PASC Game Cash (% of buy-in cash after ghost player deduction) - rounded to nearest $5
             const pascGameCashRaw = cashForSplit * (pascPercent / 100);
@@ -2347,15 +2845,82 @@
 
             // Cash taken from raffle (manual entry)
             const raffleCashInput = document.getElementById('raffleCash');
-            const raffleCash = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
+            const raffleCashGross = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
+            const bonusSettings = getBonusHandSettings();
+            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            let bonusContribution = 0;
+            if (bonusSettings.enabled) {
+                bonusContribution = Math.min(raffleCashGross, bonusSettings.amountPerGame);
+            }
+            const raffleAfterBonus = Math.max(0, raffleCashGross - bonusContribution);
+            const badBeatSettings = getBadBeatBonusSettings();
+            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            let badBeatContribution = 0;
+            if (badBeatSettings.enabled) {
+                badBeatContribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
+            }
+            const netRaffleCash = Math.max(0, raffleAfterBonus - badBeatContribution);
 
-            // Total PASC Cash Takings calculation (PASC Game Cash + Raffle + Ghost Player)
-            const pascCashTakings = pascGameCashRounded + raffleCash + ghostPlayerCash;
+            // Total PASC Cash Takings (PASC Game Cash + net Raffle only; ghost player is a separate pool)
+            const pascCashTakings = pascGameCashRounded + netRaffleCash;
             document.getElementById('pascCashTakings').textContent = `$${pascCashTakings.toFixed(2)}`;
             const pascGameCashSummary = document.getElementById('pascGameCashSummary');
             if (pascGameCashSummary) pascGameCashSummary.textContent = `$${pascGameCashRounded.toFixed(2)}`;
             const raffleCashSummary = document.getElementById('raffleCashSummary');
-            if (raffleCashSummary) raffleCashSummary.textContent = `$${raffleCash.toFixed(2)}`;
+            if (raffleCashSummary) raffleCashSummary.textContent = `$${netRaffleCash.toFixed(2)}`;
+
+            const bonusHandStatsSection = document.getElementById('bonusHandStatsSection');
+            const bonusHandDescriptionDisplay = document.getElementById('bonusHandDescriptionDisplay');
+            const bonusHandPoolDisplay = document.getElementById('bonusHandPoolDisplay');
+            if (bonusHandStatsSection) {
+                if (bonusSettings.enabled) {
+                    bonusHandStatsSection.classList.remove('hidden');
+                    if (bonusHandDescriptionDisplay) {
+                        bonusHandDescriptionDisplay.textContent = bonusSettings.description || 'Not set';
+                    }
+                    const totalPoolPayout = getPoolDisplayTotal(bonusHandPool, bonusContribution);
+                    if (bonusHandPoolDisplay) {
+                        bonusHandPoolDisplay.textContent = bonusWonThisGame && !currentGameSaved
+                            ? `$${totalPoolPayout.toFixed(2)} (won — resets on save)`
+                            : `$${totalPoolPayout.toFixed(2)}`;
+                    }
+                } else {
+                    bonusHandStatsSection.classList.add('hidden');
+                }
+            }
+
+            const badBeatBonusStatsSection = document.getElementById('badBeatBonusStatsSection');
+            const badBeatBonusPoolDisplay = document.getElementById('badBeatBonusPoolDisplay');
+            if (badBeatBonusStatsSection) {
+                if (badBeatSettings.enabled) {
+                    badBeatBonusStatsSection.classList.remove('hidden');
+                    const totalBadBeatPayout = getPoolDisplayTotal(badBeatBonusPool, badBeatContribution);
+                    if (badBeatBonusPoolDisplay) {
+                        badBeatBonusPoolDisplay.textContent = badBeatWonThisGame && !currentGameSaved
+                            ? `$${totalBadBeatPayout.toFixed(2)} (won — resets on save)`
+                            : `$${totalBadBeatPayout.toFixed(2)}`;
+                    }
+                } else {
+                    badBeatBonusStatsSection.classList.add('hidden');
+                }
+            }
+
+            if (statsPoolsCard) {
+                const showPoolsCard = ghostSettings.enabled || bonusSettings.enabled || badBeatSettings.enabled;
+                statsPoolsCard.classList.toggle('hidden', !showPoolsCard);
+            }
+            if (bonusHandStatsSection) {
+                const bonusIsFirst = bonusSettings.enabled && !ghostSettings.enabled;
+                bonusHandStatsSection.classList.toggle('border-t', !bonusIsFirst);
+                bonusHandStatsSection.classList.toggle('pt-2', !bonusIsFirst);
+                bonusHandStatsSection.classList.toggle('mt-3', !bonusIsFirst);
+            }
+            if (badBeatBonusStatsSection) {
+                const badBeatIsFirst = badBeatSettings.enabled && !ghostSettings.enabled && !bonusSettings.enabled;
+                badBeatBonusStatsSection.classList.toggle('border-t', !badBeatIsFirst);
+                badBeatBonusStatsSection.classList.toggle('pt-2', !badBeatIsFirst);
+                badBeatBonusStatsSection.classList.toggle('mt-3', !badBeatIsFirst);
+            }
 
             // Player Cash Payout calculation - remainder after PASC game cash and ghost player cash
             const playerCashPayout = totalCash - pascGameCashRounded - ghostPlayerCash;
@@ -2436,6 +3001,7 @@
                 }
                 window.selectedGhostPlayer = null;
             }
+            updateSaveGameButton();
         }
         
         function getPointsTableWinner() {
@@ -2445,6 +3011,817 @@
                 return declaredWinner;
             }
             return null;
+        }
+
+        function persistPointsTableHistory() {
+            localStorage.setItem('pointsTableHistory', JSON.stringify(pointsTableHistory));
+        }
+
+        function persistBonusHandPool() {
+            localStorage.setItem('bonusHandPool', String(bonusHandPool));
+        }
+
+        function persistGhostPlayerPool() {
+            localStorage.setItem('ghostPlayerPool', String(ghostPlayerPool));
+        }
+
+        function persistBadBeatBonusPool() {
+            localStorage.setItem('badBeatBonusPool', String(badBeatBonusPool));
+        }
+
+        function getSeasonNumber() {
+            normalizeAdminSettings();
+            const seasonNumber = parseInt(adminSettings.seasonNumber, 10);
+            return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '19';
+        }
+
+        function populateAdminSeasonNumberForm() {
+            normalizeAdminSettings();
+            const seasonInput = document.getElementById('adminSeasonNumber');
+            if (seasonInput) seasonInput.value = adminSettings.seasonNumber ?? 19;
+        }
+
+        function getGhostPlayerCashSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.ghostPlayerEnabled === true,
+                amountPerGame: Math.max(0, parseFloat(adminSettings.ghostPlayerCash) || 0)
+            };
+        }
+
+        function updateGhostPlayerCashToggleButton() {
+            const btn = document.getElementById('toggleGhostPlayerCashBtn');
+            if (!btn) return;
+            const enabled = getGhostPlayerCashSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function populateAdminGhostCashForm() {
+            normalizeAdminSettings();
+            const amountInput = document.getElementById('adminGhostPlayerCash');
+            const poolDisplay = document.getElementById('adminGhostPlayerPoolDisplay');
+            if (amountInput) amountInput.value = adminSettings.ghostPlayerCash ?? 20;
+            if (poolDisplay) poolDisplay.textContent = `$${ghostPlayerPool.toFixed(2)}`;
+            updateGhostPlayerCashToggleButton();
+        }
+
+        function toggleGhostPlayerCashEnabled() {
+            normalizeAdminSettings();
+            adminSettings.ghostPlayerEnabled = !adminSettings.ghostPlayerEnabled;
+            saveAdminSettings();
+            populateAdminGhostCashForm();
+            updateStats();
+        }
+
+        function resetGhostPlayerPool() {
+            if (!confirm('Mark the ghost player as won and reset the pool to $0?')) {
+                return;
+            }
+            ghostPlayerPool = 0;
+            persistGhostPlayerPool();
+            const wonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
+            if (wonCheckbox) wonCheckbox.checked = false;
+            populateAdminGhostCashForm();
+            updateStats();
+            alert('Ghost player cash pool reset to $0.');
+        }
+
+        function getBonusHandSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.bonusHandEnabled === true,
+                description: (adminSettings.bonusHandDescription || '').trim(),
+                amountPerGame: Math.max(0, parseFloat(adminSettings.bonusHandAmountPerGame) || 0)
+            };
+        }
+
+        function updateBonusHandToggleButton() {
+            const btn = document.getElementById('toggleBonusHandBtn');
+            if (!btn) return;
+            const enabled = getBonusHandSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function populateAdminBonusHandForm() {
+            normalizeAdminSettings();
+            const descInput = document.getElementById('adminBonusHandDescription');
+            const amountInput = document.getElementById('adminBonusHandAmount');
+            const poolDisplay = document.getElementById('adminBonusHandPoolDisplay');
+            if (descInput) descInput.value = adminSettings.bonusHandDescription || '';
+            if (amountInput) amountInput.value = adminSettings.bonusHandAmountPerGame ?? 20;
+            if (poolDisplay) poolDisplay.textContent = `$${bonusHandPool.toFixed(2)}`;
+            updateBonusHandToggleButton();
+        }
+
+        function toggleBonusHandEnabled() {
+            normalizeAdminSettings();
+            adminSettings.bonusHandEnabled = !adminSettings.bonusHandEnabled;
+            saveAdminSettings();
+            populateAdminBonusHandForm();
+            updateStats();
+        }
+
+        function resetBonusHandPool() {
+            if (!confirm('Mark the bonus hand as won and reset the pool to $0?')) {
+                return;
+            }
+            bonusHandPool = 0;
+            persistBonusHandPool();
+            const wonCheckbox = document.getElementById('bonusHandWonCheckbox');
+            if (wonCheckbox) wonCheckbox.checked = false;
+            populateAdminBonusHandForm();
+            updateStats();
+            alert('Bonus hand pool reset to $0.');
+        }
+
+        function getBadBeatBonusSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.badBeatBonusEnabled === true,
+                amountPerGame: Math.max(0, parseFloat(adminSettings.badBeatBonusAmountPerGame) || 0)
+            };
+        }
+
+        function updateBadBeatBonusToggleButton() {
+            const btn = document.getElementById('toggleBadBeatBonusBtn');
+            if (!btn) return;
+            const enabled = getBadBeatBonusSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function populateAdminBadBeatBonusForm() {
+            normalizeAdminSettings();
+            const amountInput = document.getElementById('adminBadBeatBonusAmount');
+            const poolDisplay = document.getElementById('adminBadBeatBonusPoolDisplay');
+            if (amountInput) amountInput.value = adminSettings.badBeatBonusAmountPerGame ?? 10;
+            if (poolDisplay) poolDisplay.textContent = `$${badBeatBonusPool.toFixed(2)}`;
+            updateBadBeatBonusToggleButton();
+        }
+
+        function toggleBadBeatBonusEnabled() {
+            normalizeAdminSettings();
+            adminSettings.badBeatBonusEnabled = !adminSettings.badBeatBonusEnabled;
+            saveAdminSettings();
+            populateAdminBadBeatBonusForm();
+            updateStats();
+        }
+
+        function resetBadBeatBonusPool() {
+            if (!confirm('Mark the bad beat bonus as won and reset the pool to $0?')) {
+                return;
+            }
+            badBeatBonusPool = 0;
+            persistBadBeatBonusPool();
+            const wonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
+            if (wonCheckbox) wonCheckbox.checked = false;
+            populateAdminBadBeatBonusForm();
+            updateStats();
+            alert('Bad beat bonus pool reset to $0.');
+        }
+
+        function parseMoneyAmount(value) {
+            return parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0;
+        }
+
+        function getPlacePoints(place) {
+            const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
+            if (place >= 1 && place <= 8) return pointsArr[place - 1];
+            return 0;
+        }
+
+        function getGameResults() {
+            const totalPlayers = players.length;
+            const winner = getPointsTableWinner();
+            const payout1st = parseMoneyAmount(document.getElementById('payout1st')?.textContent);
+            const payout2nd = parseMoneyAmount(document.getElementById('payout2nd')?.textContent);
+            const payout3rd = parseMoneyAmount(document.getElementById('payout3rd')?.textContent);
+            const prizes = { 1: payout1st, 2: payout2nd, 3: payout3rd };
+            const results = [];
+
+            function addResult(player, place) {
+                results.push({
+                    name: player.name,
+                    place,
+                    points: getPlacePoints(place),
+                    cashWon: place <= 3 ? (prizes[place] || 0) : 0
+                });
+            }
+
+            if (totalPlayers >= 2 && winner) {
+                addResult(winner, 1);
+            }
+            for (let i = eliminatedPlayers.length - 1; i >= 0; i--) {
+                const player = eliminatedPlayers[i];
+                if (!player.eliminated) continue;
+                const place = totalPlayers - i;
+                if (winner && (place === 1 || player.id === winner.id)) continue;
+                addResult(player, place);
+            }
+            return results.sort((a, b) => a.place - b.place);
+        }
+
+        function isGameResultsReady() {
+            if (players.length < 2 || !getPointsTableWinner()) return false;
+            return getGameResults().length === players.length;
+        }
+
+        function updateSaveGameButton() {
+            const saveBtn = document.getElementById('saveGameBtn');
+            const emailBtn = document.getElementById('emailStatsBtn');
+            if (saveBtn) {
+                if (currentGameSaved) {
+                    saveBtn.disabled = true;
+                    saveBtn.title = 'This game has already been saved';
+                } else {
+                    const ready = isGameResultsReady();
+                    saveBtn.disabled = !ready;
+                    saveBtn.title = ready ? 'Save this game to the Points Table' : 'Finish the tournament and populate game results before saving';
+                }
+            }
+            if (emailBtn) {
+                emailBtn.disabled = !currentGameSaved;
+                emailBtn.title = currentGameSaved
+                    ? 'Email stats for this saved game'
+                    : 'Save the game before emailing stats';
+            }
+        }
+
+        function getSortedPointsTableHistory() {
+            return [...pointsTableHistory].sort((a, b) => {
+                const aTime = a.savedAt ? Date.parse(a.savedAt) : (a.id || 0);
+                const bTime = b.savedAt ? Date.parse(b.savedAt) : (b.id || 0);
+                return aTime - bTime;
+            });
+        }
+
+        function getSeasonGameNumber(gameId) {
+            if (gameId == null) return null;
+            const games = getSortedPointsTableHistory();
+            const index = games.findIndex((g) => String(g.id) === String(gameId));
+            return index >= 0 ? index + 1 : null;
+        }
+
+        function getCurrentSavedSeasonGameNumber() {
+            return getSeasonGameNumber(currentSavedGameId);
+        }
+
+        function getStatsText(id, fallback = '-') {
+            const el = document.getElementById(id);
+            const value = el ? String(el.textContent || '').trim() : '';
+            return value || fallback;
+        }
+
+        function getStatsInputNumber(id, fallback = 0) {
+            const el = document.getElementById(id);
+            if (!el) return fallback;
+            const num = parseFloat(el.value);
+            return isNaN(num) ? fallback : num;
+        }
+
+        function collectStatsDashboardSnapshot(results) {
+            const ghostStatus = getGhostPlayerStatus();
+            const ghostName = window.selectedGhostPlayer?.name || '';
+            const ghostDisplay = window.selectedGhostPlayer
+                ? formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus)
+                : '-';
+            const startingStackEl = document.getElementById('startingStack');
+            const rebuyAddonEl = document.getElementById('rebuyAddon');
+            const bonusSettings = getBonusHandSettings();
+            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            const raffleCashGross = getStatsInputNumber('raffleCash', parseMoneyAmount(getStatsText('raffleCashSummary', '$0')));
+            let bonusContribution = 0;
+            if (bonusSettings.enabled) {
+                bonusContribution = Math.min(raffleCashGross, bonusSettings.amountPerGame);
+            }
+            const raffleAfterBonus = Math.max(0, raffleCashGross - bonusContribution);
+            const badBeatSettings = getBadBeatBonusSettings();
+            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            let badBeatContribution = 0;
+            if (badBeatSettings.enabled) {
+                badBeatContribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
+            }
+            const ghostSettings = getGhostPlayerCashSettings();
+            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            const totalBuyInCash = parseMoneyAmount(getStatsText('totalCashTaking', '$0'));
+            let ghostContribution = 0;
+            if (ghostSettings.enabled) {
+                ghostContribution = Math.min(totalBuyInCash, ghostSettings.amountPerGame);
+            }
+
+            return {
+                date: getStatsText('todaysDate'),
+                gameType: getStatsText('gameTypeStat'),
+                gameCount: getStatsText('gameCountStat'),
+                totalPlayers: parseInt(getStatsText('totalPlayersStat', '0'), 10) || players.length,
+                playerBuyInCost: parseMoneyAmount(getStatsText('buyInCostDisplay', '$0')),
+                totalBuyInCash: parseMoneyAmount(getStatsText('totalCashTaking', '$0')),
+                raffleCash: raffleCashGross,
+                raffleCashNet: Math.max(0, raffleAfterBonus - badBeatContribution),
+                bonusHand: {
+                    enabled: bonusSettings.enabled,
+                    description: bonusSettings.description,
+                    amountPerGame: bonusSettings.amountPerGame,
+                    poolBeforeGame: bonusHandPool,
+                    contributionThisGame: bonusContribution,
+                    wonThisGame: bonusWonThisGame,
+                    poolAfterGame: bonusWonThisGame ? 0 : (bonusHandPool + bonusContribution),
+                    payoutThisGame: bonusHandPool + bonusContribution
+                },
+                badBeatBonus: {
+                    enabled: badBeatSettings.enabled,
+                    amountPerGame: badBeatSettings.amountPerGame,
+                    poolBeforeGame: badBeatBonusPool,
+                    contributionThisGame: badBeatContribution,
+                    wonThisGame: badBeatWonThisGame,
+                    poolAfterGame: badBeatWonThisGame ? 0 : (badBeatBonusPool + badBeatContribution),
+                    payoutThisGame: badBeatBonusPool + badBeatContribution
+                },
+                playerCashPayout: parseMoneyAmount(getStatsText('playerCashPayout', '$0')),
+                playerCashPayoutPercent: getStatsText('playerCashPayoutPercent', '(75%)'),
+                payout1st: parseMoneyAmount(getStatsText('payout1st', '$0')),
+                payout2nd: parseMoneyAmount(getStatsText('payout2nd', '$0')),
+                payout3rd: parseMoneyAmount(getStatsText('payout3rd', '$0')),
+                payout1stPercent: typeof adminSettings !== 'undefined' ? (parseInt(adminSettings.payout1stPercent, 10) || 50) : 50,
+                payout2ndPercent: typeof adminSettings !== 'undefined' ? (parseInt(adminSettings.payout2ndPercent, 10) || 30) : 30,
+                payout3rdPercent: Math.max(0, 100 -
+                    (typeof adminSettings !== 'undefined' ? (parseInt(adminSettings.payout1stPercent, 10) || 50) : 50) -
+                    (typeof adminSettings !== 'undefined' ? (parseInt(adminSettings.payout2ndPercent, 10) || 30) : 30)
+                ),
+                pascGameCash: parseMoneyAmount(getStatsText('pascGameCash', '$0')),
+                pascGameCashPercent: getStatsText('pascGameCashPercent', '(25%)'),
+                ghostPlayerCash: ghostContribution,
+                ghostPlayerCashPool: {
+                    enabled: ghostSettings.enabled,
+                    amountPerGame: ghostSettings.amountPerGame,
+                    poolBeforeGame: ghostPlayerPool,
+                    contributionThisGame: ghostContribution,
+                    wonThisGame: ghostWonThisGame,
+                    poolAfterGame: ghostWonThisGame ? 0 : (ghostPlayerPool + ghostContribution),
+                    payoutThisGame: ghostPlayerPool + ghostContribution
+                },
+                totalPascCash: parseMoneyAmount(getStatsText('pascCashTakings', '$0')),
+                pascGameCashSummary: parseMoneyAmount(getStatsText('pascGameCashSummary', '$0')),
+                raffleCashSummary: parseMoneyAmount(getStatsText('raffleCashSummary', '$0')),
+                ghostPlayerCashSummary: ghostContribution,
+                ghostPlayer: {
+                    name: ghostName,
+                    status: ghostStatus || '',
+                    display: ghostDisplay,
+                    id: window.selectedGhostPlayer?.id ?? null
+                },
+                startingStack: startingStackEl ? (startingStackEl.value || '') : '',
+                rebuyAddon: rebuyAddonEl ? (rebuyAddonEl.value || 'no') : 'no',
+                settingsSnapshot: typeof adminSettings !== 'undefined' ? { ...adminSettings } : null,
+                results: (results || []).map((r) => ({
+                    name: r.name,
+                    place: r.place,
+                    points: r.points,
+                    cashWon: r.cashWon
+                }))
+            };
+        }
+
+        function saveGameToPointsTable() {
+            if (!isGameResultsReady()) {
+                alert('Game results are not ready yet. Finish the tournament so a winner is declared before saving.');
+                return;
+            }
+            if (currentGameSaved) {
+                alert('This game has already been saved.');
+                return;
+            }
+            updateStats();
+            const results = getGameResults();
+            const stats = collectStatsDashboardSnapshot(results);
+            if (!confirm(`Save this game to the Points Table?\n\n${stats.date}\n${stats.gameType}\n${stats.totalPlayers} players`)) {
+                return;
+            }
+
+            const bonusSettings = getBonusHandSettings();
+            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            if (bonusSettings.enabled) {
+                if (bonusWonThisGame) {
+                    bonusHandPool = 0;
+                } else {
+                    const contribution = stats.bonusHand?.contributionThisGame || 0;
+                    bonusHandPool += contribution;
+                }
+                persistBonusHandPool();
+            }
+            const wonCheckbox = document.getElementById('bonusHandWonCheckbox');
+            if (wonCheckbox) wonCheckbox.checked = false;
+
+            const ghostSettings = getGhostPlayerCashSettings();
+            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            if (ghostSettings.enabled) {
+                if (ghostWonThisGame) {
+                    ghostPlayerPool = 0;
+                } else {
+                    const contribution = stats.ghostPlayerCashPool?.contributionThisGame || 0;
+                    ghostPlayerPool += contribution;
+                }
+                persistGhostPlayerPool();
+            }
+            const ghostWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
+            if (ghostWonCheckbox) ghostWonCheckbox.checked = false;
+
+            const badBeatSettings = getBadBeatBonusSettings();
+            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            if (badBeatSettings.enabled) {
+                if (badBeatWonThisGame) {
+                    badBeatBonusPool = 0;
+                } else {
+                    const contribution = stats.badBeatBonus?.contributionThisGame || 0;
+                    badBeatBonusPool += contribution;
+                }
+                persistBadBeatBonusPool();
+            }
+            const badBeatWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
+            if (badBeatWonCheckbox) badBeatWonCheckbox.checked = false;
+
+            const savedGameId = Date.now();
+            pointsTableHistory.push({
+                id: savedGameId,
+                savedAt: new Date().toISOString(),
+                ...stats,
+                // Keep top-level aliases used by Game Management / Points Table
+                date: stats.date,
+                gameType: stats.gameType,
+                gameCount: stats.gameCount,
+                totalPlayers: stats.totalPlayers,
+                totalPascCash: stats.totalPascCash,
+                results: stats.results
+            });
+            persistPointsTableHistory();
+            currentSavedGameId = savedGameId;
+            renderAdminGameManagement();
+            populateAdminBonusHandForm();
+            populateAdminGhostCashForm();
+            populateAdminBadBeatBonusForm();
+            currentGameSaved = true;
+            updateStats();
+            updateSaveGameButton();
+            alert('Game saved to Points Table with full Stats Dashboard data.');
+        }
+
+        function getPointsTableAggregates() {
+            const playerMap = {};
+            pointsTableHistory.forEach((game) => {
+                (game.results || []).forEach((result) => {
+                    const name = (result.name || '').trim();
+                    if (!name) return;
+                    if (!playerMap[name]) {
+                        playerMap[name] = {
+                            name,
+                            totalPoints: 0,
+                            totalCashWon: 0,
+                            games: []
+                        };
+                    }
+                    const points = Number(result.points) || 0;
+                    const cashWon = Number(result.cashWon) || 0;
+                    playerMap[name].totalPoints += points;
+                    playerMap[name].totalCashWon += cashWon;
+                    playerMap[name].games.push({
+                        gameId: game.id,
+                        date: game.date || '-',
+                        gameType: game.gameType || '-',
+                        gameCount: game.gameCount || '-',
+                        place: result.place,
+                        points,
+                        cashWon
+                    });
+                });
+            });
+            return Object.values(playerMap).sort((a, b) => {
+                if (b.totalPoints !== a.totalPoints) return b.totalPoints - a.totalPoints;
+                if (b.totalCashWon !== a.totalCashWon) return b.totalCashWon - a.totalCashWon;
+                return a.name.localeCompare(b.name);
+            });
+        }
+
+        function formatPointsTableMoney(amount) {
+            const num = Number(amount) || 0;
+            return '$' + num.toFixed(2);
+        }
+
+        function formatResultPlaceLabel(place) {
+            const suffix = place === 1 ? 'st' : place === 2 ? 'nd' : place === 3 ? 'rd' : 'th';
+            return `${place}${suffix}`;
+        }
+
+        function togglePointsPlayerHistory(rowId) {
+            const row = document.getElementById(rowId);
+            if (!row) return;
+            row.classList.toggle('hidden');
+            const btn = document.querySelector(`[data-history-target="${rowId}"]`);
+            if (btn) {
+                btn.textContent = row.classList.contains('hidden') ? 'Show games' : 'Hide games';
+            }
+        }
+
+        function renderPointsTablePage() {
+            const container = document.getElementById('pointsTableLeaderboard');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!Array.isArray(pointsTableHistory) || pointsTableHistory.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No saved games yet. Finish a tournament on the Stats Dashboard and press Save Game.</div>';
+                return;
+            }
+
+            const aggregates = getPointsTableAggregates();
+            if (aggregates.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No player results found in saved games.</div>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full text-sm';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Player</th>
+                        <th>Games</th>
+                        <th>Total Points</th>
+                        <th>Total Cash Won</th>
+                        <th>History</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            const tbody = table.querySelector('tbody');
+
+            aggregates.forEach((player, index) => {
+                const historyId = `points-history-${index}`;
+                const mainRow = document.createElement('tr');
+                mainRow.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${player.name}</td>
+                    <td>${player.games.length}</td>
+                    <td>${player.totalPoints}</td>
+                    <td>${formatPointsTableMoney(player.totalCashWon)}</td>
+                    <td><button type="button" class="points-toggle-btn" data-history-target="${historyId}" onclick="togglePointsPlayerHistory('${historyId}')">Show games</button></td>
+                `;
+                tbody.appendChild(mainRow);
+
+                const historyRow = document.createElement('tr');
+                historyRow.id = historyId;
+                historyRow.className = 'points-history-row hidden';
+                const historyItems = [...player.games]
+                    .sort((a, b) => String(b.date).localeCompare(String(a.date)) || (b.gameId || 0) - (a.gameId || 0))
+                    .map((game) => {
+                        const cashText = game.cashWon > 0 ? ` — ${formatPointsTableMoney(game.cashWon)}` : '';
+                        return `<li>${game.date} — ${game.gameType} — ${formatResultPlaceLabel(game.place)} — ${game.points} pts${cashText}</li>`;
+                    })
+                    .join('');
+                historyRow.innerHTML = `
+                    <td colspan="6">
+                        <ul class="points-history-list">${historyItems}</ul>
+                    </td>
+                `;
+                tbody.appendChild(historyRow);
+            });
+
+            container.appendChild(table);
+        }
+
+        function formatAdminGameMoney(amount) {
+            const num = Number(amount);
+            if (isNaN(num)) return '-';
+            return '$' + num.toFixed(2);
+        }
+
+        function getSeasonStatistics() {
+            const games = Array.isArray(pointsTableHistory) ? pointsTableHistory : [];
+            const stats = {
+                season: getSeasonNumber(),
+                gamesPlayed: games.length,
+                totalBuyInCash: 0,
+                totalPlayerCashPayout: 0,
+                totalRaffleCash: 0,
+                totalGhostPlayerCashPaidOut: 0,
+                totalBonusHandCashPaidOut: 0,
+                totalBadBeatBonusCashPaidOut: 0,
+                totalPascCash: 0
+            };
+
+            games.forEach((game) => {
+                stats.totalBuyInCash += Number(game.totalBuyInCash) || 0;
+                if (game.playerCashPayout != null) {
+                    stats.totalPlayerCashPayout += Number(game.playerCashPayout) || 0;
+                } else {
+                    stats.totalPlayerCashPayout +=
+                        (Number(game.payout1st) || 0) +
+                        (Number(game.payout2nd) || 0) +
+                        (Number(game.payout3rd) || 0);
+                }
+                stats.totalRaffleCash += Number(game.raffleCash) || Number(game.raffleCashSummary) || 0;
+                stats.totalPascCash += Number(game.totalPascCash) || 0;
+
+                if (game.bonusHand?.wonThisGame) {
+                    stats.totalBonusHandCashPaidOut += Number(game.bonusHand.payoutThisGame) || 0;
+                }
+                if (game.badBeatBonus?.wonThisGame) {
+                    stats.totalBadBeatBonusCashPaidOut += Number(game.badBeatBonus.payoutThisGame) || 0;
+                }
+                if (game.ghostPlayerCashPool?.wonThisGame) {
+                    stats.totalGhostPlayerCashPaidOut += Number(game.ghostPlayerCashPool.payoutThisGame) || 0;
+                }
+            });
+
+            return stats;
+        }
+
+        function getSeasonFinalPascCash() {
+            normalizeAdminSettings();
+            const stats = getSeasonStatistics();
+            const clubExpenses = adminSettings.clubExpenses ?? 0;
+            return (
+                stats.totalPascCash +
+                stats.totalRaffleCash +
+                ghostPlayerPool +
+                bonusHandPool +
+                badBeatBonusPool -
+                clubExpenses
+            );
+        }
+
+        function renderSeasonStatRow(label, value, isMoney) {
+            return `
+                <div class="flex justify-between items-center bg-poker-primary/50 rounded-lg px-4 py-2 border border-poker-accent/20">
+                    <span class="text-poker-text/80">${label}</span>
+                    <span class="font-bold ${isMoney ? 'text-green-400' : 'text-white'}">${isMoney ? formatAdminGameMoney(value) : value}</span>
+                </div>
+            `;
+        }
+
+        function renderSeasonPoolStatRow(label, paidOut, poolBalance) {
+            return `
+                <div class="flex justify-between items-center gap-2 bg-poker-primary/50 rounded-lg px-4 py-2 border border-poker-accent/20">
+                    <span class="text-poker-text/80 shrink min-w-0">${label}</span>
+                    <div class="flex items-center gap-3 shrink-0 text-right">
+                        <span class="font-bold text-green-400">${formatAdminGameMoney(paidOut)}</span>
+                        <span class="text-poker-text/60 text-xs">Current Pool:</span>
+                        <span class="font-bold text-green-400">${formatAdminGameMoney(poolBalance)}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveClubExpenses() {
+            normalizeAdminSettings();
+            const input = document.getElementById('adminClubExpenses');
+            if (!input) return;
+            const clubExpenses = parseFloat(input.value);
+            if (isNaN(clubExpenses) || clubExpenses < 0) {
+                alert('Please enter a valid club expenses amount.');
+                return;
+            }
+            adminSettings.clubExpenses = clubExpenses;
+            saveAdminSettings();
+            renderAdminSeasonStatistics();
+        }
+
+        function renderAdminSeasonStatistics() {
+            const container = document.getElementById('adminSeasonStatisticsContent');
+            if (!container) return;
+
+            normalizeAdminSettings();
+            const stats = getSeasonStatistics();
+            const clubExpenses = adminSettings.clubExpenses ?? 0;
+            const seasonFinalTotal = getSeasonFinalPascCash();
+
+            const leftRows = [
+                { label: 'Season', value: stats.season, isMoney: false },
+                { label: 'Total Buy-in Cash', value: stats.totalBuyInCash, isMoney: true },
+                { label: 'Total Player Cash Payout', value: stats.totalPlayerCashPayout, isMoney: true },
+                { label: 'Total PASC Cash', value: stats.totalPascCash, isMoney: true },
+                { label: 'Total Raffle Cash', value: stats.totalRaffleCash, isMoney: true }
+            ];
+
+            const rightRows = [
+                { label: 'Ghost Player Paid Out', paidOut: stats.totalGhostPlayerCashPaidOut, pool: ghostPlayerPool },
+                { label: 'Bonus Hand Paid Out', paidOut: stats.totalBonusHandCashPaidOut, pool: bonusHandPool },
+                { label: 'Bad Beat Bonus Paid Out', paidOut: stats.totalBadBeatBonusCashPaidOut, pool: badBeatBonusPool }
+            ];
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-3">
+                        ${leftRows.map((row) => renderSeasonStatRow(row.label, row.value, row.isMoney)).join('')}
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        ${renderSeasonStatRow('Games Played', stats.gamesPlayed, false)}
+                        ${rightRows.map((row) => renderSeasonPoolStatRow(row.label, row.paidOut, row.pool)).join('')}
+                        <div class="bg-poker-primary/50 rounded-lg px-4 py-2 border border-poker-accent/20">
+                            <label for="adminClubExpenses" class="text-poker-text/80 block mb-2">Club Expenses</label>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <div class="relative flex-1 min-w-[120px]">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
+                                    <input type="number" id="adminClubExpenses" min="0" step="1" value="${clubExpenses}" class="w-full pl-7 pr-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                </div>
+                                <button type="button" onclick="saveClubExpenses()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 bg-poker-primary/50 rounded-xl px-4 py-6 border border-poker-accent/20 text-center">
+                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Total PASC Cash for Season Final</h4>
+                    <div class="text-4xl md:text-5xl font-bold text-green-400">${formatAdminGameMoney(seasonFinalTotal)}</div>
+                </div>
+            `;
+        }
+
+        function renderAdminGameManagement() {
+            renderAdminSeasonStatistics();
+            const container = document.getElementById('adminGameManagementList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (!Array.isArray(pointsTableHistory) || pointsTableHistory.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No saved games yet.</div>';
+                return;
+            }
+
+            const games = getSortedPointsTableHistory();
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full text-sm';
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Game Number</th>
+                        <th>Date</th>
+                        <th>Game Type</th>
+                        <th>Game Count</th>
+                        <th>Total Players</th>
+                        <th>Total PASC Cash</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+            const tbody = table.querySelector('tbody');
+
+            games.forEach((game, index) => {
+                const row = document.createElement('tr');
+                const safeId = String(game.id).replace(/'/g, "\\'");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${game.date || '-'}</td>
+                    <td>${game.gameType || '-'}</td>
+                    <td>${game.gameCount || '-'}</td>
+                    <td>${game.totalPlayers != null ? game.totalPlayers : '-'}</td>
+                    <td>${formatAdminGameMoney(game.totalPascCash)}</td>
+                    <td class="text-right">
+                        <button type="button" onclick="deleteSavedGameFromPointsTable('${safeId}')" class="text-red-400 hover:text-red-200 font-bold text-lg leading-none" title="Delete game">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            container.appendChild(table);
+        }
+
+        function deleteSavedGameFromPointsTable(gameId) {
+            const game = pointsTableHistory.find((g) => String(g.id) === String(gameId));
+            if (!game) return;
+            const label = `${game.date || 'Unknown date'} — ${game.gameType || 'Unknown game'}`;
+            if (!confirm(`Delete this game from Game Management and the Points Table?\n\n${label}`)) {
+                return;
+            }
+            pointsTableHistory = pointsTableHistory.filter((g) => String(g.id) !== String(gameId));
+            persistPointsTableHistory();
+            renderAdminGameManagement();
+            renderPointsTablePage();
         }
 
         function renderPointsTable() {
@@ -2647,6 +4024,22 @@
             return emails;
         }
 
+        function getCommitteeMemberEmails() {
+            if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return [];
+            const seen = new Set();
+            const emails = [];
+            adminPlayers.forEach(player => {
+                if (player.committee !== 'yes') return;
+                const email = (player.email || '').trim();
+                if (!email || !email.includes('@')) return;
+                const key = email.toLowerCase();
+                if (seen.has(key)) return;
+                seen.add(key);
+                emails.push(email);
+            });
+            return emails;
+        }
+
         function formatEmailMoney(value, forceDecimals = false) {
             const num = parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0;
             if (forceDecimals) return '$' + num.toFixed(2);
@@ -2688,7 +4081,20 @@
             return rows.join('\n');
         }
 
+        function getEmailPoolStatusLabel(wonThisGame) {
+            return wonThisGame ? 'WON' : 'NOT WON';
+        }
+
         function emailStats() {
+            if (!currentGameSaved || currentSavedGameId == null) {
+                alert('Please save the game before emailing stats.');
+                return;
+            }
+            const seasonGameNumber = getCurrentSavedSeasonGameNumber();
+            if (!seasonGameNumber) {
+                alert('Could not find the saved game number. Please save the game again.');
+                return;
+            }
             const todaysDate = document.getElementById('todaysDate').textContent;
             const gameType = document.getElementById('gameTypeStat').textContent;
             const gameCount = document.getElementById('gameCountStat').textContent;
@@ -2699,52 +4105,97 @@
             const pascCashTakings = formatEmailMoney(document.getElementById('pascCashTakings').textContent, true);
             const pascGameCash = formatEmailMoney(document.getElementById('pascGameCash').textContent, true);
             const raffleCash = formatEmailMoney(document.getElementById('raffleCashSummary')?.textContent || '$0', true);
-            const ghostPlayerCashAmount = formatEmailMoney(document.getElementById('ghostPlayerCashSummary')?.textContent || '$20', true);
-            const pascPercent = document.getElementById('pascGameCashPercent')?.textContent || '(25%)';
-            const payoutPercent = document.getElementById('playerCashPayoutPercent')?.textContent || '(75%)';
-            const ghostStatus = getGhostPlayerStatus();
-            const ghostPlayerLine = window.selectedGhostPlayer
-                ? formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus)
-                : '-';
+            const pascPercent = (document.getElementById('pascGameCashPercent')?.textContent || '(25%)').replace(/[()]/g, '');
+            const payoutPercent = (document.getElementById('playerCashPayoutPercent')?.textContent || '(75%)').replace(/[()]/g, '');
             const pointsTableText = buildEmailPointsTableText();
+            const birthdayText = buildEmailBirthdayText();
 
-            const subject = encodeURIComponent('PASC Stats Dashboard');
-            const body = encodeURIComponent(
-                `PASC Stats Dashboard \n\n` +
-                `Date: ${todaysDate} \n` +
-                `Game Type: ${gameType} \n` +
-                `Game Count: ${gameCount} \n` +
-                `Total Players: ${totalPlayers} \n\n` +
-                `Player Buy-in Cost: ${playerBuyInCost} \n` +
-                `Total Buy-in Cash: ${totalCashTaking} \n\n` +
-                `Total PASC Cash: ${pascCashTakings}\n` +
-                `Raffle Cash: ${raffleCash} \n` +
-                `Cash for Ghost Player: ${ghostPlayerCashAmount}\n` +
-                `PASC Game Cash ${pascPercent}: ${pascGameCash}\n\n` +
-                `Ghost Player: ${ghostPlayerLine}\n\n` +
-                `Player Cash Payout ${payoutPercent}: ${playerCashPayout} \n\n` +
-                `Points Table: \n${pointsTableText}`
+            const bonusSettings = getBonusHandSettings();
+            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            const badBeatSettings = getBadBeatBonusSettings();
+            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            const ghostSettings = getGhostPlayerCashSettings();
+            const totalBuyInForGhost = parseMoneyAmount(document.getElementById('totalCashTaking')?.textContent || '$0');
+            const ghostContributionThisGame = ghostSettings.enabled
+                ? Math.min(totalBuyInForGhost, ghostSettings.amountPerGame)
+                : 0;
+
+            const emailHeading = `PASC Stats for Season ${getSeasonNumber()} Game ${seasonGameNumber}`;
+            const bodyLines = [
+                emailHeading,
+                '',
+                `Date: ${todaysDate}`,
+                `Game Type: ${gameType}`,
+                `Game Count: ${gameCount}`,
+                `Total Players: ${totalPlayers}`,
+                `Player Buy-in Cost: ${playerBuyInCost}`,
+                `Total Buy-in Cash: ${totalCashTaking}`,
+                '',
+                `PASC Game Cash (${pascPercent}): ${pascGameCash}`,
+                `Raffle Cash: ${raffleCash}`,
+                `Total PASC Cash: ${pascCashTakings}`,
+                ''
+            ];
+
+            if (bonusSettings.enabled) {
+                const contribution = Math.min(
+                    getStatsInputNumber('raffleCash', 0),
+                    bonusSettings.amountPerGame
+                );
+                const totalPayout = getPoolDisplayTotal(bonusHandPool, contribution);
+                bodyLines.push(
+                    `Bonus Hand: ${bonusSettings.description || '-'}`,
+                    `Bonus Hand Pool: ${formatEmailMoney(totalPayout, true)} ${getEmailPoolStatusLabel(bonusWonThisGame)}`
+                );
+            }
+
+            if (badBeatSettings.enabled) {
+                const raffleGross = getStatsInputNumber('raffleCash', 0);
+                const bonusContrib = bonusSettings.enabled
+                    ? Math.min(raffleGross, bonusSettings.amountPerGame)
+                    : 0;
+                const raffleAfterBonus = Math.max(0, raffleGross - bonusContrib);
+                const contribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
+                const totalPayout = getPoolDisplayTotal(badBeatBonusPool, contribution);
+                bodyLines.push(
+                    `Bad Beat Bonus Pool: ${formatEmailMoney(totalPayout, true)} ${getEmailPoolStatusLabel(badBeatWonThisGame)}`
+                );
+            }
+
+            if (bonusSettings.enabled || badBeatSettings.enabled) {
+                bodyLines.push('');
+            }
+
+            if (ghostSettings.enabled) {
+                const totalPayout = getPoolDisplayTotal(ghostPlayerPool, ghostContributionThisGame);
+                const ghostName = window.selectedGhostPlayer?.name || '-';
+                const ghostStatus = getGhostPlayerStatus() || 'NOT WON';
+                bodyLines.push(
+                    `👻Ghost Player Cash Pool: ${formatEmailMoney(totalPayout, true)}`,
+                    `👻Ghost Player: ${ghostName} - ${ghostStatus}`,
+                    ''
+                );
+            }
+
+            bodyLines.push(
+                `🥳Birthdays This Month 🥳`,
+                birthdayText,
+                '',
+                `💲Player Cash Payout (${payoutPercent}): ${playerCashPayout}`,
+                '',
+                'Points Table:',
+                pointsTableText
             );
+
+            const subject = encodeURIComponent(emailHeading);
+            const body = encodeURIComponent(bodyLines.join('\n'));
             const recipientEmails = getAdminPlayerEmails();
             if (recipientEmails.length === 0) {
-                alert('No email addresses found in Admin > Player Management.');
+                alert('No email addresses found in Settings > Player Management.');
                 return;
             }
             const recipients = recipientEmails.join('; ');
             window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
-        }
-        
-        function toggleLayoutMode() {
-            document.body.classList.toggle('compact-mode');
-            // Optionally, change icon to indicate current mode
-            const btn = document.getElementById('layoutToggleBtn');
-            if (document.body.classList.contains('compact-mode')) {
-                btn.innerHTML = '<i class="fas fa-desktop"></i>';
-                btn.title = 'Switch to Default Layout';
-            } else {
-                btn.innerHTML = '<i class="fas fa-mobile-alt"></i>';
-                btn.title = 'Switch to Compact Layout';
-            }
         }
         
         // Initialize
@@ -2756,28 +4207,7 @@
             }
 
             // Add some sample blind levels
-            blindLevels = [               
-                { smallBlind: 100, bigBlind: 200, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 200, bigBlind: 400, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 300, bigBlind: 600, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 400, bigBlind: 800, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 500, bigBlind: 1000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 1000, bigBlind: 2000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 2000, bigBlind: 4000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 3000, bigBlind: 6000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 4000, bigBlind: 8000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 5000, bigBlind: 10000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 10000, bigBlind: 20000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 15000, bigBlind: 30000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 20000, bigBlind: 40000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 25000, bigBlind: 50000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 50000, bigBlind: 100000, levelTime: 1200, timeLeft: 1200 }
-            ];
-            blindLevels.splice(5, 0, {
-                type: 'break',
-                breakTime: 30 * 60,
-                timeLeft: 30 * 60
-            });
+            loadDefaultBlindLevels();
             currentBlindIndex = 0;
             renderBlindLevelsList();
             updateBlindDisplay();
@@ -2844,6 +4274,7 @@
                 gameTypeField.addEventListener('input', function() {
                     showGameTypeDropdown(this.value);
                     updateStats();
+                    updateStartGameButton();
                 });
                 gameTypeField.addEventListener('blur', function() {
                     setTimeout(hideGameTypeDropdown, 200);
@@ -3181,36 +4612,47 @@
             const passHash = await sha256(password);
 
             if (userHash === OWNER_USER_HASH && passHash === OWNER_PASS_HASH) {
-                return true;
+                return { ok: true, role: 'owner' };
             }
 
-            return adminPlayers.some(p =>
-                p.committee === 'yes' &&
+            const player = adminPlayers.find(p =>
                 p.loginUserHash &&
                 p.loginPasswordHash &&
                 userHash === p.loginUserHash &&
                 passHash === p.loginPasswordHash
             );
+
+            if (player) {
+                return {
+                    ok: true,
+                    role: player.committee === 'yes' ? 'committee' : 'member'
+                };
+            }
+
+            return { ok: false };
         }
 
-        function toggleCommitteeLoginFields() {
-            const committee = document.getElementById('adminPlayerCommittee')?.value;
-            const fields = document.getElementById('committeeLoginFields');
-            if (fields) fields.classList.toggle('hidden', committee !== 'yes');
-        }
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"ghostPlayerCash":20}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":true,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
-                adminSettings = { pascPercent: 25, playerPayoutPercent: 75, payout1stPercent: 50, payout2ndPercent: 30, ghostPlayerCash: 20 };
+                adminSettings = getDefaultAdminSettings();
             }
             if (adminSettings.pascPercent == null) adminSettings.pascPercent = 25;
             if (adminSettings.playerPayoutPercent == null) adminSettings.playerPayoutPercent = 75;
             if (adminSettings.payout1stPercent == null) adminSettings.payout1stPercent = 50;
             if (adminSettings.payout2ndPercent == null) adminSettings.payout2ndPercent = 30;
+            if (adminSettings.seasonNumber == null) adminSettings.seasonNumber = 19;
             if (adminSettings.ghostPlayerCash == null) adminSettings.ghostPlayerCash = 20;
+            if (adminSettings.ghostPlayerEnabled == null) adminSettings.ghostPlayerEnabled = true;
+            if (adminSettings.bonusHandEnabled == null) adminSettings.bonusHandEnabled = false;
+            if (adminSettings.bonusHandDescription == null) adminSettings.bonusHandDescription = '';
+            if (adminSettings.bonusHandAmountPerGame == null) adminSettings.bonusHandAmountPerGame = 20;
+            if (adminSettings.badBeatBonusEnabled == null) adminSettings.badBeatBonusEnabled = false;
+            if (adminSettings.badBeatBonusAmountPerGame == null) adminSettings.badBeatBonusAmountPerGame = 10;
+            if (adminSettings.clubExpenses == null) adminSettings.clubExpenses = 0;
         }
         normalizeAdminSettings();
         function populateAdminSettingsForm() {
@@ -3254,10 +4696,9 @@
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
             table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
-                <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>DOB</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Login</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
+                <th class='px-2 py-0.5'>Name</th><th class='px-2 py-0.5'>Email</th><th class='px-2 py-0.5'>Phone</th><th class='px-2 py-0.5'>DOB</th><th class='px-2 py-0.5'>Years</th><th class='px-2 py-0.5'>Member</th><th class='px-2 py-0.5'>Committee</th><th class='px-2 py-0.5'>Edit</th><th class='px-2 py-0.5'>Delete</th></tr></thead><tbody></tbody>`;
             adminPlayers.forEach((p, idx) => {
                 const row = document.createElement('tr');
-                const loginName = p.committee === 'yes' && p.loginUsername ? p.loginUsername : '—';
                 const dobDisplay = p.dob ? formatAdminDob(p.dob) : '—';
                 row.innerHTML = `
                     <td class='px-2 py-0.5'>${p.name}</td>
@@ -3267,13 +4708,79 @@
                     <td class='px-2 py-0.5'>${p.years}</td>
                     <td class='px-2 py-0.5'>${p.member === 'yes' ? 'Yes' : 'No'}</td>
                     <td class='px-2 py-0.5'>${p.committee === 'yes' ? 'Yes' : 'No'}</td>
-                    <td class='px-2 py-0.5'>${loginName}</td>
                     <td class='px-2 py-0.5'><button class='text-yellow-400 underline' onclick='editAdminPlayer(${idx})'>Edit</button></td>
                     <td class='px-2 py-0.5'><button class='text-red-400 underline' onclick='deleteAdminPlayer(${idx})'>Delete</button></td>
                 `;
                 table.querySelector('tbody').appendChild(row);
             });
             container.appendChild(table);
+        }
+
+        function renderAdminSecurityList() {
+            const container = document.getElementById('adminSecurityList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (adminPlayers.length === 0) {
+                container.innerHTML = '<div class="text-gray-400">No members yet. Add players in Player Management.</div>';
+                return;
+            }
+
+            const members = adminPlayers
+                .map((player, idx) => ({ player, idx }))
+                .sort((a, b) => (a.player.name || '').localeCompare(b.player.name || ''));
+
+            const table = document.createElement('table');
+            table.className = 'min-w-full text-sm';
+            table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
+                <th class='px-2 py-0.5 text-left'>Name</th><th class='px-2 py-0.5 text-left'>Username</th><th class='px-2 py-0.5 text-left'>Password</th><th class='px-2 py-0.5 text-left'>Edit</th></tr></thead><tbody></tbody>`;
+            members.forEach(({ player, idx }) => {
+                const row = document.createElement('tr');
+                const username = player.loginUsername ? player.loginUsername : 'Not set';
+                const passwordStatus = player.loginPasswordHash ? 'Set' : 'Not set';
+                row.innerHTML = `
+                    <td class='px-2 py-0.5 text-left'>${player.name}</td>
+                    <td class='px-2 py-0.5 text-left'>${username}</td>
+                    <td class='px-2 py-0.5 text-left'>${passwordStatus}</td>
+                    <td class='px-2 py-0.5 text-left'><button class='text-yellow-400 underline' onclick='editAdminSecurityLogin(${idx})'>Edit</button></td>
+                `;
+                table.querySelector('tbody').appendChild(row);
+            });
+            container.appendChild(table);
+        }
+
+        function editAdminSecurityLogin(idx) {
+            const player = adminPlayers[idx];
+            if (!player) return;
+            showAdminSettingsSection('security');
+            const form = document.getElementById('adminSecurityForm');
+            const editIdx = document.getElementById('adminSecurityEditIdx');
+            const editName = document.getElementById('adminSecurityEditName');
+            const usernameInput = document.getElementById('adminSecurityUsername');
+            const passwordInput = document.getElementById('adminSecurityPassword');
+            if (!form || !editIdx || !editName || !usernameInput || !passwordInput) return;
+            editIdx.value = String(idx);
+            editName.textContent = `Editing login for ${player.name}`;
+            usernameInput.value = player.loginUsername || '';
+            passwordInput.value = '';
+            passwordInput.placeholder = player.loginPasswordHash ? 'Leave blank to keep current password' : 'Login Password';
+            form.classList.remove('hidden');
+        }
+
+        function cancelAdminSecurityEdit() {
+            const form = document.getElementById('adminSecurityForm');
+            const editIdx = document.getElementById('adminSecurityEditIdx');
+            const editName = document.getElementById('adminSecurityEditName');
+            const usernameInput = document.getElementById('adminSecurityUsername');
+            const passwordInput = document.getElementById('adminSecurityPassword');
+            if (form) form.classList.add('hidden');
+            if (editIdx) editIdx.value = '';
+            if (editName) editName.textContent = '';
+            if (usernameInput) usernameInput.value = '';
+            if (passwordInput) {
+                passwordInput.value = '';
+                passwordInput.placeholder = 'Login Password';
+            }
         }
         let registrationNames = [];
         let dropdownActiveIndex = -1;
@@ -3296,7 +4803,7 @@
             }
             matches.forEach((name) => {
                 const item = document.createElement('div');
-                item.className = 'player-dropdown-item px-4 py-2 cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+                item.className = 'player-dropdown-item cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
                 item.textContent = name;
                 item.addEventListener('mousedown', function(e) {
                     e.preventDefault();
@@ -3347,27 +4854,59 @@
             }
             return false;
         }
-        function exportAdminData() {
-            const data = {
-                version: '1.0.4',
+        function getAdminExportData() {
+            return {
+                version: '1.0.5',
                 type: 'pasc-admin-data',
                 exportedAt: new Date().toISOString(),
                 adminPlayers,
                 adminSettings,
                 adminMemberStats,
-                savedGames
+                savedGames,
+                pointsTableHistory,
+                bonusHandPool,
+                ghostPlayerPool,
+                badBeatBonusPool,
+                birthdayBonusPaidSeason
             };
+        }
+
+        function exportAdminData() {
+            const data = getAdminExportData();
+            const stamp = new Date().toISOString().slice(0, 10);
+            const filename = `pasc-admin-data-${stamp}.json`;
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
-            const stamp = new Date().toISOString().slice(0, 10);
             a.href = url;
-            a.download = `pasc-admin-data-${stamp}.json`;
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            return { data, filename, stamp };
         }
+
+        function emailAdminData() {
+            const recipientEmails = getCommitteeMemberEmails();
+            if (recipientEmails.length === 0) {
+                alert('No committee member email addresses found in Player Management.');
+                return;
+            }
+            const { data, filename, stamp } = exportAdminData();
+            const recipients = recipientEmails.join('; ');
+            const subject = encodeURIComponent(`PASC Admin Data Export ${stamp}`);
+            const body = encodeURIComponent(
+                `PASC Admin Data Export\n\n` +
+                `Exported: ${data.exportedAt}\n\n` +
+                `Please attach the downloaded file "${filename}" to this email.\n` +
+                `(Browsers cannot auto-attach files to Outlook/mailto.)\n\n` +
+                `Recipients can save the attachment and use Settings > Backup / Restore to import.`
+            );
+            window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
+            alert(`"${filename}" has been downloaded.\n\nAn email to committee members will open next — attach that downloaded JSON file to the email, then send.`);
+        }
+
         function importAdminData(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
@@ -3392,11 +4931,37 @@
                         savedGames = data.savedGames;
                         persistSavedGames();
                     }
+                    if (Array.isArray(data.pointsTableHistory)) {
+                        pointsTableHistory = data.pointsTableHistory;
+                        persistPointsTableHistory();
+                    }
+                    if (data.bonusHandPool != null) {
+                        bonusHandPool = parseFloat(data.bonusHandPool) || 0;
+                        persistBonusHandPool();
+                    }
+                    if (data.ghostPlayerPool != null) {
+                        ghostPlayerPool = parseFloat(data.ghostPlayerPool) || 0;
+                        persistGhostPlayerPool();
+                    }
+                    if (data.badBeatBonusPool != null) {
+                        badBeatBonusPool = parseFloat(data.badBeatBonusPool) || 0;
+                        persistBadBeatBonusPool();
+                    }
+                    if (data.birthdayBonusPaidSeason && typeof data.birthdayBonusPaidSeason === 'object') {
+                        birthdayBonusPaidSeason = data.birthdayBonusPaidSeason;
+                        persistBirthdayBonusPaidSeason();
+                    }
                     renderAdminPlayersList();
-                    renderAdminMemberStats();
+                    renderAdminSecurityList();
                     renderRegistrationDatalist();
                     populateAdminSettingsForm();
+                    populateAdminSeasonNumberForm();
+                    populateAdminBonusHandForm();
+                    populateAdminGhostCashForm();
+                    populateAdminBadBeatBonusForm();
                     updateStats();
+                    renderPointsTablePage();
+                    renderAdminGameManagement();
                     alert('Admin data imported successfully.');
                 } catch (err) {
                     alert('Import failed: the selected file is not valid PASC admin data.');
@@ -3407,6 +4972,7 @@
         }
         function editAdminPlayer(idx) {
             const p = adminPlayers[idx];
+            showAdminSettingsSection('player-management');
             document.getElementById('adminPlayerName').value = p.name;
             document.getElementById('adminPlayerEmail').value = p.email;
             document.getElementById('adminPlayerPhone').value = p.phone;
@@ -3414,18 +4980,6 @@
             document.getElementById('adminPlayerYears').value = p.years;
             document.getElementById('adminPlayerMember').value = p.member;
             document.getElementById('adminPlayerCommittee').value = p.committee;
-            toggleCommitteeLoginFields();
-            const committeeUsername = document.getElementById('adminCommitteeUsername');
-            const committeePassword = document.getElementById('adminCommitteePassword');
-            if (p.committee === 'yes') {
-                committeeUsername.value = p.loginUsername || '';
-                committeePassword.value = '';
-                committeePassword.placeholder = 'Leave blank to keep current password';
-            } else {
-                committeeUsername.value = '';
-                committeePassword.value = '';
-                committeePassword.placeholder = 'Login Password';
-            }
             document.getElementById('adminPlayerForm').setAttribute('data-edit-idx', idx);
         }
         function deleteAdminPlayer(idx) {
@@ -3436,50 +4990,221 @@
                 renderRegistrationDatalist();
             }
         }
-        function renderAdminMemberStats() {
-            const container = document.getElementById('adminMemberStats');
-            if (!container) return;
-            container.innerHTML = '';
-            if (adminMemberStats.length === 0) {
-                container.innerHTML = '<div class="text-gray-400">No stats yet.</div>';
-                return;
-            }
-            const table = document.createElement('table');
-            table.className = 'min-w-full text-sm';
-            table.innerHTML = `<thead><tr class='bg-[#056d78]/50'>
-                <th class='p-2'>Name</th><th class='p-2'>Points</th><th class='p-2'>Money Won</th></tr></thead><tbody></tbody>`;
-            adminMemberStats.forEach((s) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td class='p-2'>${s.name}</td><td class='p-2'>${s.points}</td><td class='p-2'>$${s.moneyWon}</td>`;
-                table.querySelector('tbody').appendChild(row);
-            });
-            container.appendChild(table);
-        }
         function saveAdminSettings() {
             localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
         }
+        function loadDefaultBlindLevels() {
+            blindLevels = [
+                { smallBlind: 100, bigBlind: 200, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 200, bigBlind: 400, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 300, bigBlind: 600, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 400, bigBlind: 800, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 500, bigBlind: 1000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 1000, bigBlind: 2000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 2000, bigBlind: 4000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 3000, bigBlind: 6000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 4000, bigBlind: 8000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 5000, bigBlind: 10000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 10000, bigBlind: 20000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 15000, bigBlind: 30000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 20000, bigBlind: 40000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 25000, bigBlind: 50000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 50000, bigBlind: 100000, levelTime: 1200, timeLeft: 1200 }
+            ];
+            blindLevels.splice(5, 0, {
+                type: 'break',
+                breakTime: 30 * 60,
+                timeLeft: 30 * 60
+            });
+        }
+
+        function getDefaultAdminSettings() {
+            return {
+                pascPercent: 25,
+                playerPayoutPercent: 75,
+                payout1stPercent: 50,
+                payout2ndPercent: 30,
+                seasonNumber: 19,
+                ghostPlayerCash: 20,
+                ghostPlayerEnabled: true,
+                bonusHandEnabled: false,
+                bonusHandDescription: '',
+                bonusHandAmountPerGame: 20,
+                badBeatBonusEnabled: false,
+                badBeatBonusAmountPerGame: 10,
+                clubExpenses: 0
+            };
+        }
+
+        function clearCurrentGameState() {
+            players = [];
+            tables = [];
+            eliminatedPlayers = [];
+            declaredWinner = null;
+            currentGameSaved = false;
+            currentSavedGameId = null;
+            originalPlayers = [];
+            ghostEligible = false;
+            window.selectedGhostPlayer = null;
+            const playersList = document.getElementById('playersList');
+            if (playersList) playersList.innerHTML = '';
+            const tablesList = document.getElementById('tablesList');
+            if (tablesList) tablesList.innerHTML = '';
+            updateStartGameButton();
+            resetRaffleCashInputs();
+            const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
+            if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
+            const ghostPlayerWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
+            if (ghostPlayerWonCheckbox) ghostPlayerWonCheckbox.checked = false;
+            const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
+            if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
+            const gameTypeEl = document.getElementById('gameType');
+            if (gameTypeEl) gameTypeEl.value = '';
+            const startingStackEl = document.getElementById('startingStack');
+            if (startingStackEl) startingStackEl.value = '';
+            const rebuyAddonEl = document.getElementById('rebuyAddon');
+            if (rebuyAddonEl) rebuyAddonEl.value = 'no';
+            const buyInEl = document.getElementById('buyIn');
+            if (buyInEl) buyInEl.value = '';
+            const gameCountEl = document.getElementById('gameCount');
+            if (gameCountEl) gameCountEl.value = '1';
+            const setAllBlindTimeInput = document.getElementById('setAllBlindTimeInput');
+            if (setAllBlindTimeInput) setAllBlindTimeInput.value = '';
+            const smallBlindInput = document.getElementById('smallBlindInput');
+            if (smallBlindInput) smallBlindInput.value = '';
+            const bigBlindInput = document.getElementById('bigBlindInput');
+            if (bigBlindInput) bigBlindInput.value = '';
+            const breakTimeInput = document.getElementById('breakTimeInput');
+            if (breakTimeInput) breakTimeInput.value = '';
+        }
+
+        function resetSeasonGameData() {
+            if (!confirm('Clear all Game Management / Points Table history for a new season?\n\nThis does NOT remove players, settings, or saved game types.')) {
+                return;
+            }
+            if (!confirm('Confirm: permanently delete all saved season games and points history?')) {
+                return;
+            }
+            pointsTableHistory = [];
+            persistPointsTableHistory();
+            bonusHandPool = 0;
+            persistBonusHandPool();
+            ghostPlayerPool = 0;
+            persistGhostPlayerPool();
+            badBeatBonusPool = 0;
+            persistBadBeatBonusPool();
+            birthdayBonusPaidSeason = {};
+            persistBirthdayBonusPaidSeason();
+            adminMemberStats = [];
+            localStorage.setItem('adminMemberStats', JSON.stringify(adminMemberStats));
+            renderAdminGameManagement();
+            renderPointsTablePage();
+            populateAdminBonusHandForm();
+            populateAdminGhostCashForm();
+            populateAdminBadBeatBonusForm();
+            alert('Season game data cleared. Ready for a new season.');
+        }
+
+        function resetAppToDefaults() {
+            if (!confirm('Factory reset the entire app?\n\nThis clears players, settings, saved games, points history, and the current tournament, then restores defaults.')) {
+                return;
+            }
+            if (!confirm('Final confirmation: permanently clear ALL app data?')) {
+                return;
+            }
+
+            adminPlayers = [];
+            adminSettings = getDefaultAdminSettings();
+            adminMemberStats = [];
+            savedGames = [];
+            pointsTableHistory = [];
+            bonusHandPool = 0;
+            ghostPlayerPool = 0;
+            badBeatBonusPool = 0;
+            birthdayBonusPaidSeason = {};
+
+            localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
+            localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
+            localStorage.setItem('adminMemberStats', JSON.stringify(adminMemberStats));
+            persistSavedGames();
+            persistPointsTableHistory();
+            persistBonusHandPool();
+            persistGhostPlayerPool();
+            persistBadBeatBonusPool();
+            persistBirthdayBonusPaidSeason();
+
+            clearCurrentGameState();
+            loadDefaultBlindLevels();
+            resetBlindTimerToFirstLevel();
+            renderRegistrationDatalist();
+            populateAdminSettingsForm();
+            populateAdminSeasonNumberForm();
+            renderAdminPlayersList();
+            renderAdminSecurityList();
+            renderAdminGameManagement();
+            renderPointsTablePage();
+            populateAdminBonusHandForm();
+            populateAdminGhostCashForm();
+            populateAdminBadBeatBonusForm();
+            updateAfterLevelSelects();
+            updateStats();
+            alert('App reset complete. All data cleared and defaults restored.');
+        }
+
+        function showAdminSettingsSection(sectionId) {
+            document.querySelectorAll('.admin-settings-section').forEach((section) => {
+                section.classList.add('hidden');
+            });
+            const activeSection = document.getElementById(`adminSection-${sectionId}`);
+            if (activeSection) activeSection.classList.remove('hidden');
+
+            document.querySelectorAll('.admin-settings-nav-btn[data-admin-section]').forEach((btn) => {
+                btn.classList.toggle('active', btn.dataset.adminSection === sectionId);
+            });
+
+            localStorage.setItem('adminSettingsSection', sectionId);
+
+            switch (sectionId) {
+                case 'player-management':
+                    renderAdminPlayersList();
+                    break;
+                case 'security':
+                    renderAdminSecurityList();
+                    cancelAdminSecurityEdit();
+                    break;
+                case 'game-management':
+                    renderAdminGameManagement();
+                    break;
+                case 'season-statistics':
+                    renderAdminSeasonStatistics();
+                    break;
+                case 'blind-timer':
+                    renderBlindLevelsList();
+                    updateAfterLevelSelects();
+                    populateVoiceList();
+                    break;
+                default:
+                    break;
+            }
+        }
+
         function showAdminPanel() {
             renderAdminPlayersList();
-            renderAdminMemberStats();
+            populateAdminSeasonNumberForm();
             populateAdminSettingsForm();
+            populateAdminBonusHandForm();
+            populateAdminGhostCashForm();
+            populateAdminBadBeatBonusForm();
+            renderAdminSeasonStatistics();
             renderBlindLevelsList();
             updateAfterLevelSelects();
             populateVoiceList();
+            renderAdminGameManagement();
+            renderAdminSecurityList();
+            const savedSection = localStorage.getItem('adminSettingsSection') || 'backup-restore';
+            showAdminSettingsSection(savedSection);
         }
 
-        function toggleAdminBlindTimerSettings() {
-            const content = document.getElementById('adminBlindTimerSettingsContent');
-            const btn = document.getElementById('toggleAdminBlindTimerBtn');
-            if (!content || !btn) return;
-            const isHidden = content.classList.contains('hidden');
-            if (isHidden) {
-                content.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Blind Settings';
-            } else {
-                content.classList.add('hidden');
-                btn.innerHTML = '<i class="fas fa-eye mr-2"></i>Show Blind Settings';
-            }
-        }
         document.addEventListener('DOMContentLoaded', () => {
             // Populate the registration dropdown from saved admin players
             renderRegistrationDatalist();
@@ -3491,7 +5216,9 @@
                     const username = document.getElementById('appUsername').value;
                     const password = document.getElementById('appPassword').value;
                     const loginError = document.getElementById('appLoginError');
-                    if (await verifyAdminLogin(username, password)) {
+                    const result = await verifyAdminLogin(username, password);
+                    if (result.ok) {
+                        setAppLoggedIn(true, result.role);
                         loginError.classList.add('hidden');
                         showAppAfterLogin();
                     } else {
@@ -3500,14 +5227,64 @@
                 });
             }
 
-            // Admin logout
-            const adminLogoutBtn = document.getElementById('adminLogoutBtn');
-            if (adminLogoutBtn) {
-                adminLogoutBtn.addEventListener('click', logoutApp);
+            const appLogoutBtn = document.getElementById('appLogoutBtn');
+            if (appLogoutBtn) {
+                appLogoutBtn.addEventListener('click', logoutApp);
             }
-            const adminPlayerCommittee = document.getElementById('adminPlayerCommittee');
-            if (adminPlayerCommittee) {
-                adminPlayerCommittee.addEventListener('change', toggleCommitteeLoginFields);
+            const adminSecurityForm = document.getElementById('adminSecurityForm');
+            if (adminSecurityForm) {
+                adminSecurityForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const editIdx = parseInt(document.getElementById('adminSecurityEditIdx').value, 10);
+                    if (isNaN(editIdx) || !adminPlayers[editIdx]) return;
+
+                    const loginUsername = document.getElementById('adminSecurityUsername').value.trim();
+                    const loginPassword = document.getElementById('adminSecurityPassword').value;
+                    const existingPlayer = adminPlayers[editIdx];
+
+                    if (!loginUsername) {
+                        alert('Please enter a username.');
+                        return;
+                    }
+
+                    const loginUserHash = await sha256(normalizeAdminUsername(loginUsername));
+                    if (loginUserHash === OWNER_USER_HASH) {
+                        alert('That username is reserved. Choose a different one.');
+                        return;
+                    }
+
+                    const duplicate = adminPlayers.some((p, i) =>
+                        i !== editIdx &&
+                        p.loginUserHash &&
+                        p.loginUserHash === loginUserHash
+                    );
+                    if (duplicate) {
+                        alert('That login username is already in use.');
+                        return;
+                    }
+
+                    let loginPasswordHash;
+                    if (!loginPassword && existingPlayer.loginPasswordHash) {
+                        loginPasswordHash = existingPlayer.loginPasswordHash;
+                    } else {
+                        if (!loginPassword) {
+                            alert('Please enter a password.');
+                            return;
+                        }
+                        loginPasswordHash = await sha256(loginPassword);
+                    }
+
+                    adminPlayers[editIdx] = {
+                        ...existingPlayer,
+                        loginUsername,
+                        loginUserHash,
+                        loginPasswordHash
+                    };
+                    localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
+                    cancelAdminSecurityEdit();
+                    renderAdminSecurityList();
+                    alert('Login details saved!');
+                });
             }
             // Admin player add/update
             const adminPlayerForm = document.getElementById('adminPlayerForm');
@@ -3521,8 +5298,6 @@
                     const years = document.getElementById('adminPlayerYears').value.trim();
                     const member = document.getElementById('adminPlayerMember').value;
                     const committee = document.getElementById('adminPlayerCommittee').value;
-                    const loginUsername = document.getElementById('adminCommitteeUsername').value.trim();
-                    const loginPassword = document.getElementById('adminCommitteePassword').value;
                     if (!name) return;
 
                     const editIdxAttr = adminPlayerForm.getAttribute('data-edit-idx');
@@ -3530,38 +5305,10 @@
                     const existingPlayer = editIdx !== null ? adminPlayers[editIdx] : null;
                     const player = { name, email, phone, dob, years, member, committee };
 
-                    if (committee === 'yes') {
-                        if (!loginUsername) {
-                            alert('Committee members need a login username.');
-                            return;
-                        }
-                        const loginUserHash = await sha256(normalizeAdminUsername(loginUsername));
-                        if (loginUserHash === OWNER_USER_HASH) {
-                            alert('That username is reserved. Choose a different one.');
-                            return;
-                        }
-                        const duplicate = adminPlayers.some((p, i) =>
-                            i !== editIdx &&
-                            p.committee === 'yes' &&
-                            p.loginUserHash === loginUserHash
-                        );
-                        if (duplicate) {
-                            alert('That login username is already in use.');
-                            return;
-                        }
-                        let loginPasswordHash;
-                        if (editIdx !== null && !loginPassword && existingPlayer?.loginPasswordHash) {
-                            loginPasswordHash = existingPlayer.loginPasswordHash;
-                        } else {
-                            if (!loginPassword) {
-                                alert('Committee members need a login password.');
-                                return;
-                            }
-                            loginPasswordHash = await sha256(loginPassword);
-                        }
-                        player.loginUsername = loginUsername;
-                        player.loginUserHash = loginUserHash;
-                        player.loginPasswordHash = loginPasswordHash;
+                    if (existingPlayer?.loginUsername) {
+                        player.loginUsername = existingPlayer.loginUsername;
+                        player.loginUserHash = existingPlayer.loginUserHash;
+                        player.loginPasswordHash = existingPlayer.loginPasswordHash;
                     }
 
                     if (editIdx !== null) {
@@ -3572,10 +5319,26 @@
                     }
                     localStorage.setItem('adminPlayers', JSON.stringify(adminPlayers));
                     renderAdminPlayersList();
+                    renderAdminSecurityList();
                     renderRegistrationDatalist();
                     adminPlayerForm.reset();
-                    document.getElementById('adminCommitteePassword').placeholder = 'Login Password';
-                    toggleCommitteeLoginFields();
+                    adminPlayerForm.removeAttribute('data-edit-idx');
+                });
+            }
+            const adminSeasonNumberForm = document.getElementById('adminSeasonNumberForm');
+            if (adminSeasonNumberForm) {
+                adminSeasonNumberForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const seasonNumber = parseInt(document.getElementById('adminSeasonNumber').value, 10);
+                    if (isNaN(seasonNumber) || seasonNumber < 1) {
+                        alert('Please enter a valid season number.');
+                        return;
+                    }
+                    adminSettings.seasonNumber = seasonNumber;
+                    saveAdminSettings();
+                    populateAdminSeasonNumberForm();
+                    renderAdminSeasonStatistics();
+                    alert('Season number saved!');
                 });
             }
             // Admin settings save
@@ -3631,7 +5394,42 @@
                     }
                     adminSettings.ghostPlayerCash = ghostPlayerCash;
                     saveAdminSettings();
+                    populateAdminGhostCashForm();
                     alert('Settings saved!');
+                    updateStats();
+                });
+            }
+            const adminBonusHandForm = document.getElementById('adminBonusHandForm');
+            if (adminBonusHandForm) {
+                adminBonusHandForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const description = document.getElementById('adminBonusHandDescription').value.trim();
+                    const amount = parseFloat(document.getElementById('adminBonusHandAmount').value);
+                    if (isNaN(amount) || amount < 0) {
+                        alert('Please enter a valid bonus hand amount.');
+                        return;
+                    }
+                    adminSettings.bonusHandDescription = description;
+                    adminSettings.bonusHandAmountPerGame = amount;
+                    saveAdminSettings();
+                    populateAdminBonusHandForm();
+                    alert('Bonus hand settings saved!');
+                    updateStats();
+                });
+            }
+            const adminBadBeatBonusForm = document.getElementById('adminBadBeatBonusForm');
+            if (adminBadBeatBonusForm) {
+                adminBadBeatBonusForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const amount = parseFloat(document.getElementById('adminBadBeatBonusAmount').value);
+                    if (isNaN(amount) || amount < 0) {
+                        alert('Please enter a valid bad beat bonus amount.');
+                        return;
+                    }
+                    adminSettings.badBeatBonusAmountPerGame = amount;
+                    saveAdminSettings();
+                    populateAdminBadBeatBonusForm();
+                    alert('Bad beat bonus settings saved!');
                     updateStats();
                 });
             }
