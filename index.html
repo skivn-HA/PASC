@@ -3617,6 +3617,45 @@
             return '$' + num.toFixed(2);
         }
 
+        function getGameNetRaffleCashForSeason(game) {
+            if (game.raffleCashNet != null && !isNaN(Number(game.raffleCashNet))) {
+                return Math.max(0, Number(game.raffleCashNet));
+            }
+
+            const gross = Number(game.raffleCash);
+            const hasGross = game.raffleCash != null && !isNaN(gross);
+
+            if (!hasGross) {
+                return Math.max(0, Number(game.raffleCashSummary) || 0);
+            }
+
+            let bonusContribution = Number(game.bonusHand?.contributionThisGame);
+            if (isNaN(bonusContribution)) {
+                if (game.bonusHand?.enabled) {
+                    bonusContribution = Math.min(gross, Number(game.bonusHand.amountPerGame) || 20);
+                } else if (!game.bonusHand && !game.badBeatBonus) {
+                    bonusContribution = Math.min(gross, 20);
+                } else {
+                    bonusContribution = 0;
+                }
+            }
+
+            const raffleAfterBonus = Math.max(0, gross - bonusContribution);
+
+            let badBeatContribution = Number(game.badBeatBonus?.contributionThisGame);
+            if (isNaN(badBeatContribution)) {
+                if (game.badBeatBonus?.enabled) {
+                    badBeatContribution = Math.min(raffleAfterBonus, Number(game.badBeatBonus.amountPerGame) || 10);
+                } else if (!game.bonusHand && !game.badBeatBonus) {
+                    badBeatContribution = Math.min(raffleAfterBonus, 10);
+                } else {
+                    badBeatContribution = 0;
+                }
+            }
+
+            return Math.max(0, raffleAfterBonus - badBeatContribution);
+        }
+
         function getSeasonStatistics() {
             const games = Array.isArray(pointsTableHistory) ? pointsTableHistory : [];
             const stats = {
@@ -3641,7 +3680,7 @@
                         (Number(game.payout2nd) || 0) +
                         (Number(game.payout3rd) || 0);
                 }
-                stats.totalRaffleCash += Number(game.raffleCash) || Number(game.raffleCashSummary) || 0;
+                stats.totalRaffleCash += getGameNetRaffleCashForSeason(game);
                 stats.totalPascCash += Number(game.totalPascCash) || 0;
 
                 if (game.bonusHand?.wonThisGame) {
@@ -3664,7 +3703,6 @@
             const clubExpenses = adminSettings.clubExpenses ?? 0;
             return (
                 stats.totalPascCash +
-                stats.totalRaffleCash +
                 ghostPlayerPool +
                 bonusHandPool +
                 badBeatBonusPool -
@@ -3722,7 +3760,7 @@
                 { label: 'Total Buy-in Cash', value: stats.totalBuyInCash, isMoney: true },
                 { label: 'Total Player Cash Payout', value: stats.totalPlayerCashPayout, isMoney: true },
                 { label: 'Total PASC Cash', value: stats.totalPascCash, isMoney: true },
-                { label: 'Total Raffle Cash', value: stats.totalRaffleCash, isMoney: true }
+                { label: 'Total Raffle Cash (net)', value: stats.totalRaffleCash, isMoney: true }
             ];
 
             const rightRows = [
