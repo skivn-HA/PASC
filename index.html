@@ -3029,6 +3029,14 @@
             localStorage.setItem('badBeatBonusPool', String(badBeatBonusPool));
         }
 
+        function recordSeasonPoolManualPayout(settingsKey, poolValue) {
+            normalizeAdminSettings();
+            const payoutAmount = Math.max(0, Number(poolValue) || 0);
+            if (payoutAmount <= 0) return;
+            adminSettings[settingsKey] = (Number(adminSettings[settingsKey]) || 0) + payoutAmount;
+            saveAdminSettings();
+        }
+
         function getSeasonNumber() {
             normalizeAdminSettings();
             const seasonNumber = parseInt(adminSettings.seasonNumber, 10);
@@ -3085,12 +3093,14 @@
             if (!confirm('Mark the ghost player as won and reset the pool to $0?')) {
                 return;
             }
+            recordSeasonPoolManualPayout('ghostPlayerManualPaidOut', ghostPlayerPool);
             ghostPlayerPool = 0;
             persistGhostPlayerPool();
             const wonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
             if (wonCheckbox) wonCheckbox.checked = false;
             populateAdminGhostCashForm();
             updateStats();
+            renderAdminSeasonStatistics();
             alert('Ghost player cash pool reset to $0.');
         }
 
@@ -3141,12 +3151,14 @@
             if (!confirm('Mark the bonus hand as won and reset the pool to $0?')) {
                 return;
             }
+            recordSeasonPoolManualPayout('bonusHandManualPaidOut', bonusHandPool);
             bonusHandPool = 0;
             persistBonusHandPool();
             const wonCheckbox = document.getElementById('bonusHandWonCheckbox');
             if (wonCheckbox) wonCheckbox.checked = false;
             populateAdminBonusHandForm();
             updateStats();
+            renderAdminSeasonStatistics();
             alert('Bonus hand pool reset to $0.');
         }
 
@@ -3194,12 +3206,14 @@
             if (!confirm('Mark the bad beat bonus as won and reset the pool to $0?')) {
                 return;
             }
+            recordSeasonPoolManualPayout('badBeatBonusManualPaidOut', badBeatBonusPool);
             badBeatBonusPool = 0;
             persistBadBeatBonusPool();
             const wonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
             if (wonCheckbox) wonCheckbox.checked = false;
             populateAdminBadBeatBonusForm();
             updateStats();
+            renderAdminSeasonStatistics();
             alert('Bad beat bonus pool reset to $0.');
         }
 
@@ -3693,6 +3707,11 @@
                     stats.totalGhostPlayerCashPaidOut += Number(game.ghostPlayerCashPool.payoutThisGame) || 0;
                 }
             });
+
+            normalizeAdminSettings();
+            stats.totalGhostPlayerCashPaidOut += Number(adminSettings.ghostPlayerManualPaidOut) || 0;
+            stats.totalBonusHandCashPaidOut += Number(adminSettings.bonusHandManualPaidOut) || 0;
+            stats.totalBadBeatBonusCashPaidOut += Number(adminSettings.badBeatBonusManualPaidOut) || 0;
 
             return stats;
         }
@@ -4691,6 +4710,9 @@
             if (adminSettings.badBeatBonusEnabled == null) adminSettings.badBeatBonusEnabled = false;
             if (adminSettings.badBeatBonusAmountPerGame == null) adminSettings.badBeatBonusAmountPerGame = 10;
             if (adminSettings.clubExpenses == null) adminSettings.clubExpenses = 0;
+            if (adminSettings.ghostPlayerManualPaidOut == null) adminSettings.ghostPlayerManualPaidOut = 0;
+            if (adminSettings.bonusHandManualPaidOut == null) adminSettings.bonusHandManualPaidOut = 0;
+            if (adminSettings.badBeatBonusManualPaidOut == null) adminSettings.badBeatBonusManualPaidOut = 0;
         }
         normalizeAdminSettings();
         function populateAdminSettingsForm() {
@@ -5070,7 +5092,10 @@
                 bonusHandAmountPerGame: 20,
                 badBeatBonusEnabled: false,
                 badBeatBonusAmountPerGame: 10,
-                clubExpenses: 0
+                clubExpenses: 0,
+                ghostPlayerManualPaidOut: 0,
+                bonusHandManualPaidOut: 0,
+                badBeatBonusManualPaidOut: 0
             };
         }
 
@@ -5135,6 +5160,11 @@
             persistBirthdayBonusPaidSeason();
             adminMemberStats = [];
             localStorage.setItem('adminMemberStats', JSON.stringify(adminMemberStats));
+            normalizeAdminSettings();
+            adminSettings.ghostPlayerManualPaidOut = 0;
+            adminSettings.bonusHandManualPaidOut = 0;
+            adminSettings.badBeatBonusManualPaidOut = 0;
+            saveAdminSettings();
             renderAdminGameManagement();
             renderPointsTablePage();
             populateAdminBonusHandForm();
