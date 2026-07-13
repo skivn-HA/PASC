@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#056d78">
-    <meta name="description" content="Poker Academy Social Club — registration, blind timer, and stats">
+    <meta name="description" content="Poker club — registration, blind timer, and stats">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PASC">
+    <meta name="apple-mobile-web-app-title" content="Poker Club">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="Logos/Logo-S19-1.1.png">
-    <title>PASC Season 19</title>
+    <title>Poker Club</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
@@ -848,6 +848,16 @@
             flex-wrap: wrap;
         }
 
+        .pasc-modal-actions-stack {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .pasc-modal-actions-stack .pasc-modal-btn {
+            width: 100%;
+            min-width: 0;
+        }
+
         .pasc-modal-btn {
             min-width: 6.5rem;
             padding: 0.625rem 1.25rem;
@@ -905,7 +915,7 @@
     </div>
     <div class="w-full flex justify-center m-0 leading-none">
         <div class="flex items-center justify-center">
-            <img src="Logos/Logo-S19-1.1.png" alt="Poker Academy Social Club Logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
+            <img id="clubLogoPrimary" src="Logos/Logo-S19-1.1.png" alt="Club logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
             <img src="Logos/Logo-S19-2.png" alt="" class="block" style="height:120px; width:auto; object-fit:contain;" />
         </div>
     </div>
@@ -918,8 +928,8 @@
         <!-- Login Page -->
         <div id="login" class="page">
             <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-sm mx-auto mt-8">
-                <h2 class="text-2xl font-bold mb-4 text-yellow-400 flex items-center justify-center">
-                    <i class="fas fa-sign-in-alt mr-2"></i>PASC Login
+                <h2 id="appLoginHeading" class="text-2xl font-bold mb-4 text-yellow-400 flex items-center justify-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Club Login
                 </h2>
                 <form id="appLoginForm" class="flex flex-col gap-4">
                     <input type="text" id="appUsername" placeholder="Username" autocomplete="username" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
@@ -992,7 +1002,7 @@
                                     <!-- Options populated from Settings > Player Management -->
                                 </div>
                             </div>
-                            <button onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
+                            <button type="button" onclick="registerPlayer()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white">
                                 <i class="fas fa-plus mr-2"></i>Add Player
                             </button>
                         </div>
@@ -1221,7 +1231,7 @@
                                 <div>3rd: <span id="payout3rd">$0</span></div>
                             </div>
                             <div class="border-t pt-2 mt-3">
-                                <h3 class="text-lg font-semibold mb-2">PASC Game Cash <span id="pascGameCashPercent">(25%)</span></h3>
+                                <h3 class="text-lg font-semibold mb-2">Club Game Cash <span id="pascGameCashPercent">(25%)</span></h3>
                                 <div class="text-2xl font-bold text-green-400" id="pascGameCash">$0</div>
                             </div>
                         </div>
@@ -1250,10 +1260,10 @@
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
-                            <h3 class="text-lg font-semibold mb-2">Total PASC Cash</h3>
+                            <h3 class="text-lg font-semibold mb-2">Total Club Cash</h3>
                             <div class="text-2xl font-bold text-green-400" id="pascCashTakings">$0</div>
                             <div class="mt-2 text-sm text-poker-text">
-                                <div>PASC Game Cash: <span id="pascGameCashSummary">$0</span></div>
+                                <div>Club Game Cash: <span id="pascGameCashSummary">$0</span></div>
                                 <div>Raffle: <span id="raffleCashSummary">$0</span></div>
                             </div>
                         </div>
@@ -1335,11 +1345,14 @@
                         <nav id="adminSettingsNav" aria-label="Settings sections">
                             <button type="button" class="admin-settings-nav-btn active" data-admin-section="backup-restore" onclick="showAdminSettingsSection('backup-restore')">Backup / Restore</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="club" onclick="showAdminSettingsSection('club')">Club</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">PASC Cash &amp; Payout</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">Club Cash &amp; Payout</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="birthday-bonus" onclick="showAdminSettingsSection('birthday-bonus')">Birthday Bonus</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="table-assignments" onclick="showAdminSettingsSection('table-assignments')">Table Assignments</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="season-number" onclick="showAdminSettingsSection('season-number')">Season Number</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="game-management" onclick="showAdminSettingsSection('game-management')">Game Management</button>
@@ -1369,6 +1382,17 @@
                                     <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
                                 </form>
                                 <div id="adminPlayersList" class="overflow-x-auto"></div>
+                            </div>
+                            <div id="adminSection-club" class="admin-settings-section hidden">
+                                <h3>Club</h3>
+                                <p class="admin-section-intro">Set your club name. It appears on the login screen, page title, emails, exports, and reports throughout the app.</p>
+                                <form id="adminClubForm" class="flex flex-wrap items-end gap-4">
+                                    <div class="flex flex-col flex-1 min-w-[200px] max-w-md">
+                                        <label for="adminClubName" class="text-sm font-semibold mb-1">Club Name</label>
+                                        <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                </form>
                             </div>
                             <div id="adminSection-security" class="admin-settings-section hidden">
                                 <h3>Security</h3>
@@ -1419,12 +1443,12 @@
                                 </form>
                             </div>
                             <div id="adminSection-pasc-cash" class="admin-settings-section hidden">
-                                <h3>PASC Cash &amp; Payout Settings</h3>
-                                <p class="admin-section-intro">Configure how buy-in cash is split between PASC funds and player payouts, and the top-three prize percentages.</p>
+                                <h3>Club Cash &amp; Payout Settings</h3>
+                                <p class="admin-section-intro">Configure how buy-in cash is split between club funds and player payouts, and the top-three prize percentages.</p>
                                 <form id="adminSettingsForm" class="flex flex-col gap-4">
                                     <div class="flex flex-col md:flex-row gap-4 items-center flex-wrap">
                                         <div class="flex flex-col">
-                                            <label for="adminPascPercent" class="text-sm font-semibold mb-1">PASC Cash %</label>
+                                            <label for="adminPascPercent" class="text-sm font-semibold mb-1">Club Cash %</label>
                                             <input type="number" id="adminPascPercent" min="0" max="100" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:100px;">
                                         </div>
                                         <div class="flex flex-col">
@@ -1521,6 +1545,26 @@
                                     </div>
                                 </form>
                             </div>
+                            <div id="adminSection-birthday-bonus" class="admin-settings-section hidden">
+                                <h3>Birthday Bonus</h3>
+                                <p class="admin-section-intro">Track players with birthdays this month and mark when their birthday bonus has been paid. Paid status resets each year when their birthday month comes around again. When disabled, birthday icons and bonus tracking are hidden throughout the app.</p>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <button type="button" onclick="toggleBirthdayBonusEnabled()" id="toggleBirthdayBonusBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
+                                        <i class="fas fa-toggle-off mr-2"></i>Disabled
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="adminSection-table-assignments" class="admin-settings-section hidden">
+                                <h3>Table Assignments</h3>
+                                <p class="admin-section-intro">Set the maximum number of players at each table. During registration, new players are seated using this limit. After the game starts, when remaining players reach a multiple of this number, players are moved from other tables to form full tables.</p>
+                                <form id="adminTableAssignmentsForm" class="flex flex-wrap items-end gap-4">
+                                    <div class="flex flex-col">
+                                        <label for="adminMaxPlayersPerTable" class="text-sm font-semibold mb-1">Maximum Players per Table</label>
+                                        <input type="number" id="adminMaxPlayersPerTable" min="2" max="12" step="1" value="8" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                    </div>
+                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                </form>
+                            </div>
                             <div id="adminSection-blind-timer" class="admin-settings-section hidden">
                                 <h3>Blind Timer Settings</h3>
                                 <p class="admin-section-intro">Configure blind levels, break times, and the voice used for timer announcements.</p>
@@ -1592,7 +1636,7 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p class="text-sm text-poker-text/60">Poker Academy Social Club v2026.7.12</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Club v2026.7.12</p>
         </div>
     </div>
 
@@ -1614,6 +1658,7 @@
         let ghostPlayerPool = parseFloat(localStorage.getItem('ghostPlayerPool') || '0') || 0;
         let badBeatBonusPool = parseFloat(localStorage.getItem('badBeatBonusPool') || '0') || 0;
         let birthdayBonusPaidSeason = JSON.parse(localStorage.getItem('birthdayBonusPaidSeason') || '{}');
+        normalizeBirthdayBonusPaidSeason();
         let blindWarningGiven = false;
         let selectedVoice = null;
         let originalPlayers = [];
@@ -1632,6 +1677,20 @@
 
         let pascModalResolve = null;
         let pascModalKeyHandler = null;
+        let pascModalIgnoreSubmitUntil = 0;
+
+        function armPascModalSubmitGuard() {
+            pascModalIgnoreSubmitUntil = Date.now() + 350;
+        }
+
+        function shouldIgnorePascModalSubmit() {
+            return Date.now() < pascModalIgnoreSubmitUntil;
+        }
+
+        function guardedClosePascModal(result) {
+            if (shouldIgnorePascModalSubmit()) return;
+            closePascModal(result);
+        }
 
         function showToast(message, type = 'info', duration = 4000) {
             const container = document.getElementById('pascToastContainer');
@@ -1712,13 +1771,13 @@
                 cancelBtn.type = 'button';
                 cancelBtn.className = 'pasc-modal-btn pasc-modal-btn-cancel';
                 cancelBtn.textContent = cancelText;
-                cancelBtn.addEventListener('click', () => closePascModal(false));
+                cancelBtn.addEventListener('click', () => guardedClosePascModal(false));
 
                 const confirmBtn = document.createElement('button');
                 confirmBtn.type = 'button';
                 confirmBtn.className = `pasc-modal-btn ${danger ? 'pasc-modal-btn-danger' : 'pasc-modal-btn-confirm'}`;
                 confirmBtn.textContent = confirmText;
-                confirmBtn.addEventListener('click', () => closePascModal(true));
+                confirmBtn.addEventListener('click', () => guardedClosePascModal(true));
 
                 actionsEl.appendChild(cancelBtn);
                 actionsEl.appendChild(confirmBtn);
@@ -1727,6 +1786,8 @@
                     if (event.key === 'Escape') {
                         event.preventDefault();
                         closePascModal(false);
+                    } else if (event.key === 'Enter' && shouldIgnorePascModalSubmit()) {
+                        event.preventDefault();
                     }
                 };
                 document.addEventListener('keydown', pascModalKeyHandler);
@@ -1737,7 +1798,73 @@
 
                 overlay.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
-                cancelBtn.focus();
+                armPascModalSubmitGuard();
+                setTimeout(() => cancelBtn.focus(), 0);
+            });
+        }
+
+        function showChoice(message, choices = [], options = {}) {
+            const { cancelText = 'Cancel' } = options;
+
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('pascModalOverlay');
+                const messageEl = document.getElementById('pascModalMessage');
+                const iconEl = document.getElementById('pascModalIcon');
+                const actionsEl = document.getElementById('pascModalActions');
+                if (!overlay || !messageEl || !iconEl || !actionsEl) {
+                    resolve(null);
+                    return;
+                }
+
+                if (pascModalResolve) {
+                    closePascModal(null);
+                }
+
+                pascModalResolve = resolve;
+                messageEl.textContent = message;
+                iconEl.className = 'pasc-modal-icon';
+                iconEl.innerHTML = '<i class="fas fa-question-circle"></i>';
+
+                actionsEl.innerHTML = '';
+                actionsEl.className = 'pasc-modal-actions pasc-modal-actions-stack';
+
+                choices.forEach((choice) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = `pasc-modal-btn ${choice.primary ? 'pasc-modal-btn-confirm' : 'pasc-modal-btn-cancel'}`;
+                    btn.textContent = choice.label;
+                    btn.addEventListener('click', () => guardedClosePascModal(choice.id));
+                    actionsEl.appendChild(btn);
+                });
+
+                const cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'pasc-modal-btn pasc-modal-btn-cancel';
+                cancelBtn.textContent = cancelText;
+                cancelBtn.addEventListener('click', () => closePascModal(null));
+                actionsEl.appendChild(cancelBtn);
+
+                pascModalKeyHandler = (event) => {
+                    if (event.key === 'Escape') {
+                        event.preventDefault();
+                        closePascModal(null);
+                    } else if (event.key === 'Enter' && shouldIgnorePascModalSubmit()) {
+                        event.preventDefault();
+                    }
+                };
+                document.addEventListener('keydown', pascModalKeyHandler);
+
+                overlay.onclick = (event) => {
+                    if (event.target === overlay) closePascModal(null);
+                };
+
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                armPascModalSubmitGuard();
+                setTimeout(() => cancelBtn.focus(), 0);
+            }).finally(() => {
+                const actionsEl = document.getElementById('pascModalActions');
+                if (actionsEl) actionsEl.className = 'pasc-modal-actions';
             });
         }
 
@@ -1954,12 +2081,68 @@
         }
         
         // Player registration functions
-        function registerPlayerByName(name, idSuffix = 0) {
+        function getMaxPlayersPerTable() {
+            if (typeof adminSettings !== 'undefined') {
+                normalizeAdminSettings();
+                const max = parseInt(adminSettings.maxPlayersPerTable, 10);
+                if (!isNaN(max) && max >= 2) return max;
+            }
+            return 8;
+        }
+
+        function areAllTablesFull() {
+            const maxPerTable = getMaxPlayersPerTable();
+            if (tables.length === 0) return false;
+            if (tables.length === 1 && tables[0] === 'final') return false;
+
+            const numericTables = tables.filter((t) => t !== 'final');
+            if (numericTables.length === 0) return false;
+
+            return numericTables.every((tableNum) =>
+                players.filter((p) => !p.eliminated && p.table === tableNum).length >= maxPerTable
+            );
+        }
+
+        function getShortestTableNumber() {
+            const numericTables = tables.filter((t) => t !== 'final');
+            let shortestTable = numericTables[0];
+            let shortestCount = Infinity;
+            numericTables.forEach((tableNum) => {
+                const count = players.filter((p) => !p.eliminated && p.table === tableNum).length;
+                if (count < shortestCount || (count === shortestCount && tableNum < shortestTable)) {
+                    shortestCount = count;
+                    shortestTable = tableNum;
+                }
+            });
+            return shortestTable;
+        }
+
+        function syncOriginalPlayersTables() {
+            players.forEach((p) => {
+                const orig = originalPlayers.find((o) => o.id === p.id);
+                if (orig) orig.table = p.table;
+            });
+        }
+
+        async function registerPlayerByName(name, idSuffix = 0) {
             const trimmedName = (name || '').trim();
             if (!trimmedName) return 'empty';
 
             const existingPlayer = players.find(p => p.name.toLowerCase() === trimmedName.toLowerCase());
             if (existingPlayer) return 'duplicate';
+
+            let fullTableAction = null;
+            if (areAllTablesFull()) {
+                const maxPerTable = getMaxPlayersPerTable();
+                fullTableAction = await showChoice(
+                    `All tables are full (${maxPerTable} players each). How would you like to add ${trimmedName}?`,
+                    [
+                        { id: 'overflow', label: `Add to Shortest Table (${maxPerTable + 1} players)`, primary: true },
+                        { id: 'reassign', label: 'Reassign Tables' }
+                    ]
+                );
+                if (!fullTableAction) return 'cancelled';
+            }
 
             const playerNumber = players.length + 1;
             const adminRecord = getAdminRecordForPlayer(trimmedName);
@@ -1979,11 +2162,35 @@
             };
 
             players.push(player);
+
+            if (fullTableAction === 'reassign') {
+                assignTables();
+                syncOriginalPlayersTables();
+            } else if (fullTableAction === 'overflow') {
+                player.table = getShortestTableNumber();
+            } else {
+                assignNewPlayerToShortestTable(player);
+            }
+
             originalPlayers.push({ ...player });
             return 'added';
         }
 
-        function registerPlayer() {
+        function assignNewPlayerToShortestTable(player) {
+            if (!player || tables.length === 0) return;
+
+            if (tables.length === 1 && tables[0] === 'final') {
+                player.table = 'final';
+                return;
+            }
+
+            const numericTables = tables.filter((t) => t !== 'final');
+            if (numericTables.length === 0) return;
+
+            player.table = getShortestTableNumber();
+        }
+
+        async function registerPlayer() {
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
             
@@ -2000,13 +2207,16 @@
                 }
 
                 let added = 0;
-                registrationNames.forEach((playerName, index) => {
-                    if (registerPlayerByName(playerName, index) === 'added') added++;
-                });
+                for (let index = 0; index < registrationNames.length; index++) {
+                    const result = await registerPlayerByName(registrationNames[index], index);
+                    if (result === 'added') added++;
+                    if (result === 'cancelled') break;
+                }
 
                 hidePlayerNameDropdown();
                 nameInput.value = '';
                 renderPlayersList();
+                if (tables.length > 0) renderTables();
                 updateStats();
 
                 if (added === 0) {
@@ -2015,12 +2225,15 @@
                 return;
             }
             
-            if (registerPlayerByName(name) === 'duplicate') {
+            const result = await registerPlayerByName(name);
+            if (result === 'duplicate') {
                 showToast(`Player "${name}" is already registered in this game.`, 'error');
                 return;
             }
+            if (result === 'cancelled') return;
 
             renderPlayersList();
+            if (tables.length > 0) renderTables();
             nameInput.value = '';
             hidePlayerNameDropdown();
             updateStats();
@@ -2029,6 +2242,13 @@
         function getAdminRecordForPlayer(name) {
             if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return null;
             return adminPlayers.find(p => (p.name || '').trim().toLowerCase() === (name || '').trim().toLowerCase()) || null;
+        }
+
+        function getBirthdayBonusSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.birthdayBonusEnabled === true
+            };
         }
 
         function isBirthdayMonth(name) {
@@ -2047,18 +2267,47 @@
             localStorage.setItem('birthdayBonusPaidSeason', JSON.stringify(birthdayBonusPaidSeason));
         }
 
+        function normalizeBirthdayBonusPaidSeason() {
+            if (!birthdayBonusPaidSeason || typeof birthdayBonusPaidSeason !== 'object') {
+                birthdayBonusPaidSeason = {};
+                return;
+            }
+            let changed = false;
+            const currentYear = new Date().getFullYear();
+            Object.keys(birthdayBonusPaidSeason).forEach((key) => {
+                const value = birthdayBonusPaidSeason[key];
+                if (value === true) {
+                    birthdayBonusPaidSeason[key] = currentYear;
+                    changed = true;
+                }
+            });
+            if (changed) persistBirthdayBonusPaidSeason();
+        }
+
+        function getBirthdayBonusPaidYear(name) {
+            const key = normalizePlayerNameKey(name);
+            const value = birthdayBonusPaidSeason[key];
+            if (value == null || value === false) return null;
+            if (value === true) return new Date().getFullYear();
+            const year = parseInt(value, 10);
+            return isNaN(year) ? null : year;
+        }
+
         function hasBirthdayBonusBeenPaidSeason(name) {
-            return !!birthdayBonusPaidSeason[normalizePlayerNameKey(name)];
+            const paidYear = getBirthdayBonusPaidYear(name);
+            if (!paidYear) return false;
+            return paidYear === new Date().getFullYear();
         }
 
         function setBirthdayBonusPaidSeason(name) {
             const key = normalizePlayerNameKey(name);
             if (!key) return;
-            birthdayBonusPaidSeason[key] = true;
+            birthdayBonusPaidSeason[key] = new Date().getFullYear();
             persistBirthdayBonusPaidSeason();
         }
 
         function getBirthdayIcon(player) {
+            if (!getBirthdayBonusSettings().enabled) return '';
             const name = typeof player === 'string' ? player : player?.name;
             const playerId = typeof player === 'object' ? player.id : null;
             const paidThisGame = typeof player === 'object' && player.birthdayBonusPaid;
@@ -2074,6 +2323,7 @@
         }
 
         function markBirthdayBonusPaid(playerId) {
+            if (!getBirthdayBonusSettings().enabled) return;
             const player = players.find(p => p.id === playerId);
             if (!player || !isBirthdayMonth(player.name) || player.birthdayBonusPaid) return;
             player.birthdayBonusPaid = true;
@@ -2085,6 +2335,7 @@
         }
 
         function getBirthdayPlayersThisMonth() {
+            if (!getBirthdayBonusSettings().enabled) return [];
             if (typeof adminPlayers === 'undefined' || !Array.isArray(adminPlayers)) return [];
             const currentMonth = new Date().getMonth() + 1;
             const seen = new Set();
@@ -2105,6 +2356,7 @@
         }
 
         function buildEmailBirthdayText() {
+            if (!getBirthdayBonusSettings().enabled) return 'Disabled';
             const birthdayPlayers = getBirthdayPlayersThisMonth();
             if (birthdayPlayers.length === 0) {
                 return 'None';
@@ -2145,6 +2397,7 @@
             }
             // Renumber remaining players sequentially
             players.forEach((p, i) => { p.number = i + 1; });
+            syncTablesAfterRegistrationChange();
             renderPlayersList();
             renderTables();
             updateStats();
@@ -2294,8 +2547,9 @@
                 player.table = null;
             });
             
-            // Calculate number of tables needed (max 8 players per table)
-            const numTables = Math.ceil(players.length / 8);
+            // Calculate number of tables needed
+            const maxPerTable = getMaxPlayersPerTable();
+            const numTables = Math.ceil(players.length / maxPerTable);
             tables = Array.from({ length: numTables }, (_, i) => i + 1);
             
             // Enhanced shuffling for better mixing - shuffle multiple times
@@ -2344,11 +2598,71 @@
             updateStats();
         }
         
+        function syncTablesAfterRegistrationChange() {
+            const assignedPlayers = players.filter((p) => p.table != null);
+            if (assignedPlayers.length === 0) {
+                tables = [];
+                players.forEach((p) => { p.table = null; });
+                return;
+            }
+
+            if (tables.length === 1 && tables[0] === 'final') {
+                players.forEach((p) => {
+                    if (!p.eliminated) p.table = 'final';
+                });
+                return;
+            }
+
+            const activePlayers = players.filter((p) => !p.eliminated && p.table != null && p.table !== 'final');
+            let numericTables = [...new Set(activePlayers.map((p) => p.table))]
+                .map(Number)
+                .filter((n) => !isNaN(n))
+                .sort((a, b) => a - b);
+
+            const maxPerTable = getMaxPlayersPerTable();
+            const targetTableCount = Math.max(1, Math.ceil(activePlayers.length / maxPerTable));
+            while (numericTables.length > targetTableCount) {
+                const tableToClose = numericTables[numericTables.length - 1];
+                const otherTables = numericTables.slice(0, -1);
+                activePlayers
+                    .filter((p) => p.table === tableToClose)
+                    .forEach((p, index) => {
+                        p.table = otherTables[index % otherTables.length];
+                    });
+                numericTables = otherTables;
+            }
+
+            const renumberMap = {};
+            numericTables.forEach((oldNum, index) => {
+                renumberMap[oldNum] = index + 1;
+            });
+            players.forEach((p) => {
+                if (p.table != null && p.table !== 'final' && renumberMap[p.table] != null) {
+                    p.table = renumberMap[p.table];
+                }
+            });
+            tables = numericTables.map((_, index) => index + 1);
+
+            for (let i = 0; i < players.length; i++) {
+                const before = players.map((p) => `${p.id}:${p.table}`).join('|');
+                rebalanceTables();
+                const after = players.map((p) => `${p.id}:${p.table}`).join('|');
+                if (before === after) break;
+            }
+        }
+
+        function tableMatches(playerTable, tableNumber) {
+            if (tableNumber === 'final') return playerTable === 'final';
+            const playerNum = Number(playerTable);
+            const tableNum = Number(tableNumber);
+            return !isNaN(playerNum) && !isNaN(tableNum) && playerNum === tableNum;
+        }
+
         function renderTables() {
             const container = document.getElementById('tablesList');
             container.innerHTML = '';
             tables.forEach(tableNumber => {
-                const tablePlayers = players.filter(p => p.table === tableNumber);
+                const tablePlayers = players.filter(p => tableMatches(p.table, tableNumber) && !p.eliminated);
                 const tableCard = document.createElement('div');
                 const isFinal = tableNumber === 'final';
                 tableCard.className = `rounded-xl shadow border ${isFinal ? 'border-yellow-400/40' : 'border-poker-accent/10'} bg-poker-primary`;
@@ -3351,6 +3665,44 @@
             return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '19';
         }
 
+        function getClubName() {
+            normalizeAdminSettings();
+            const name = (adminSettings.clubName || '').trim();
+            return name || 'Poker Club';
+        }
+
+        function getClubExportSlug() {
+            const slug = getClubName().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+            return slug || 'poker-club';
+        }
+
+        function applyClubBranding() {
+            const clubName = getClubName();
+            const season = getSeasonNumber();
+            document.title = `${clubName} Season ${season}`;
+
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', `${clubName} — registration, blind timer, and stats`);
+
+            const appleTitle = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+            if (appleTitle) appleTitle.setAttribute('content', clubName);
+
+            const loginHeading = document.getElementById('appLoginHeading');
+            if (loginHeading) loginHeading.innerHTML = `<i class="fas fa-sign-in-alt mr-2"></i>${clubName} Login`;
+
+            const footer = document.getElementById('appVersionFooter');
+            if (footer) footer.textContent = `${clubName} v2026.7.12`;
+
+            const clubLogo = document.getElementById('clubLogoPrimary');
+            if (clubLogo) clubLogo.alt = `${clubName} logo`;
+        }
+
+        function populateAdminClubForm() {
+            normalizeAdminSettings();
+            const clubNameInput = document.getElementById('adminClubName');
+            if (clubNameInput) clubNameInput.value = adminSettings.clubName || '';
+        }
+
         function populateAdminSeasonNumberForm() {
             normalizeAdminSettings();
             const seasonInput = document.getElementById('adminSeasonNumber');
@@ -3525,6 +3877,35 @@
             updateStats();
             renderAdminSeasonStatistics();
             showToast('Bad beat bonus pool reset to $0.', 'success');
+        }
+
+        function updateBirthdayBonusToggleButton() {
+            const btn = document.getElementById('toggleBirthdayBonusBtn');
+            if (!btn) return;
+            const enabled = getBirthdayBonusSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function populateAdminBirthdayBonusForm() {
+            normalizeAdminSettings();
+            updateBirthdayBonusToggleButton();
+        }
+
+        function toggleBirthdayBonusEnabled() {
+            normalizeAdminSettings();
+            adminSettings.birthdayBonusEnabled = !getBirthdayBonusSettings().enabled;
+            saveAdminSettings();
+            populateAdminBirthdayBonusForm();
+            renderPlayersList();
+            renderTables();
         }
 
         function parseMoneyAmount(value) {
@@ -4095,7 +4476,7 @@
                 { label: 'Season', value: stats.season, isMoney: false },
                 { label: 'Total Buy-in Cash', value: stats.totalBuyInCash, isMoney: true },
                 { label: 'Total Player Cash Payout', value: stats.totalPlayerCashPayout, isMoney: true },
-                { label: 'Total PASC Cash', value: stats.totalPascCash, isMoney: true },
+                { label: 'Total Club Cash', value: stats.totalPascCash, isMoney: true },
                 { label: 'Total Raffle Cash (net)', value: stats.totalRaffleCash, isMoney: true }
             ];
 
@@ -4126,7 +4507,7 @@
                     </div>
                 </div>
                 <div class="mt-4 bg-poker-primary/50 rounded-xl px-4 py-6 border border-poker-accent/20 text-center">
-                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Total PASC Cash for Season Final</h4>
+                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Total Club Cash for Season Final</h4>
                     <div class="text-4xl md:text-5xl font-bold text-green-400">${formatAdminGameMoney(seasonFinalTotal)}</div>
                 </div>
             `;
@@ -4155,7 +4536,7 @@
                         <th>Game Type</th>
                         <th>Game Count</th>
                         <th>Total Players</th>
-                        <th>Total PASC Cash</th>
+                        <th>Total Club Cash</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -4262,10 +4643,15 @@
             const wasElimination = !player.eliminated;
             if (!player.eliminated) {
                 player.eliminated = true;
+                player._tableBeforeElimination = player.table;
+                player.table = null;
                 eliminatedPlayers.push(player);
             } else {
                 player.eliminated = false;
-                // Remove from eliminatedPlayers
+                if (player._tableBeforeElimination != null) {
+                    player.table = player._tableBeforeElimination;
+                }
+                delete player._tableBeforeElimination;
                 eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== playerId);
             }
 
@@ -4285,49 +4671,153 @@
 
             renderPlayersList();
             renderTables();
-            rebalanceTables();
-            checkForFinalTable(); // <-- Add this line
+            if (!checkForFinalTable()) {
+                rebalanceTables({ afterElimination: true });
+            }
             updateStats();
             if (wasElimination && players.length >= 2 && players.filter(p => !p.eliminated).length === 1) {
                 showPage('stats');
             }
         }
 
-        // Automatically combine to Final Table when 8 players remain
+        // Automatically combine to Final Table when max players remain
         function checkForFinalTable() {
+            const maxPerTable = getMaxPlayersPerTable();
             const activePlayers = players.filter(p => !p.eliminated);
-            if (activePlayers.length === 8) {
-                // Assign all to table 'final'
+            if (activePlayers.length === maxPerTable) {
                 activePlayers.forEach(p => p.table = 'final');
+                players.forEach((p) => {
+                    if (p.eliminated) p.table = null;
+                });
                 tables = ['final'];
                 renderTables();
                 renderPlayersList();
+                return true;
             }
+            return false;
+        }
+
+        function consolidateToFullTables() {
+            const maxPerTable = getMaxPlayersPerTable();
+            const activePlayers = players.filter((p) => !p.eliminated && p.table !== 'final');
+            const count = activePlayers.length;
+            if (count === 0 || count % maxPerTable !== 0 || count <= maxPerTable) return false;
+
+            const targetTableCount = count / maxPerTable;
+            const tableMap = {};
+            activePlayers.forEach((p) => {
+                const tableNum = Number(p.table);
+                const key = !isNaN(tableNum) ? tableNum : 0;
+                if (!tableMap[key]) tableMap[key] = [];
+                tableMap[key].push(p);
+            });
+
+            let tableNumbers = Object.keys(tableMap)
+                .map(Number)
+                .filter((n) => n > 0)
+                .sort((a, b) => a - b);
+
+            if (tableNumbers.length === 0) {
+                tables = Array.from({ length: targetTableCount }, (_, i) => i + 1);
+                activePlayers
+                    .sort((a, b) => a.number - b.number)
+                    .forEach((p, index) => {
+                        p.table = Math.floor(index / maxPerTable) + 1;
+                    });
+                return true;
+            }
+
+            while (tableNumbers.length > targetTableCount) {
+                const closingTable = tableNumbers[tableNumbers.length - 1];
+                const movers = tableMap[closingTable] || [];
+                delete tableMap[closingTable];
+                tableNumbers.pop();
+
+                movers.forEach((player) => {
+                    const destination = tableNumbers
+                        .filter((t) => (tableMap[t] || []).length < maxPerTable)
+                        .sort((a, b) => (tableMap[a].length - tableMap[b].length))[0];
+                    if (destination == null) return;
+                    tableMap[destination].push(player);
+                    player.table = destination;
+                });
+            }
+
+            let safety = 0;
+            while (safety++ < count * 2) {
+                const under = tableNumbers.filter((t) => (tableMap[t] || []).length < maxPerTable);
+                const over = tableNumbers.filter((t) => (tableMap[t] || []).length > maxPerTable);
+                if (under.length === 0 && over.length === 0) break;
+                if (over.length === 0) break;
+
+                const fromTable = over.sort((a, b) => (tableMap[b].length - tableMap[a].length))[0];
+                const toTable = under.sort((a, b) => (tableMap[a].length - tableMap[b].length))[0];
+                if (fromTable == null || toTable == null) break;
+
+                const donorList = tableMap[fromTable];
+                const playerToMove = donorList.reduce((a, b) => (a.number > b.number ? a : b));
+                tableMap[fromTable] = donorList.filter((p) => p.id !== playerToMove.id);
+                tableMap[toTable].push(playerToMove);
+                playerToMove.table = toTable;
+            }
+
+            tableNumbers.sort((a, b) => a - b);
+            const renumberMap = {};
+            tableNumbers.forEach((oldNum, index) => {
+                renumberMap[oldNum] = index + 1;
+            });
+            tableNumbers.forEach((oldNum) => {
+                (tableMap[oldNum] || []).forEach((p) => {
+                    p.table = renumberMap[oldNum];
+                });
+            });
+            tables = Array.from({ length: targetTableCount }, (_, i) => i + 1);
+
+            players.forEach((p) => {
+                if (p.eliminated) p.table = null;
+            });
+            return true;
         }
         
-        function rebalanceTables() {
-            // Get all non-eliminated players
-            const activePlayers = players.filter(p => !p.eliminated);
-            if (activePlayers.length === 0) return;
-            // Group by table
+        function rebalanceTables(options = {}) {
+            const { afterElimination = false } = options;
+            if (tables.length === 1 && tables[0] === 'final') return;
+
+            const maxPerTable = getMaxPlayersPerTable();
+            const activePlayers = players.filter((p) => !p.eliminated && p.table != null && p.table !== 'final');
+            const count = activePlayers.length;
+            if (count === 0) return;
+
+            if (afterElimination && count % maxPerTable === 0 && count > maxPerTable) {
+                if (consolidateToFullTables()) {
+                    renderPlayersList();
+                    renderTables();
+                    showToast(`Tables balanced: ${count / maxPerTable} tables of ${maxPerTable} players.`, 'info');
+                    return;
+                }
+            }
+
             const tableMap = {};
-            activePlayers.forEach(p => {
-                if (!tableMap[p.table]) tableMap[p.table] = [];
-                tableMap[p.table].push(p);
+            activePlayers.forEach((p) => {
+                const tableNum = Number(p.table);
+                if (isNaN(tableNum)) return;
+                if (!tableMap[tableNum]) tableMap[tableNum] = [];
+                tableMap[tableNum].push(p);
             });
+
             const tableNumbers = Object.keys(tableMap).map(Number);
-            if (tableNumbers.length < 2) return; // No need to rebalance if only one table
-            // Find table with most and fewest players
-            let maxTable = tableNumbers[0], minTable = tableNumbers[0];
-            tableNumbers.forEach(tn => {
+            if (tableNumbers.length < 2) return;
+
+            let maxTable = tableNumbers[0];
+            let minTable = tableNumbers[0];
+            tableNumbers.forEach((tn) => {
                 if (tableMap[tn].length > tableMap[maxTable].length) maxTable = tn;
                 if (tableMap[tn].length < tableMap[minTable].length) minTable = tn;
             });
-            // If difference is more than 1, move one player from maxTable to minTable
+
             if (tableMap[maxTable].length - tableMap[minTable].length > 1) {
-                // Move the player with the highest player number from maxTable
                 const playerToMove = tableMap[maxTable].reduce((a, b) => (a.number > b.number ? a : b));
-                playerToMove.table = Number(minTable);
+                playerToMove.table = minTable;
                 renderPlayersList();
                 renderTables();
             }
@@ -4495,7 +4985,8 @@
                 ? Math.min(totalBuyInForGhost, ghostSettings.amountPerGame)
                 : 0;
 
-            const emailHeading = `PASC Stats for Season ${getSeasonNumber()} Game ${seasonGameNumber}`;
+            const clubName = getClubName();
+            const emailHeading = `${clubName} Stats for Season ${getSeasonNumber()} Game ${seasonGameNumber}`;
             const bodyLines = [
                 emailHeading,
                 '',
@@ -4506,9 +4997,9 @@
                 `Player Buy-in Cost: ${playerBuyInCost}`,
                 `Total Buy-in Cash: ${totalCashTaking}`,
                 '',
-                `PASC Game Cash (${pascPercent}): ${pascGameCash}`,
+                `Club Game Cash (${pascPercent}): ${pascGameCash}`,
                 `Raffle Cash: ${raffleCash}`,
-                `Total PASC Cash: ${pascCashTakings}`,
+                `Total Club Cash: ${pascCashTakings}`,
                 ''
             ];
 
@@ -4553,10 +5044,15 @@
                 );
             }
 
+            if (getBirthdayBonusSettings().enabled) {
+                bodyLines.push(
+                    `🥳Birthdays This Month 🥳`,
+                    birthdayText,
+                    ''
+                );
+            }
+
             bodyLines.push(
-                `🥳Birthdays This Month 🥳`,
-                birthdayText,
-                '',
                 `💲Player Cash Payout (${payoutPercent}): ${playerCashPayout}`,
                 '',
                 'Points Table:',
@@ -4622,8 +5118,8 @@
                     } else if (e.key === 'Escape') {
                         hidePlayerNameDropdown();
                     } else if (e.key === 'Enter') {
+                        e.preventDefault();
                         if (selectActiveDropdownItem()) {
-                            e.preventDefault();
                             return;
                         }
                         registerPlayer();
@@ -5011,7 +5507,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"birthdayBonusEnabled":false,"clubName":"Poker Club"}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -5032,6 +5528,9 @@
             if (adminSettings.ghostPlayerManualPaidOut == null) adminSettings.ghostPlayerManualPaidOut = 0;
             if (adminSettings.bonusHandManualPaidOut == null) adminSettings.bonusHandManualPaidOut = 0;
             if (adminSettings.badBeatBonusManualPaidOut == null) adminSettings.badBeatBonusManualPaidOut = 0;
+            if (adminSettings.maxPlayersPerTable == null) adminSettings.maxPlayersPerTable = 8;
+            if (adminSettings.birthdayBonusEnabled == null) adminSettings.birthdayBonusEnabled = false;
+            if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
         }
         normalizeAdminSettings();
         function populateAdminSettingsForm() {
@@ -5047,6 +5546,11 @@
             if (payout2ndInput) payout2ndInput.value = adminSettings.payout2ndPercent;
             if (ghostPlayerCashInput) ghostPlayerCashInput.value = adminSettings.ghostPlayerCash;
             updatePayout3rdPercentDisplay();
+        }
+        function populateAdminTableAssignmentsForm() {
+            normalizeAdminSettings();
+            const maxPlayersInput = document.getElementById('adminMaxPlayersPerTable');
+            if (maxPlayersInput) maxPlayersInput.value = adminSettings.maxPlayersPerTable ?? 8;
         }
         function updatePayout3rdPercentDisplay() {
             const payout1stInput = document.getElementById('adminPayout1stPercent');
@@ -5253,7 +5757,7 @@
         function exportAdminData() {
             const data = getAdminExportData();
             const stamp = new Date().toISOString().slice(0, 10);
-            const filename = `pasc-admin-data-${stamp}.json`;
+            const filename = `${getClubExportSlug()}-admin-data-${stamp}.json`;
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -5274,9 +5778,10 @@
             }
             const { data, filename, stamp } = exportAdminData();
             const recipients = recipientEmails.join('; ');
-            const subject = encodeURIComponent(`PASC Admin Data Export ${stamp}`);
+            const clubName = getClubName();
+            const subject = encodeURIComponent(`${clubName} Admin Data Export ${stamp}`);
             const body = encodeURIComponent(
-                `PASC Admin Data Export\n\n` +
+                `${clubName} Admin Data Export\n\n` +
                 `Exported: ${data.exportedAt}\n\n` +
                 `Please attach the downloaded file "${filename}" to this email.\n` +
                 `(Browsers cannot auto-attach files to Outlook/mailto.)\n\n` +
@@ -5328,22 +5833,25 @@
                     }
                     if (data.birthdayBonusPaidSeason && typeof data.birthdayBonusPaidSeason === 'object') {
                         birthdayBonusPaidSeason = data.birthdayBonusPaidSeason;
-                        persistBirthdayBonusPaidSeason();
+                        normalizeBirthdayBonusPaidSeason();
                     }
                     renderAdminPlayersList();
                     renderAdminSecurityList();
                     renderRegistrationDatalist();
+                    populateAdminClubForm();
                     populateAdminSettingsForm();
                     populateAdminSeasonNumberForm();
                     populateAdminBonusHandForm();
                     populateAdminGhostCashForm();
                     populateAdminBadBeatBonusForm();
+                    populateAdminBirthdayBonusForm();
+                    applyClubBranding();
                     updateStats();
                     renderPointsTablePage();
                     renderAdminGameManagement();
                     showToast('Admin data imported successfully.', 'success');
                 } catch (err) {
-                    showToast('Import failed: the selected file is not valid PASC admin data.', 'error');
+                    showToast('Import failed: the selected file is not valid club admin data.', 'error');
                 }
             };
             reader.readAsText(file);
@@ -5414,7 +5922,10 @@
                 clubExpenses: 0,
                 ghostPlayerManualPaidOut: 0,
                 bonusHandManualPaidOut: 0,
-                badBeatBonusManualPaidOut: 0
+                badBeatBonusManualPaidOut: 0,
+                maxPlayersPerTable: 8,
+                birthdayBonusEnabled: false,
+                clubName: 'Poker Club'
             };
         }
 
@@ -5563,6 +6074,15 @@
                 case 'season-statistics':
                     renderAdminSeasonStatistics();
                     break;
+                case 'table-assignments':
+                    populateAdminTableAssignmentsForm();
+                    break;
+                case 'birthday-bonus':
+                    populateAdminBirthdayBonusForm();
+                    break;
+                case 'club':
+                    populateAdminClubForm();
+                    break;
                 case 'blind-timer':
                     renderBlindLevelsList();
                     updateAfterLevelSelects();
@@ -5576,21 +6096,26 @@
         function showAdminPanel() {
             renderAdminPlayersList();
             populateAdminSeasonNumberForm();
+            populateAdminClubForm();
             populateAdminSettingsForm();
+            populateAdminTableAssignmentsForm();
             populateAdminBonusHandForm();
             populateAdminGhostCashForm();
             populateAdminBadBeatBonusForm();
+            populateAdminBirthdayBonusForm();
             renderAdminSeasonStatistics();
             renderBlindLevelsList();
             updateAfterLevelSelects();
             populateVoiceList();
             renderAdminGameManagement();
             renderAdminSecurityList();
+            applyClubBranding();
             const savedSection = localStorage.getItem('adminSettingsSection') || 'backup-restore';
             showAdminSettingsSection(savedSection);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            applyClubBranding();
             // Populate the registration dropdown from saved admin players
             renderRegistrationDatalist();
 
@@ -5719,6 +6244,22 @@
                     adminPlayerForm.removeAttribute('data-edit-idx');
                 });
             }
+            const adminClubForm = document.getElementById('adminClubForm');
+            if (adminClubForm) {
+                adminClubForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const clubName = document.getElementById('adminClubName').value.trim();
+                    if (!clubName) {
+                        showToast('Please enter a club name.', 'error');
+                        return;
+                    }
+                    adminSettings.clubName = clubName;
+                    saveAdminSettings();
+                    populateAdminClubForm();
+                    applyClubBranding();
+                    showToast('Club name saved!', 'success');
+                });
+            }
             const adminSeasonNumberForm = document.getElementById('adminSeasonNumberForm');
             if (adminSeasonNumberForm) {
                 adminSeasonNumberForm.addEventListener('submit', function(e) {
@@ -5731,8 +6272,24 @@
                     adminSettings.seasonNumber = seasonNumber;
                     saveAdminSettings();
                     populateAdminSeasonNumberForm();
+                    applyClubBranding();
                     renderAdminSeasonStatistics();
                     showToast('Season number saved!', 'success');
+                });
+            }
+            const adminTableAssignmentsForm = document.getElementById('adminTableAssignmentsForm');
+            if (adminTableAssignmentsForm) {
+                adminTableAssignmentsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const maxPlayersPerTable = parseInt(document.getElementById('adminMaxPlayersPerTable').value, 10);
+                    if (isNaN(maxPlayersPerTable) || maxPlayersPerTable < 2 || maxPlayersPerTable > 12) {
+                        showToast('Please enter a maximum between 2 and 12 players per table.', 'error');
+                        return;
+                    }
+                    adminSettings.maxPlayersPerTable = maxPlayersPerTable;
+                    saveAdminSettings();
+                    populateAdminTableAssignmentsForm();
+                    showToast('Table assignment settings saved!', 'success');
                 });
             }
             // Admin settings save
@@ -5830,6 +6387,7 @@
         });
 
         function printStats() {
+            const clubName = getClubName();
             // Hide navigation and non-stats content for printing
             const mainContent = document.querySelector('#stats');
             if (!mainContent) {
@@ -5845,7 +6403,7 @@
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>Poker Academy Social Club - Stats</title>
+                    <title>${clubName} - Stats</title>
                     <link rel=\"stylesheet\" href=\"https://cdn.tailwindcss.com\">
                     <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">
                     <style>
@@ -5897,7 +6455,7 @@
                     </style>
                 </head>
                 <body>
-                    <h1 class=\"text-3xl font-bold text-center mb-2\">Poker Academy Social Club - Stats</h1>
+                    <h1 class=\"text-3xl font-bold text-center mb-2\">${clubName} - Stats</h1>
                     <div>${mainContent.innerHTML}</div>
                 </body>
                 </html>
