@@ -1229,12 +1229,6 @@
                             <div id="ghostPlayerCashCardSection">
                                 <h3 class="text-lg font-semibold mb-2">Ghost Player Cash</h3>
                                 <div class="text-2xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
-                                <div id="ghostPlayerCashStatsSection" class="pt-2 mt-2">
-                                    <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
-                                        <input type="checkbox" id="ghostPlayerWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
-                                        <span>Ghost Player won this game (resets pool on save)</span>
-                                    </label>
-                                </div>
                             </div>
                             <div id="bonusHandStatsSection" class="border-t pt-2 mt-3 hidden">
                                 <h3 class="text-lg font-semibold mb-2">Bonus Hand</h3>
@@ -1343,7 +1337,7 @@
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">PASC Cash &amp; Payout</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player Cash</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
@@ -1456,7 +1450,7 @@
                                 </form>
                             </div>
                             <div id="adminSection-ghost-player-cash" class="admin-settings-section hidden">
-                                <h3>Ghost Player Cash</h3>
+                                <h3>Ghost Player</h3>
                                 <p class="admin-section-intro">Amount taken from each game before the percentage split. Builds up each game until the ghost player wins, then resets.</p>
                                 <div class="flex flex-wrap items-center gap-3 mb-3">
                                     <button type="button" onclick="toggleGhostPlayerCashEnabled()" id="toggleGhostPlayerCashBtn" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium transition-colors duration-300 text-white">
@@ -2421,8 +2415,6 @@
                 resetRaffleCashInputs();
                 const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
                 if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
-                const ghostPlayerWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
-                if (ghostPlayerWonCheckbox) ghostPlayerWonCheckbox.checked = false;
                 const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
                 if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
                 updateStats();
@@ -2555,7 +2547,7 @@
             }
             
             isTimerRunning = true;
-            ghostEligible = true; // Allow ghost player selection after timer starts
+            ghostEligible = getGhostPlayerCashSettings().enabled;
             timeLeft = blindLevels[currentBlindIndex].timeLeft;
             blindWarningGiven = false; // Reset warning for new level
             
@@ -2997,7 +2989,7 @@
         }
 
         function getGhostPlayerStatus() {
-            if (!window.selectedGhostPlayer) return '';
+            if (!getGhostPlayerCashSettings().enabled || !window.selectedGhostPlayer) return '';
             const ghostId = window.selectedGhostPlayer.id;
             const activePlayers = players.filter(p => !p.eliminated);
 
@@ -3040,6 +3032,34 @@
             const contribution = Math.max(0, parseFloat(contributionThisGame) || 0);
             const poolAmount = Math.max(0, parseFloat(pool) || 0);
             return currentGameSaved ? poolAmount : poolAmount + contribution;
+        }
+
+        function getCurrentSavedGame() {
+            if (!currentGameSaved || currentSavedGameId == null) return null;
+            return pointsTableHistory.find((g) => String(g.id) === String(currentSavedGameId)) || null;
+        }
+
+        function isGhostPlayerWonThisGame() {
+            if (!getGhostPlayerCashSettings().enabled || !window.selectedGhostPlayer) return false;
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.ghostPlayerCashPool?.wonThisGame != null) {
+                return savedGame.ghostPlayerCashPool.wonThisGame === true;
+            }
+            return getGhostPlayerStatus() === 'WINNER';
+        }
+
+        function getGhostPlayerPoolDisplayAmount(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.ghostPlayerCashPool) {
+                const pool = savedGame.ghostPlayerCashPool;
+                if (pool.wonThisGame) {
+                    return Number(pool.payoutThisGame) || 0;
+                }
+                if (pool.poolAfterGame != null) {
+                    return Number(pool.poolAfterGame) || 0;
+                }
+            }
+            return getPoolDisplayTotal(ghostPlayerPool, contributionThisGame);
         }
 
         function updateStats() {
@@ -3099,7 +3119,7 @@
                 ? Math.max(0, parseFloat(adminSettings.ghostPlayerCash) || 0)
                 : 20;
             const ghostSettings = getGhostPlayerCashSettings();
-            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            const ghostWonThisGame = isGhostPlayerWonThisGame();
             let ghostContributionThisGame = 0;
             if (ghostSettings.enabled) {
                 ghostContributionThisGame = Math.min(ghostPlayerCashSetting, totalCash);
@@ -3111,7 +3131,7 @@
             const statsPoolsCard = document.getElementById('statsPoolsCard');
             if (ghostPlayerCashEl) {
                 if (ghostSettings.enabled) {
-                    const totalGhostPayout = getPoolDisplayTotal(ghostPlayerPool, ghostContributionThisGame);
+                    const totalGhostPayout = getGhostPlayerPoolDisplayAmount(ghostContributionThisGame);
                     ghostPlayerCashEl.textContent = ghostWonThisGame && !currentGameSaved
                         ? `$${totalGhostPayout.toFixed(2)} (won — resets on save)`
                         : `$${totalGhostPayout.toFixed(2)}`;
@@ -3235,12 +3255,22 @@
             const blindTimerGhostSection = document.getElementById('blindTimerGhostPlayer');
             const blindTimerGhostNameDiv = document.getElementById('blindTimerGhostPlayerName');
             const activePlayers = players.filter(p => !p.eliminated);
-            const ghostStatus = getGhostPlayerStatus();
-            
-            if (window.selectedGhostPlayer) {
+
+            function hideGhostPlayerDisplays() {
+                if (ghostSection) ghostSection.classList.add('hidden');
+                if (ghostNameDiv) ghostNameDiv.textContent = '-';
+                if (blindTimerGhostSection) blindTimerGhostSection.classList.add('hidden');
+                if (blindTimerGhostNameDiv) blindTimerGhostNameDiv.textContent = '-';
+            }
+
+            if (!ghostSettings.enabled) {
+                window.selectedGhostPlayer = null;
+                ghostEligible = false;
+                hideGhostPlayerDisplays();
+            } else if (window.selectedGhostPlayer) {
+                const ghostStatus = getGhostPlayerStatus();
                 ghostSection.classList.remove('hidden');
                 ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
-                // Also show in blind timer
                 if (blindTimerGhostSection && blindTimerGhostNameDiv) {
                     blindTimerGhostSection.classList.remove('hidden');
                     blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
@@ -3271,19 +3301,12 @@
                 }
                 ghostSection.classList.remove('hidden');
                 ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
-                // Also show in blind timer
                 if (blindTimerGhostSection && blindTimerGhostNameDiv) {
                     blindTimerGhostSection.classList.remove('hidden');
                     blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
                 }
             } else {
-                ghostSection.classList.add('hidden');
-                ghostNameDiv.textContent = '-';
-                // Also hide in blind timer
-                if (blindTimerGhostSection && blindTimerGhostNameDiv) {
-                    blindTimerGhostSection.classList.add('hidden');
-                    blindTimerGhostNameDiv.textContent = '-';
-                }
+                hideGhostPlayerDisplays();
                 window.selectedGhostPlayer = null;
             }
             updateSaveGameButton();
@@ -3369,6 +3392,10 @@
         function toggleGhostPlayerCashEnabled() {
             normalizeAdminSettings();
             adminSettings.ghostPlayerEnabled = !adminSettings.ghostPlayerEnabled;
+            if (!adminSettings.ghostPlayerEnabled) {
+                window.selectedGhostPlayer = null;
+                ghostEligible = false;
+            }
             saveAdminSettings();
             populateAdminGhostCashForm();
             updateStats();
@@ -3381,8 +3408,6 @@
             recordSeasonPoolManualPayout('ghostPlayerManualPaidOut', ghostPlayerPool);
             ghostPlayerPool = 0;
             persistGhostPlayerPool();
-            const wonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
-            if (wonCheckbox) wonCheckbox.checked = false;
             populateAdminGhostCashForm();
             updateStats();
             renderAdminSeasonStatistics();
@@ -3602,9 +3627,10 @@
         }
 
         function collectStatsDashboardSnapshot(results) {
-            const ghostStatus = getGhostPlayerStatus();
-            const ghostName = window.selectedGhostPlayer?.name || '';
-            const ghostDisplay = window.selectedGhostPlayer
+            const ghostSettings = getGhostPlayerCashSettings();
+            const ghostStatus = ghostSettings.enabled ? getGhostPlayerStatus() : '';
+            const ghostName = ghostSettings.enabled ? (window.selectedGhostPlayer?.name || '') : '';
+            const ghostDisplay = ghostSettings.enabled && window.selectedGhostPlayer
                 ? formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus)
                 : '-';
             const startingStackEl = document.getElementById('startingStack');
@@ -3623,8 +3649,7 @@
             if (badBeatSettings.enabled) {
                 badBeatContribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
             }
-            const ghostSettings = getGhostPlayerCashSettings();
-            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            const ghostWonThisGame = ghostSettings.enabled && isGhostPlayerWonThisGame();
             const totalBuyInCash = parseMoneyAmount(getStatsText('totalCashTaking', '$0'));
             let ghostContribution = 0;
             if (ghostSettings.enabled) {
@@ -3690,7 +3715,7 @@
                     name: ghostName,
                     status: ghostStatus || '',
                     display: ghostDisplay,
-                    id: window.selectedGhostPlayer?.id ?? null
+                    id: ghostSettings.enabled ? (window.selectedGhostPlayer?.id ?? null) : null
                 },
                 startingStack: startingStackEl ? (startingStackEl.value || '') : '',
                 rebuyAddon: rebuyAddonEl ? (rebuyAddonEl.value || 'no') : 'no',
@@ -3744,7 +3769,7 @@
             if (wonCheckbox) wonCheckbox.checked = false;
 
             const ghostSettings = getGhostPlayerCashSettings();
-            const ghostWonThisGame = document.getElementById('ghostPlayerWonCheckbox')?.checked === true;
+            const ghostWonThisGame = stats.ghostPlayerCashPool?.wonThisGame === true;
             if (ghostSettings.enabled) {
                 if (ghostWonThisGame) {
                     ghostPlayerPool = 0;
@@ -3754,8 +3779,6 @@
                 }
                 persistGhostPlayerPool();
             }
-            const ghostWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
-            if (ghostWonCheckbox) ghostWonCheckbox.checked = false;
 
             const badBeatSettings = getBadBeatBonusSettings();
             const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
@@ -4185,6 +4208,7 @@
             const payout1st = document.getElementById('payout1st')?.textContent || '$0';
             const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
             const payout3rd = document.getElementById('payout3rd')?.textContent || '$0';
+            const ghostFeatureEnabled = getGhostPlayerCashSettings().enabled;
 
             function appendPointsRow(player, place) {
                 let points = 0;
@@ -4192,7 +4216,7 @@
                 let prize = '';
                 let medal = '';
                 let ghostLabel = '';
-                if (place <= 3 && window.selectedGhostPlayer && player.id === window.selectedGhostPlayer.id) {
+                if (ghostFeatureEnabled && place <= 3 && window.selectedGhostPlayer && player.id === window.selectedGhostPlayer.id) {
                     ghostLabel = `<span class="ml-2 inline-flex items-center px-2 py-1 rounded bg-indigo-700 text-white text-xs" style="white-space:nowrap;"><svg width='16' height='16' viewBox='0 0 48 48' fill='none' style='display:inline-block;vertical-align:middle;margin-right:2px;'><path d='M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z' fill='#fff' stroke='#6366f1' stroke-width='2'/><ellipse cx='18' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='30' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='24' cy='30' rx='3' ry='2' fill='#6366f1'/></svg>Ghost Player</span>`;
                 }
                 if (place === 1) {
@@ -4518,9 +4542,10 @@
             }
 
             if (ghostSettings.enabled) {
-                const totalPayout = getPoolDisplayTotal(ghostPlayerPool, ghostContributionThisGame);
+                const totalPayout = getGhostPlayerPoolDisplayAmount(ghostContributionThisGame);
                 const ghostName = window.selectedGhostPlayer?.name || '-';
-                const ghostStatus = getGhostPlayerStatus() || 'NOT WON';
+                const ghostWon = isGhostPlayerWonThisGame();
+                const ghostStatus = ghostWon ? 'WINNER' : (getGhostPlayerStatus() || 'NOT WON');
                 bodyLines.push(
                     `👻Ghost Player Cash Pool: ${formatEmailMoney(totalPayout, true)}`,
                     `👻Ghost Player: ${ghostName} - ${ghostStatus}`,
@@ -5411,8 +5436,6 @@
             resetRaffleCashInputs();
             const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
             if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
-            const ghostPlayerWonCheckbox = document.getElementById('ghostPlayerWonCheckbox');
-            if (ghostPlayerWonCheckbox) ghostPlayerWonCheckbox.checked = false;
             const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
             if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
             const gameTypeEl = document.getElementById('gameType');
