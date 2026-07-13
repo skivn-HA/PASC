@@ -525,7 +525,31 @@
         }
 
         #points-table h2 {
-            margin-bottom: 0.75rem !important;
+            margin-bottom: 0 !important;
+        }
+
+        #points-table .points-table-page-header {
+            margin-bottom: 0.75rem;
+        }
+
+        #points-table .points-table-email-btn {
+            flex-shrink: 0;
+            padding: 0.35rem 0.55rem;
+            font-size: 0.875rem;
+            line-height: 1;
+            border-radius: 0.375rem;
+            background: #ca8a04;
+            color: #fff;
+            transition: background-color 0.2s;
+        }
+
+        #points-table .points-table-email-btn:hover:not(:disabled) {
+            background: #a16207;
+        }
+
+        #points-table .points-table-email-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         #points-table .points-table-page-intro {
@@ -581,6 +605,26 @@
             border: none;
             padding: 0;
             font-size: 0.875rem;
+        }
+
+        #points-table .points-email-btn {
+            color: #facc15;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            line-height: 1;
+        }
+
+        #points-table .points-email-btn:hover:not(:disabled) {
+            color: #fde047;
+        }
+
+        #points-table .points-email-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
         
         .timer-display {
@@ -1508,9 +1552,15 @@
             <!-- Points Table Page -->
             <div id="points-table" class="page hidden">
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-6xl mx-auto">
-                    <h2 class="text-2xl font-bold mb-2 text-yellow-400">
-                        <i class="fas fa-trophy mr-2"></i>Points Table
-                    </h2>
+                    <div class="points-table-page-header flex justify-between items-start gap-3">
+                        <h2 class="text-2xl font-bold text-yellow-400">
+                            <i class="fas fa-trophy mr-2"></i>Points Table
+                        </h2>
+                        <button type="button" id="emailPointsTableBtn" onclick="emailPointsTablePage()" class="points-table-email-btn" disabled title="Email points table to all members with a registered email address">
+                            <i class="fas fa-envelope" aria-hidden="true"></i>
+                            <span class="sr-only">Email Points Table</span>
+                        </button>
+                    </div>
                     <p class="points-table-page-intro">Season standings across all saved games. Players are ranked by total points, highest first.</p>
                     <div id="pointsTableLeaderboard" class="overflow-x-auto">
                         <!-- Leaderboard populated by JavaScript -->
@@ -4763,6 +4813,13 @@
             return '$' + num.toFixed(2);
         }
 
+        function formatPointsTableGameRatio(totalPoints, gamesPlayed) {
+            const games = Number(gamesPlayed) || 0;
+            if (games <= 0) return '-';
+            const ratio = (Number(totalPoints) || 0) / games;
+            return ratio.toFixed(1);
+        }
+
         function formatResultPlaceLabel(place) {
             const suffix = place === 1 ? 'st' : place === 2 ? 'nd' : place === 3 ? 'rd' : 'th';
             return `${place}${suffix}`;
@@ -4780,18 +4837,32 @@
 
         function renderPointsTablePage() {
             const container = document.getElementById('pointsTableLeaderboard');
+            const emailBtn = document.getElementById('emailPointsTableBtn');
             if (!container) return;
             container.innerHTML = '';
 
             if (!Array.isArray(pointsTableHistory) || pointsTableHistory.length === 0) {
+                if (emailBtn) {
+                    emailBtn.disabled = true;
+                    emailBtn.title = 'No saved games to email yet';
+                }
                 container.innerHTML = '<div class="text-gray-400">No saved games yet. Finish a tournament on the Stats Dashboard and press Save Game.</div>';
                 return;
             }
 
             const aggregates = getPointsTableAggregates();
             if (aggregates.length === 0) {
+                if (emailBtn) {
+                    emailBtn.disabled = true;
+                    emailBtn.title = 'No player results to email yet';
+                }
                 container.innerHTML = '<div class="text-gray-400">No player results found in saved games.</div>';
                 return;
+            }
+
+            if (emailBtn) {
+                emailBtn.disabled = false;
+                emailBtn.title = 'Email points table to all members with a registered email address';
             }
 
             const minGamesForFinal = getMinGamesForSeasonFinal();
@@ -4810,10 +4881,12 @@
                         <th>#</th>
                         <th>Player</th>
                         <th>Games</th>
-                        <th>Qualified</th>
                         <th>Total Points</th>
+                        <th>Game Ratio</th>
                         <th>Total Cash Won</th>
+                        <th>Qualified</th>
                         <th>History</th>
+                        <th>Email</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -4828,16 +4901,22 @@
                     : qualification === 'No'
                         ? 'text-red-400 font-semibold'
                         : '';
+                const playerEmail = getAdminPlayerEmailByName(player.name);
+                const emailTitle = playerEmail
+                    ? `Email ${player.name} their points table summary and game history`
+                    : `No email address on file for ${player.name}`;
                 const mainRow = document.createElement('tr');
                 mainRow.className = 'points-player-row';
                 mainRow.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${player.name}</td>
                     <td>${player.games.length}</td>
-                    <td class="${qualificationClass}">${qualification}</td>
                     <td>${player.totalPoints}</td>
+                    <td>${formatPointsTableGameRatio(player.totalPoints, player.games.length)}</td>
                     <td>${formatPointsTableMoney(player.totalCashWon)}</td>
+                    <td class="${qualificationClass}">${qualification}</td>
                     <td><button type="button" class="points-toggle-btn" data-history-target="${historyId}" onclick="togglePointsPlayerHistory('${historyId}')">Show games</button></td>
+                    <td><button type="button" class="points-email-btn" onclick="emailPointsTablePlayer(${index})" ${playerEmail ? '' : 'disabled'} title="${emailTitle}">@</button></td>
                 `;
                 tbody.appendChild(mainRow);
 
@@ -4852,7 +4931,7 @@
                     })
                     .join('');
                 historyRow.innerHTML = `
-                    <td colspan="7">
+                    <td colspan="9">
                         <ul class="points-history-list">${historyItems}</ul>
                     </td>
                 `;
@@ -4860,6 +4939,113 @@
             });
 
             container.appendChild(table);
+        }
+
+        function getAdminPlayerEmailByName(name) {
+            const record = getAdminRecordForPlayer(name);
+            const email = (record?.email || '').trim();
+            return email.includes('@') ? email : '';
+        }
+
+        function getSortedPointsTablePlayerGames(games) {
+            return [...games].sort((a, b) => String(b.date).localeCompare(String(a.date)) || (b.gameId || 0) - (a.gameId || 0));
+        }
+
+        function formatPointsTablePlayerGameLine(game) {
+            const cashText = game.cashWon > 0 ? ` — ${formatPointsTableMoney(game.cashWon)}` : '';
+            return `${game.date} — ${game.gameType} — ${formatResultPlaceLabel(game.place)} — ${game.points} pts${cashText}`;
+        }
+
+        function buildPointsTablePlayerSummaryLines(player, rank) {
+            const games = player.games.length;
+            const qualified = getSeasonFinalQualificationLabel(games);
+            const ratio = formatPointsTableGameRatio(player.totalPoints, games);
+            const cash = formatPointsTableMoney(player.totalCashWon);
+            return [
+                rank != null ? `${rank}. ${player.name}` : player.name,
+                `   Games: ${games}  |  Points: ${player.totalPoints}  |  Ratio: ${ratio}  |  Cash Won: ${cash}  |  Qualified: ${qualified}`
+            ];
+        }
+
+        function buildPointsTablePlayerEmailLines(player, rank) {
+            const lines = buildPointsTablePlayerSummaryLines(player, rank);
+            const gameLines = getSortedPointsTablePlayerGames(player.games).map((game) => `   ${formatPointsTablePlayerGameLine(game)}`);
+            if (gameLines.length > 0) {
+                lines.push('', 'Game History:');
+                lines.push(...gameLines);
+            }
+            return lines;
+        }
+
+        function buildSeasonPointsTableEmailContent() {
+            if (!Array.isArray(pointsTableHistory) || pointsTableHistory.length === 0) return null;
+            const aggregates = getPointsTableAggregates();
+            if (aggregates.length === 0) return null;
+
+            const clubName = getClubName();
+            const season = getSeasonNumber();
+            const heading = `${clubName} Points Table — Season ${season}`;
+            const rows = [heading, ''];
+
+            aggregates.forEach((player, index) => {
+                rows.push(...buildPointsTablePlayerSummaryLines(player, index + 1));
+                rows.push('');
+            });
+
+            if (rows[rows.length - 1] === '') rows.pop();
+
+            return { heading, bodyLines: rows };
+        }
+
+        function buildPointsTablePlayerEmailContent(playerIndex) {
+            const aggregates = getPointsTableAggregates();
+            const player = aggregates[playerIndex];
+            if (!player) return null;
+
+            const clubName = getClubName();
+            const season = getSeasonNumber();
+            const heading = `${clubName} Points Table — Season ${season} — ${player.name}`;
+            const bodyLines = [
+                heading,
+                '',
+                ...buildPointsTablePlayerEmailLines(player, playerIndex + 1)
+            ];
+            return { heading, bodyLines, recipientEmail: getAdminPlayerEmailByName(player.name) };
+        }
+
+        function emailPointsTablePage() {
+            const report = buildSeasonPointsTableEmailContent();
+            if (!report) {
+                showToast('No points table data to email yet.', 'info');
+                return;
+            }
+
+            const recipientEmails = getAdminPlayerEmails();
+            if (recipientEmails.length === 0) {
+                showToast('No email addresses found in Settings > Player Management.', 'error');
+                return;
+            }
+
+            const subject = encodeURIComponent(report.heading);
+            const body = encodeURIComponent(report.bodyLines.join('\n'));
+            const recipients = recipientEmails.join('; ');
+            window.location.href = `mailto:${recipients}?subject=${subject}&body=${body}`;
+        }
+
+        function emailPointsTablePlayer(playerIndex) {
+            const report = buildPointsTablePlayerEmailContent(playerIndex);
+            if (!report) {
+                showToast('Could not build email for this player.', 'error');
+                return;
+            }
+            if (!report.recipientEmail) {
+                showToast('No email address on file for this player in Settings > Player Management.', 'error');
+                return;
+            }
+
+            const subject = encodeURIComponent(report.heading);
+            const body = encodeURIComponent(report.bodyLines.join('\n'));
+            window.location.href = `mailto:${report.recipientEmail}?subject=${subject}&body=${body}`;
         }
 
         function formatAdminGameMoney(amount) {
