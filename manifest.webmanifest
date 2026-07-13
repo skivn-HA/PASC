@@ -1,6 +1,6 @@
 {
-  "name": "Poker Academy Social Club",
-  "short_name": "PASC",
+  "name": "Poker Club",
+  "short_name": "Poker Club",
   "description": "Poker tournament registration, blind timer, and stats dashboard",
   "start_url": "./index.html",
   "scope": "./",
