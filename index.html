@@ -271,14 +271,22 @@
 
         #admin #adminGameManagementList table th,
         #admin #adminGameManagementList table td {
-            padding: 0.375rem 0.5rem !important;
+            padding: 0.25rem 0.5rem !important;
             text-align: left;
-            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
         }
 
         #admin #adminGameManagementList table {
             border-collapse: collapse;
             width: 100%;
+            line-height: 1.4;
+        }
+
+        #admin #adminGameManagementList table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #admin #adminGameManagementList table tbody tr:last-child {
+            border-bottom: none;
         }
 
         #admin #adminGameManagementList table thead th {
@@ -289,33 +297,34 @@
         #admin .admin-settings-layout {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 0.75rem;
         }
 
         @media (min-width: 1024px) {
             #admin .admin-settings-layout {
                 flex-direction: row;
                 align-items: flex-start;
+                gap: 0.75rem;
             }
         }
 
         #admin #adminSettingsNav {
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 3px;
             flex-shrink: 0;
         }
 
         @media (min-width: 1024px) {
             #admin #adminSettingsNav {
-                width: 13rem;
+                width: 12.5rem;
             }
         }
 
         #admin .admin-settings-nav-btn {
             text-align: left;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
             background: rgba(5, 109, 120, 0.35);
             color: #e5e7eb;
             font-weight: 500;
@@ -353,9 +362,55 @@
             margin-bottom: 0.375rem !important;
         }
 
+        #admin .admin-about-list {
+            display: grid;
+            gap: 0.75rem;
+            max-width: 28rem;
+        }
+
+        #admin .admin-about-item {
+            display: grid;
+            grid-template-columns: 8.5rem 1fr;
+            gap: 0.75rem;
+            align-items: baseline;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #admin .admin-about-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        #admin .admin-about-item dt {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: rgba(209, 213, 219, 0.85);
+        }
+
+        #admin .admin-about-item dd {
+            margin: 0;
+            font-size: 0.95rem;
+            color: #f9fafb;
+            font-weight: 600;
+        }
+
         #admin #adminSecurityList table th,
         #admin #adminSecurityList table td {
             text-align: left;
+        }
+
+        #admin #adminSecurityList table {
+            border-collapse: collapse;
+            line-height: 1.4;
+        }
+
+        #admin #adminSecurityList table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #admin #adminSecurityList table tbody tr:last-child {
+            border-bottom: none;
         }
 
         #admin #adminLogoutBtn {
@@ -415,6 +470,27 @@
             margin-top: 0.375rem !important;
         }
 
+        @keyframes raffleCashPulse {
+            0%, 100% {
+                border-color: #f7931a;
+                box-shadow: 0 0 0 0 rgba(247, 147, 26, 0.5);
+            }
+            50% {
+                border-color: #fbbf24;
+                box-shadow: 0 0 0 4px rgba(247, 147, 26, 0.35);
+            }
+        }
+
+        #stats #raffleCash.raffle-cash-alert {
+            border-color: #f7931a !important;
+            animation: raffleCashPulse 1.4s ease-in-out infinite;
+        }
+
+        #stats #raffleCash.raffle-cash-alert:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(247, 147, 26, 0.45);
+        }
+
         #stats .mb-4:not(h2):not(.grid) {
             margin-bottom: 0.375rem !important;
         }
@@ -461,13 +537,17 @@
         #points-table table {
             border-collapse: collapse;
             width: 100%;
+            line-height: 1.4;
         }
 
         #points-table table th,
         #points-table table td {
-            padding: 0.5rem 0.75rem;
+            padding: 0.25rem 0.5rem;
             text-align: left;
-            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+        }
+
+        #points-table table tbody tr.points-player-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #points-table table thead th {
@@ -477,9 +557,8 @@
 
         #points-table .points-history-row td {
             background: rgba(17, 24, 39, 0.55);
-            padding-top: 0.25rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(209, 213, 219, 0.4);
+            padding: 0.25rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #points-table .points-history-list {
@@ -529,6 +608,83 @@
         .eliminated {
             opacity: 0.6;
             background-color: rgba(138, 43, 226, 0.08);
+        }
+
+        #eliminatedPlayersSection {
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+        }
+
+        #eliminatedPlayersSection .eliminated-players-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        #eliminatedPlayersSection h3 {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.25;
+        }
+
+        #toggleEliminatedPlayersBtn {
+            color: #facc15;
+            text-decoration: underline;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        #eliminatedPlayersList {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            align-items: flex-start;
+        }
+
+        #eliminatedPlayersList.hidden {
+            display: none !important;
+        }
+
+        #eliminatedPlayersList:not(.hidden) {
+            display: flex;
+        }
+
+        #eliminatedPlayersList .eliminated-player-row {
+            display: inline-flex;
+            align-items: center;
+            width: auto;
+            max-width: 100%;
+            gap: 0.375rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            background: rgba(127, 29, 29, 0.35);
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+
+        #eliminatedPlayersList .eliminated-player-row .eliminated-player-name {
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        #eliminatedPlayersList .eliminated-player-row .eliminated-player-table {
+            color: rgba(209, 213, 219, 0.7);
+            font-size: 0.6875rem;
+            white-space: nowrap;
+        }
+
+        #eliminatedPlayersList .eliminated-player-row .eliminated-restore-btn {
+            padding: 0.0625rem 0.3125rem;
+            font-size: 0.625rem;
+            line-height: 1.2;
+            border-radius: 0.25rem;
         }
         
         @keyframes sparkle {
@@ -833,6 +989,14 @@
             color: #f87171;
         }
 
+        .pasc-modal-icon.pasc-modal-icon-raffle {
+            font-size: 4.5rem;
+            line-height: 1;
+            color: #facc15;
+            transform: rotate(-10deg);
+            margin-bottom: 1rem;
+        }
+
         .pasc-modal-message {
             color: #f9fafb;
             font-size: 1rem;
@@ -1100,6 +1264,15 @@
                     <div id="tablesList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <!-- Tables will be added here -->
                     </div>
+                    <div id="eliminatedPlayersSection" class="hidden mt-6 border-t border-poker-accent/20 pt-4">
+                        <div class="eliminated-players-header">
+                            <h3 class="font-semibold text-red-400">
+                                <i class="fas fa-skull mr-1"></i>Eliminated Players
+                            </h3>
+                            <button type="button" id="toggleEliminatedPlayersBtn" onclick="toggleEliminatedPlayersList()">Show</button>
+                        </div>
+                        <div id="eliminatedPlayersList" class="hidden"></div>
+                    </div>
                 </div>
             </div>
             
@@ -1187,7 +1360,7 @@
                         <button onclick="emailStats()" id="emailStatsBtn" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold shadow transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-yellow-600" disabled title="Save the game before emailing stats">
                             <i class="fas fa-envelope mr-2"></i>Email Stats
                         </button>
-                        <button onclick="printStats()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors duration-300">
+                        <button onclick="printStats()" id="printStatsBtn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-blue-600" disabled title="Save the game before printing stats">
                             <i class="fas fa-print mr-2"></i>Print Stats
                         </button>
                     </div>
@@ -1215,7 +1388,7 @@
                             <h3 class="text-lg font-semibold mb-2">Total Buy-in Cash</h3>
                             <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
                             <div class="border-t border-poker-accent/20 pt-2 mt-3">
-                                <div class="text-sm font-semibold text-white mb-1">Raffle Cash</div>
+                                <h3 class="text-lg font-semibold mb-2">Raffle Cash</h3>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
                                     <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCash')" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
@@ -1246,8 +1419,12 @@
                                 <div class="text-2xl font-bold text-green-400 mb-1" id="bonusHandPoolDisplay">$0.00</div>
                                 <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
                                     <input type="checkbox" id="bonusHandWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
-                                    <span>Bonus Hand won this game (resets pool on save)</span>
+                                    <span>WON</span>
                                 </label>
+                                <div id="bonusHandWinnerRow" class="mt-2 hidden">
+                                    <label for="bonusHandWinnerName" class="block text-xs text-poker-text/80 mb-1">Winner name</label>
+                                    <input type="text" id="bonusHandWinnerName" placeholder="Player name" oninput="updateStats()" class="w-full px-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                </div>
                             </div>
                             <div id="badBeatBonusStatsSection" class="border-t pt-2 mt-3 hidden">
                                 <h3 class="text-lg font-semibold mb-2">Bad Beat Bonus</h3>
@@ -1255,8 +1432,12 @@
                                 <div class="text-2xl font-bold text-green-400 mb-1" id="badBeatBonusPoolDisplay">$0.00</div>
                                 <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
                                     <input type="checkbox" id="badBeatBonusWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
-                                    <span>Bad Beat Bonus won this game (resets pool on save)</span>
+                                    <span>WON</span>
                                 </label>
+                                <div id="badBeatBonusWinnerRow" class="mt-2 hidden">
+                                    <label for="badBeatBonusWinnerName" class="block text-xs text-poker-text/80 mb-1">Winner name</label>
+                                    <input type="text" id="badBeatBonusWinnerName" placeholder="Player name" oninput="updateStats()" class="w-full px-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                </div>
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
@@ -1343,21 +1524,20 @@
                     <h2 class="text-2xl font-bold mb-4 text-red-400 flex items-center"><i class="fas fa-cog mr-2"></i>Settings</h2>
                     <div id="adminPanelSection" class="admin-settings-layout">
                         <nav id="adminSettingsNav" aria-label="Settings sections">
-                            <button type="button" class="admin-settings-nav-btn active" data-admin-section="backup-restore" onclick="showAdminSettingsSection('backup-restore')">Backup / Restore</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="club" onclick="showAdminSettingsSection('club')">Club</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="general" onclick="showAdminSettingsSection('general')">General</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">Club Cash &amp; Payout</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="birthday-bonus" onclick="showAdminSettingsSection('birthday-bonus')">Birthday Bonus</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="table-assignments" onclick="showAdminSettingsSection('table-assignments')">Table Assignments</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="season-number" onclick="showAdminSettingsSection('season-number')">Season Number</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="game-management" onclick="showAdminSettingsSection('game-management')">Game Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="season-statistics" onclick="showAdminSettingsSection('season-statistics')">Season Statistics</button>
+                            <button type="button" class="admin-settings-nav-btn active" data-admin-section="backup-restore" onclick="showAdminSettingsSection('backup-restore')">Backup / Restore</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="reset-app" onclick="showAdminSettingsSection('reset-app')">Reset App</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="about" onclick="showAdminSettingsSection('about')">About</button>
                         </nav>
                         <div id="adminSettingsBody">
                             <div id="adminSection-player-management" class="admin-settings-section hidden">
@@ -1383,15 +1563,36 @@
                                 </form>
                                 <div id="adminPlayersList" class="overflow-x-auto"></div>
                             </div>
-                            <div id="adminSection-club" class="admin-settings-section hidden">
-                                <h3>Club</h3>
-                                <p class="admin-section-intro">Set your club name. It appears on the login screen, page title, emails, exports, and reports throughout the app.</p>
-                                <form id="adminClubForm" class="flex flex-wrap items-end gap-4">
-                                    <div class="flex flex-col flex-1 min-w-[200px] max-w-md">
-                                        <label for="adminClubName" class="text-sm font-semibold mb-1">Club Name</label>
-                                        <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                            <div id="adminSection-general" class="admin-settings-section hidden">
+                                <h3>General</h3>
+                                <p class="admin-section-intro">Club name, season number, table seating limits, and season final qualification rules used across registration, reports, and the Points Table.</p>
+                                <form id="adminGeneralForm" class="flex flex-col gap-6">
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col flex-1 min-w-[200px] max-w-md">
+                                            <label for="adminClubName" class="text-sm font-semibold mb-1">Club Name</label>
+                                            <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                        </div>
                                     </div>
-                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col">
+                                            <label for="adminSeasonNumber" class="text-sm font-semibold mb-1">Season Number</label>
+                                            <input type="number" id="adminSeasonNumber" min="1" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col">
+                                            <label for="adminMaxPlayersPerTable" class="text-sm font-semibold mb-1">Maximum Players per Table</label>
+                                            <input type="number" id="adminMaxPlayersPerTable" min="2" max="12" step="1" value="8" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <div class="flex flex-col max-w-md">
+                                            <label for="adminMinGamesForSeasonFinal" class="text-sm font-semibold mb-1">Minimum Games Played to Qualify for Season Final</label>
+                                            <input type="number" id="adminMinGamesForSeasonFinal" min="0" step="1" value="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                            <p class="text-xs text-poker-text/70 mt-1">Set to 0 to disable. Players need at least this many saved games to show as qualified on the Points Table.</p>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="self-start px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                                 </form>
                             </div>
                             <div id="adminSection-security" class="admin-settings-section hidden">
@@ -1430,17 +1631,6 @@
                                     </button>
                                     <input type="file" id="adminImportFile" accept="application/json,.json" class="hidden" onchange="importAdminData(event)">
                                 </div>
-                            </div>
-                            <div id="adminSection-season-number" class="admin-settings-section hidden">
-                                <h3>Season Number</h3>
-                                <p class="admin-section-intro">The current season number used in Email Stats subject lines and headings.</p>
-                                <form id="adminSeasonNumberForm" class="flex flex-wrap items-end gap-4">
-                                    <div class="flex flex-col">
-                                        <label for="adminSeasonNumber" class="text-sm font-semibold mb-1">Season Number</label>
-                                        <input type="number" id="adminSeasonNumber" min="1" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                    </div>
-                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                </form>
                             </div>
                             <div id="adminSection-pasc-cash" class="admin-settings-section hidden">
                                 <h3>Club Cash &amp; Payout Settings</h3>
@@ -1554,17 +1744,6 @@
                                     </button>
                                 </div>
                             </div>
-                            <div id="adminSection-table-assignments" class="admin-settings-section hidden">
-                                <h3>Table Assignments</h3>
-                                <p class="admin-section-intro">Set the maximum number of players at each table. During registration, new players are seated using this limit. After the game starts, when remaining players reach a multiple of this number, players are moved from other tables to form full tables.</p>
-                                <form id="adminTableAssignmentsForm" class="flex flex-wrap items-end gap-4">
-                                    <div class="flex flex-col">
-                                        <label for="adminMaxPlayersPerTable" class="text-sm font-semibold mb-1">Maximum Players per Table</label>
-                                        <input type="number" id="adminMaxPlayersPerTable" min="2" max="12" step="1" value="8" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                    </div>
-                                    <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                </form>
-                            </div>
                             <div id="adminSection-blind-timer" class="admin-settings-section hidden">
                                 <h3>Blind Timer Settings</h3>
                                 <p class="admin-section-intro">Configure blind levels, break times, and the voice used for timer announcements.</p>
@@ -1627,6 +1806,28 @@
                                     </button>
                                 </div>
                             </div>
+                            <div id="adminSection-about" class="admin-settings-section hidden">
+                                <h3>About</h3>
+                                <p class="admin-section-intro">Application information and license details.</p>
+                                <dl class="admin-about-list">
+                                    <div class="admin-about-item">
+                                        <dt>Name</dt>
+                                        <dd id="aboutAppName">Poker Manager</dd>
+                                    </div>
+                                    <div class="admin-about-item">
+                                        <dt>Version</dt>
+                                        <dd id="aboutAppVersion">—</dd>
+                                    </div>
+                                    <div class="admin-about-item">
+                                        <dt>License Number</dt>
+                                        <dd id="aboutLicenseNumber">—</dd>
+                                    </div>
+                                    <div class="admin-about-item">
+                                        <dt>Licensed To</dt>
+                                        <dd id="aboutLicensedTo">—</dd>
+                                    </div>
+                                </dl>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1636,11 +1837,14 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Club v2026.7.12</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.13</p>
         </div>
     </div>
 
     <script>
+        const PASC_APP_NAME = 'Poker Manager';
+        const PASC_APP_VERSION = '2026.7.13';
+
         // Global variables
         let players = [];
         let tables = [];
@@ -1649,6 +1853,8 @@
         let timerInterval;
         let timeLeft = 0;
         let isTimerRunning = false;
+        let gameStarted = false;
+        let eliminatedPlayersListVisible = false;
         let eliminatedPlayers = [];
         let declaredWinner = null;
         let currentGameSaved = false;
@@ -1738,11 +1944,28 @@
             if (resolve) resolve(result);
         }
 
+        function getPascModalIconMarkup(icon, danger) {
+            if (icon === 'raffle') {
+                return '<i class="fas fa-ticket"></i>';
+            }
+            if (danger) {
+                return '<i class="fas fa-exclamation-triangle"></i>';
+            }
+            return '<i class="fas fa-question-circle"></i>';
+        }
+
+        function getPascModalIconClassName(icon, danger) {
+            if (icon === 'raffle') return 'pasc-modal-icon pasc-modal-icon-raffle';
+            if (danger) return 'pasc-modal-icon pasc-modal-icon-danger';
+            return 'pasc-modal-icon';
+        }
+
         function showConfirm(message, options = {}) {
             const {
                 confirmText = 'Confirm',
                 cancelText = 'Cancel',
-                danger = false
+                danger = false,
+                icon = danger ? 'danger' : 'question'
             } = options;
 
             return new Promise((resolve) => {
@@ -1761,10 +1984,8 @@
 
                 pascModalResolve = resolve;
                 messageEl.textContent = message;
-                iconEl.className = `pasc-modal-icon${danger ? ' pasc-modal-icon-danger' : ''}`;
-                iconEl.innerHTML = danger
-                    ? '<i class="fas fa-exclamation-triangle"></i>'
-                    : '<i class="fas fa-question-circle"></i>';
+                iconEl.className = getPascModalIconClassName(icon, danger);
+                iconEl.innerHTML = getPascModalIconMarkup(icon, danger);
 
                 actionsEl.innerHTML = '';
                 const cancelBtn = document.createElement('button');
@@ -1961,6 +2182,9 @@
             if (pageId === 'stats') {
                 updateStats();
             }
+            if (pageId === 'registration') {
+                renderTables();
+            }
             if (pageId === 'blind-timer') {
                 updateStats();
                 requestAnimationFrame(() => requestAnimationFrame(fitStandardBlindTimer));
@@ -2059,6 +2283,10 @@
             document.querySelectorAll('#pauseBtn').forEach(btn => btn.classList.add('hidden'));
         }
 
+        function isGameStarted() {
+            return gameStarted;
+        }
+
         function startGame() {
             const gameType = (document.getElementById('gameType')?.value || '').trim();
             if (!gameType) {
@@ -2069,6 +2297,9 @@
                 showToast('Please add at least one blind level in Settings > Blind Timer.', 'error');
                 return;
             }
+
+            gameStarted = true;
+            renderTables();
 
             if (isTimerRunning || currentBlindIndex !== 0) {
                 showPage('blind-timer');
@@ -2607,9 +2838,29 @@
             }
 
             if (tables.length === 1 && tables[0] === 'final') {
-                players.forEach((p) => {
-                    if (!p.eliminated) p.table = 'final';
-                });
+                const activePlayers = players.filter((p) => !p.eliminated);
+                const maxPerTable = getMaxPlayersPerTable();
+
+                if (activePlayers.length <= maxPerTable) {
+                    activePlayers.forEach((p) => {
+                        p.table = 'final';
+                    });
+                    return;
+                }
+
+                const targetTableCount = Math.ceil(activePlayers.length / maxPerTable);
+                activePlayers
+                    .sort((a, b) => a.number - b.number)
+                    .forEach((p, index) => {
+                        p.table = Math.floor(index / maxPerTable) + 1;
+                    });
+                tables = Array.from({ length: targetTableCount }, (_, i) => i + 1);
+                for (let i = 0; i < players.length; i++) {
+                    const before = players.map((p) => `${p.id}:${p.table}`).join('|');
+                    rebalanceTables();
+                    const after = players.map((p) => `${p.id}:${p.table}`).join('|');
+                    if (before === after) break;
+                }
                 return;
             }
 
@@ -2658,6 +2909,66 @@
             return !isNaN(playerNum) && !isNaN(tableNum) && playerNum === tableNum;
         }
 
+        function formatPlayerTableLabel(table) {
+            if (table == null || table === '') return '';
+            if (table === 'final') return 'Final Table';
+            return `Table ${table}`;
+        }
+
+        function toggleEliminatedPlayersList() {
+            const container = document.getElementById('eliminatedPlayersList');
+            const toggleBtn = document.getElementById('toggleEliminatedPlayersBtn');
+            if (!container || !toggleBtn) return;
+            eliminatedPlayersListVisible = !eliminatedPlayersListVisible;
+            container.classList.toggle('hidden', !eliminatedPlayersListVisible);
+            updateEliminatedPlayersToggleLabel();
+        }
+
+        function updateEliminatedPlayersToggleLabel() {
+            const toggleBtn = document.getElementById('toggleEliminatedPlayersBtn');
+            if (!toggleBtn) return;
+            const count = eliminatedPlayers.filter((p) => p.eliminated).length;
+            toggleBtn.textContent = eliminatedPlayersListVisible
+                ? 'Hide'
+                : (count > 0 ? `Show (${count})` : 'Show');
+        }
+
+        function renderEliminatedPlayersList() {
+            const section = document.getElementById('eliminatedPlayersSection');
+            const container = document.getElementById('eliminatedPlayersList');
+            if (!section || !container) return;
+
+            const eliminated = eliminatedPlayers.filter((p) => p.eliminated);
+            if (eliminated.length === 0) {
+                section.classList.add('hidden');
+                container.classList.add('hidden');
+                container.innerHTML = '';
+                eliminatedPlayersListVisible = false;
+                updateEliminatedPlayersToggleLabel();
+                return;
+            }
+
+            section.classList.remove('hidden');
+            container.classList.toggle('hidden', !eliminatedPlayersListVisible);
+            container.innerHTML = '';
+
+            [...eliminated].reverse().forEach((player) => {
+                const tableLabel = formatPlayerTableLabel(player._tableBeforeElimination);
+                const row = document.createElement('div');
+                row.className = 'eliminated-player-row';
+                row.innerHTML = `
+                    <span class="text-red-400"><i class="fas fa-skull"></i></span>
+                    <span class="eliminated-player-name">${player.name}</span>
+                    ${tableLabel ? `<span class="eliminated-player-table">${tableLabel}</span>` : ''}
+                    <button type="button" onclick="restorePlayer(${player.id})" class="eliminated-restore-btn bg-green-600 hover:bg-green-700 font-bold text-white">
+                        Restore
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+            updateEliminatedPlayersToggleLabel();
+        }
+
         function renderTables() {
             const container = document.getElementById('tablesList');
             container.innerHTML = '';
@@ -2682,15 +2993,15 @@
                             const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
                             const birthdayIcon = getBirthdayIcon(player);
                             return `
-                            <div class=\"flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors ${player.eliminated ? 'bg-red-900/30 border-red-500/50 opacity-75' : 'bg-poker-secondary hover:border-poker-highlight/40'}\">
-                                <div class=\"flex items-center gap-2\">
-                                    <span class=\"inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow\">${idx + 1}</span>
-                                    <span class=\"text-white font-medium\">${player.name}</span>${birthdayIcon}${committeeIcon}
+                            <div class="flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors bg-poker-secondary hover:border-poker-highlight/40">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow">${idx + 1}</span>
+                                    <span class="text-white font-medium">${player.name}</span>${birthdayIcon}${committeeIcon}
                                 </div>
-                                <div class=\"flex items-center gap-1\">
-                                    ${player.eliminated
-                                        ? `<span class=\"text-red-400 ml-2\"><i class=\"fas fa-skull\"></i></span><button onclick=\"eliminatePlayer(${player.id})\" class=\"px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs font-bold ml-2 text-white\" title=\"Undo elimination\"><i class='fas fa-undo'></i></button>`
-                                        : `<button onclick=\"eliminatePlayer(${player.id})\" class=\"px-3 py-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded text-xs font-bold ml-2 text-white shadow\">Eliminate</button>`}
+                                <div class="flex items-center gap-1">
+                                    ${isGameStarted()
+                                        ? `<button onclick="eliminatePlayer(${player.id})" class="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded text-xs font-bold ml-2 text-white shadow">Eliminate</button>`
+                                        : ''}
                                 </div>
                             </div>
                         `}).join('')}
@@ -2699,6 +3010,7 @@
                 container.appendChild(tableCard);
             });
             updateStartGameButton();
+            renderEliminatedPlayersList();
         }
 
         function updateStartGameButton() {
@@ -2717,6 +3029,8 @@
                 tables = [];
                 eliminatedPlayers = [];
                 declaredWinner = null;
+                gameStarted = false;
+                eliminatedPlayersListVisible = false;
                 currentGameSaved = false;
                 currentSavedGameId = null;
                 originalPlayers = [];
@@ -2724,13 +3038,30 @@
                 window.selectedGhostPlayer = null;
                 document.getElementById('playersList').innerHTML = '';
                 document.getElementById('tablesList').innerHTML = '';
+                renderEliminatedPlayersList();
                 updateStartGameButton();
                 resetBlindTimerToFirstLevel();
                 resetRaffleCashInputs();
                 const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
-                if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
+                if (bonusHandWonCheckbox) {
+                    bonusHandWonCheckbox.checked = false;
+                    bonusHandWonCheckbox.disabled = false;
+                }
+                const bonusHandWinnerName = document.getElementById('bonusHandWinnerName');
+                if (bonusHandWinnerName) {
+                    bonusHandWinnerName.value = '';
+                    bonusHandWinnerName.disabled = false;
+                }
                 const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
-                if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
+                if (badBeatBonusWonCheckbox) {
+                    badBeatBonusWonCheckbox.checked = false;
+                    badBeatBonusWonCheckbox.disabled = false;
+                }
+                const badBeatBonusWinnerName = document.getElementById('badBeatBonusWinnerName');
+                if (badBeatBonusWinnerName) {
+                    badBeatBonusWinnerName.value = '';
+                    badBeatBonusWinnerName.disabled = false;
+                }
                 updateStats();
             }
         }
@@ -3342,6 +3673,14 @@
             if (raffleCashRegistrationEl) raffleCashRegistrationEl.value = '0';
         }
 
+        function updateRaffleCashAlert() {
+            const raffleCashInput = document.getElementById('raffleCash');
+            if (!raffleCashInput) return;
+            const raffleCashGross = parseFloat(raffleCashInput.value) || 0;
+            const shouldAlert = !currentGameSaved && isGameResultsReady() && raffleCashGross <= 0;
+            raffleCashInput.classList.toggle('raffle-cash-alert', shouldAlert);
+        }
+
         function getPoolDisplayTotal(pool, contributionThisGame) {
             const contribution = Math.max(0, parseFloat(contributionThisGame) || 0);
             const poolAmount = Math.max(0, parseFloat(pool) || 0);
@@ -3374,6 +3713,128 @@
                 }
             }
             return getPoolDisplayTotal(ghostPlayerPool, contributionThisGame);
+        }
+
+        function isBonusHandWonThisGame() {
+            if (!getBonusHandSettings().enabled) return false;
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.bonusHand?.wonThisGame != null) {
+                return savedGame.bonusHand.wonThisGame === true;
+            }
+            return document.getElementById('bonusHandWonCheckbox')?.checked === true;
+        }
+
+        function getBonusHandPoolDisplayAmount(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.bonusHand) {
+                const pool = savedGame.bonusHand;
+                if (pool.wonThisGame) {
+                    return Number(pool.payoutThisGame) || 0;
+                }
+                if (pool.poolAfterGame != null) {
+                    return Number(pool.poolAfterGame) || 0;
+                }
+            }
+            return getPoolDisplayTotal(bonusHandPool, contributionThisGame);
+        }
+
+        function isBadBeatBonusWonThisGame() {
+            if (!getBadBeatBonusSettings().enabled) return false;
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.badBeatBonus?.wonThisGame != null) {
+                return savedGame.badBeatBonus.wonThisGame === true;
+            }
+            return document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+        }
+
+        function getBadBeatBonusPoolDisplayAmount(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.badBeatBonus) {
+                const pool = savedGame.badBeatBonus;
+                if (pool.wonThisGame) {
+                    return Number(pool.payoutThisGame) || 0;
+                }
+                if (pool.poolAfterGame != null) {
+                    return Number(pool.poolAfterGame) || 0;
+                }
+            }
+            return getPoolDisplayTotal(badBeatBonusPool, contributionThisGame);
+        }
+
+        function getBonusHandWinnerName() {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.bonusHand?.wonThisGame === true) {
+                return String(savedGame.bonusHand.winnerName || '').trim();
+            }
+            return (document.getElementById('bonusHandWinnerName')?.value || '').trim();
+        }
+
+        function getBadBeatBonusWinnerName() {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.badBeatBonus?.wonThisGame === true) {
+                return String(savedGame.badBeatBonus.winnerName || '').trim();
+            }
+            return (document.getElementById('badBeatBonusWinnerName')?.value || '').trim();
+        }
+
+        function syncBonusHandWinnerUi(bonusWonThisGame) {
+            const wonCheckbox = document.getElementById('bonusHandWonCheckbox');
+            const winnerRow = document.getElementById('bonusHandWinnerRow');
+            const winnerInput = document.getElementById('bonusHandWinnerName');
+            if (!winnerRow || !winnerInput) return;
+
+            if (bonusWonThisGame) {
+                winnerRow.classList.remove('hidden');
+                if (currentGameSaved) {
+                    winnerInput.value = getBonusHandWinnerName();
+                    winnerInput.disabled = true;
+                    if (wonCheckbox) {
+                        wonCheckbox.checked = true;
+                        wonCheckbox.disabled = true;
+                    }
+                } else {
+                    winnerInput.disabled = false;
+                    if (wonCheckbox) wonCheckbox.disabled = false;
+                }
+            } else {
+                winnerRow.classList.add('hidden');
+                if (!currentGameSaved) winnerInput.value = '';
+                winnerInput.disabled = false;
+                if (wonCheckbox) {
+                    wonCheckbox.checked = false;
+                    wonCheckbox.disabled = false;
+                }
+            }
+        }
+
+        function syncBadBeatBonusWinnerUi(badBeatWonThisGame) {
+            const wonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
+            const winnerRow = document.getElementById('badBeatBonusWinnerRow');
+            const winnerInput = document.getElementById('badBeatBonusWinnerName');
+            if (!winnerRow || !winnerInput) return;
+
+            if (badBeatWonThisGame) {
+                winnerRow.classList.remove('hidden');
+                if (currentGameSaved) {
+                    winnerInput.value = getBadBeatBonusWinnerName();
+                    winnerInput.disabled = true;
+                    if (wonCheckbox) {
+                        wonCheckbox.checked = true;
+                        wonCheckbox.disabled = true;
+                    }
+                } else {
+                    winnerInput.disabled = false;
+                    if (wonCheckbox) wonCheckbox.disabled = false;
+                }
+            } else {
+                winnerRow.classList.add('hidden');
+                if (!currentGameSaved) winnerInput.value = '';
+                winnerInput.disabled = false;
+                if (wonCheckbox) {
+                    wonCheckbox.checked = false;
+                    wonCheckbox.disabled = false;
+                }
+            }
         }
 
         function updateStats() {
@@ -3466,14 +3927,14 @@
             const raffleCashInput = document.getElementById('raffleCash');
             const raffleCashGross = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
             const bonusSettings = getBonusHandSettings();
-            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            const bonusWonThisGame = isBonusHandWonThisGame();
             let bonusContribution = 0;
             if (bonusSettings.enabled) {
                 bonusContribution = Math.min(raffleCashGross, bonusSettings.amountPerGame);
             }
             const raffleAfterBonus = Math.max(0, raffleCashGross - bonusContribution);
             const badBeatSettings = getBadBeatBonusSettings();
-            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            const badBeatWonThisGame = isBadBeatBonusWonThisGame();
             let badBeatContribution = 0;
             if (badBeatSettings.enabled) {
                 badBeatContribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
@@ -3497,32 +3958,30 @@
                     if (bonusHandDescriptionDisplay) {
                         bonusHandDescriptionDisplay.textContent = bonusSettings.description || 'Not set';
                     }
-                    const totalPoolPayout = getPoolDisplayTotal(bonusHandPool, bonusContribution);
+                    const totalPoolPayout = getBonusHandPoolDisplayAmount(bonusContribution);
                     if (bonusHandPoolDisplay) {
-                        bonusHandPoolDisplay.textContent = bonusWonThisGame && !currentGameSaved
-                            ? `$${totalPoolPayout.toFixed(2)} (won — resets on save)`
-                            : `$${totalPoolPayout.toFixed(2)}`;
+                        bonusHandPoolDisplay.textContent = `$${totalPoolPayout.toFixed(2)}`;
                     }
                 } else {
                     bonusHandStatsSection.classList.add('hidden');
                 }
             }
+            syncBonusHandWinnerUi(bonusWonThisGame);
 
             const badBeatBonusStatsSection = document.getElementById('badBeatBonusStatsSection');
             const badBeatBonusPoolDisplay = document.getElementById('badBeatBonusPoolDisplay');
             if (badBeatBonusStatsSection) {
                 if (badBeatSettings.enabled) {
                     badBeatBonusStatsSection.classList.remove('hidden');
-                    const totalBadBeatPayout = getPoolDisplayTotal(badBeatBonusPool, badBeatContribution);
+                    const totalBadBeatPayout = getBadBeatBonusPoolDisplayAmount(badBeatContribution);
                     if (badBeatBonusPoolDisplay) {
-                        badBeatBonusPoolDisplay.textContent = badBeatWonThisGame && !currentGameSaved
-                            ? `$${totalBadBeatPayout.toFixed(2)} (won — resets on save)`
-                            : `$${totalBadBeatPayout.toFixed(2)}`;
+                        badBeatBonusPoolDisplay.textContent = `$${totalBadBeatPayout.toFixed(2)}`;
                     }
                 } else {
                     badBeatBonusStatsSection.classList.add('hidden');
                 }
             }
+            syncBadBeatBonusWinnerUi(badBeatWonThisGame);
 
             if (statsPoolsCard) {
                 const showPoolsCard = ghostSettings.enabled || bonusSettings.enabled || badBeatSettings.enabled;
@@ -3623,6 +4082,7 @@
                 hideGhostPlayerDisplays();
                 window.selectedGhostPlayer = null;
             }
+            updateRaffleCashAlert();
             updateSaveGameButton();
         }
         
@@ -3662,7 +4122,7 @@
         function getSeasonNumber() {
             normalizeAdminSettings();
             const seasonNumber = parseInt(adminSettings.seasonNumber, 10);
-            return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '19';
+            return Number.isFinite(seasonNumber) && seasonNumber > 0 ? String(seasonNumber) : '1';
         }
 
         function getClubName() {
@@ -3691,10 +4151,28 @@
             if (loginHeading) loginHeading.innerHTML = `<i class="fas fa-sign-in-alt mr-2"></i>${clubName} Login`;
 
             const footer = document.getElementById('appVersionFooter');
-            if (footer) footer.textContent = `${clubName} v2026.7.12`;
+            if (footer) footer.textContent = `${PASC_APP_NAME} v${PASC_APP_VERSION}`;
 
             const clubLogo = document.getElementById('clubLogoPrimary');
             if (clubLogo) clubLogo.alt = `${clubName} logo`;
+        }
+
+        function populateAdminAboutSection() {
+            normalizeAdminSettings();
+            const nameEl = document.getElementById('aboutAppName');
+            const versionEl = document.getElementById('aboutAppVersion');
+            const licenseEl = document.getElementById('aboutLicenseNumber');
+            const licensedToEl = document.getElementById('aboutLicensedTo');
+            if (nameEl) nameEl.textContent = PASC_APP_NAME;
+            if (versionEl) versionEl.textContent = PASC_APP_VERSION;
+            if (licenseEl) {
+                const licenseNumber = (adminSettings.licenseNumber || '').trim();
+                licenseEl.textContent = licenseNumber || '—';
+            }
+            if (licensedToEl) {
+                const licensedTo = (adminSettings.licensedTo || '').trim();
+                licensedToEl.textContent = licensedTo || getClubName() || '—';
+            }
         }
 
         function populateAdminClubForm() {
@@ -3703,10 +4181,28 @@
             if (clubNameInput) clubNameInput.value = adminSettings.clubName || '';
         }
 
+        function getMinGamesForSeasonFinal() {
+            normalizeAdminSettings();
+            const min = parseInt(adminSettings.minGamesForSeasonFinal, 10);
+            return !isNaN(min) && min > 0 ? min : 0;
+        }
+
+        function getSeasonFinalQualificationLabel(gamesPlayed) {
+            const minGames = getMinGamesForSeasonFinal();
+            if (minGames === 0) return '—';
+            return gamesPlayed >= minGames ? 'Yes' : 'No';
+        }
+
+        function populateAdminGeneralForm() {
+            populateAdminClubForm();
+            populateAdminSeasonNumberForm();
+            populateAdminTableAssignmentsForm();
+        }
+
         function populateAdminSeasonNumberForm() {
             normalizeAdminSettings();
             const seasonInput = document.getElementById('adminSeasonNumber');
-            if (seasonInput) seasonInput.value = adminSettings.seasonNumber ?? 19;
+            if (seasonInput) seasonInput.value = adminSettings.seasonNumber ?? 1;
         }
 
         function getGhostPlayerCashSettings() {
@@ -3957,6 +4453,7 @@
         function updateSaveGameButton() {
             const saveBtn = document.getElementById('saveGameBtn');
             const emailBtn = document.getElementById('emailStatsBtn');
+            const printBtn = document.getElementById('printStatsBtn');
             if (saveBtn) {
                 if (currentGameSaved) {
                     saveBtn.disabled = true;
@@ -3972,6 +4469,12 @@
                 emailBtn.title = currentGameSaved
                     ? 'Email stats for this saved game'
                     : 'Save the game before emailing stats';
+            }
+            if (printBtn) {
+                printBtn.disabled = !currentGameSaved;
+                printBtn.title = currentGameSaved
+                    ? 'Print stats for this saved game'
+                    : 'Save the game before printing stats';
             }
         }
 
@@ -4017,7 +4520,7 @@
             const startingStackEl = document.getElementById('startingStack');
             const rebuyAddonEl = document.getElementById('rebuyAddon');
             const bonusSettings = getBonusHandSettings();
-            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            const bonusWonThisGame = isBonusHandWonThisGame();
             const raffleCashGross = getStatsInputNumber('raffleCash', parseMoneyAmount(getStatsText('raffleCashSummary', '$0')));
             let bonusContribution = 0;
             if (bonusSettings.enabled) {
@@ -4025,7 +4528,7 @@
             }
             const raffleAfterBonus = Math.max(0, raffleCashGross - bonusContribution);
             const badBeatSettings = getBadBeatBonusSettings();
-            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            const badBeatWonThisGame = isBadBeatBonusWonThisGame();
             let badBeatContribution = 0;
             if (badBeatSettings.enabled) {
                 badBeatContribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
@@ -4053,6 +4556,7 @@
                     poolBeforeGame: bonusHandPool,
                     contributionThisGame: bonusContribution,
                     wonThisGame: bonusWonThisGame,
+                    winnerName: bonusWonThisGame ? getBonusHandWinnerName() : '',
                     poolAfterGame: bonusWonThisGame ? 0 : (bonusHandPool + bonusContribution),
                     payoutThisGame: bonusHandPool + bonusContribution
                 },
@@ -4062,6 +4566,7 @@
                     poolBeforeGame: badBeatBonusPool,
                     contributionThisGame: badBeatContribution,
                     wonThisGame: badBeatWonThisGame,
+                    winnerName: badBeatWonThisGame ? getBadBeatBonusWinnerName() : '',
                     poolAfterGame: badBeatWonThisGame ? 0 : (badBeatBonusPool + badBeatContribution),
                     payoutThisGame: badBeatBonusPool + badBeatContribution
                 },
@@ -4126,7 +4631,8 @@
             if (raffleCashGross <= 0) {
                 if (!(await showConfirm('You have not entered the raffle cash amount. Do you want to continue?', {
                     confirmText: 'Continue',
-                    cancelText: 'Cancel'
+                    cancelText: 'Go Back',
+                    icon: 'raffle'
                 }))) {
                     return;
                 }
@@ -4147,7 +4653,15 @@
                 persistBonusHandPool();
             }
             const wonCheckbox = document.getElementById('bonusHandWonCheckbox');
-            if (wonCheckbox) wonCheckbox.checked = false;
+            if (wonCheckbox) {
+                wonCheckbox.checked = false;
+                wonCheckbox.disabled = false;
+            }
+            const bonusWinnerInput = document.getElementById('bonusHandWinnerName');
+            if (bonusWinnerInput) {
+                bonusWinnerInput.value = '';
+                bonusWinnerInput.disabled = false;
+            }
 
             const ghostSettings = getGhostPlayerCashSettings();
             const ghostWonThisGame = stats.ghostPlayerCashPool?.wonThisGame === true;
@@ -4173,7 +4687,15 @@
                 persistBadBeatBonusPool();
             }
             const badBeatWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
-            if (badBeatWonCheckbox) badBeatWonCheckbox.checked = false;
+            if (badBeatWonCheckbox) {
+                badBeatWonCheckbox.checked = false;
+                badBeatWonCheckbox.disabled = false;
+            }
+            const badBeatWinnerInput = document.getElementById('badBeatBonusWinnerName');
+            if (badBeatWinnerInput) {
+                badBeatWinnerInput.value = '';
+                badBeatWinnerInput.disabled = false;
+            }
 
             const savedGameId = Date.now();
             pointsTableHistory.push({
@@ -4272,6 +4794,14 @@
                 return;
             }
 
+            const minGamesForFinal = getMinGamesForSeasonFinal();
+            const introEl = document.querySelector('#points-table .points-table-page-intro');
+            if (introEl) {
+                introEl.textContent = minGamesForFinal > 0
+                    ? `Season standings across all saved games. Players are ranked by total points, highest first. Season final qualification requires at least ${minGamesForFinal} game${minGamesForFinal === 1 ? '' : 's'} played.`
+                    : 'Season standings across all saved games. Players are ranked by total points, highest first.';
+            }
+
             const table = document.createElement('table');
             table.className = 'min-w-full text-sm';
             table.innerHTML = `
@@ -4280,6 +4810,7 @@
                         <th>#</th>
                         <th>Player</th>
                         <th>Games</th>
+                        <th>Qualified</th>
                         <th>Total Points</th>
                         <th>Total Cash Won</th>
                         <th>History</th>
@@ -4291,11 +4822,19 @@
 
             aggregates.forEach((player, index) => {
                 const historyId = `points-history-${index}`;
+                const qualification = getSeasonFinalQualificationLabel(player.games.length);
+                const qualificationClass = qualification === 'Yes'
+                    ? 'text-green-400 font-semibold'
+                    : qualification === 'No'
+                        ? 'text-red-400 font-semibold'
+                        : '';
                 const mainRow = document.createElement('tr');
+                mainRow.className = 'points-player-row';
                 mainRow.innerHTML = `
                     <td>${index + 1}</td>
                     <td>${player.name}</td>
                     <td>${player.games.length}</td>
+                    <td class="${qualificationClass}">${qualification}</td>
                     <td>${player.totalPoints}</td>
                     <td>${formatPointsTableMoney(player.totalCashWon)}</td>
                     <td><button type="button" class="points-toggle-btn" data-history-target="${historyId}" onclick="togglePointsPlayerHistory('${historyId}')">Show games</button></td>
@@ -4313,7 +4852,7 @@
                     })
                     .join('');
                 historyRow.innerHTML = `
-                    <td colspan="6">
+                    <td colspan="7">
                         <ul class="points-history-list">${historyItems}</ul>
                     </td>
                 `;
@@ -4637,25 +5176,9 @@
             }
         }
         
-        function eliminatePlayer(playerId) {
-            const player = players.find(p => p.id === playerId);
-            if (!player) return;
-            const wasElimination = !player.eliminated;
-            if (!player.eliminated) {
-                player.eliminated = true;
-                player._tableBeforeElimination = player.table;
-                player.table = null;
-                eliminatedPlayers.push(player);
-            } else {
-                player.eliminated = false;
-                if (player._tableBeforeElimination != null) {
-                    player.table = player._tableBeforeElimination;
-                }
-                delete player._tableBeforeElimination;
-                eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== playerId);
-            }
+        function afterPlayerActiveStateChange(wasElimination, playerId) {
+            const activeAfter = players.filter((p) => !p.eliminated);
 
-            const activeAfter = players.filter(p => !p.eliminated);
             if (wasElimination) {
                 if (declaredWinner && declaredWinner.id === playerId) {
                     declaredWinner = null;
@@ -4669,15 +5192,46 @@
                 declaredWinner = null;
             }
 
+            if (!checkForFinalTable()) {
+                if (wasElimination) {
+                    rebalanceTables({ afterElimination: true });
+                } else {
+                    syncTablesAfterRegistrationChange();
+                }
+            }
+
             renderPlayersList();
             renderTables();
-            if (!checkForFinalTable()) {
-                rebalanceTables({ afterElimination: true });
-            }
             updateStats();
-            if (wasElimination && players.length >= 2 && players.filter(p => !p.eliminated).length === 1) {
+            if (wasElimination && players.length >= 2 && activeAfter.length === 1) {
                 showPage('stats');
             }
+        }
+
+        function eliminatePlayer(playerId) {
+            const player = players.find((p) => p.id === playerId);
+            if (!player || player.eliminated) return;
+            if (!isGameStarted()) {
+                showToast('Please start the game before eliminating players.', 'info');
+                return;
+            }
+            player.eliminated = true;
+            player._tableBeforeElimination = player.table;
+            player.table = null;
+            eliminatedPlayers.push(player);
+            afterPlayerActiveStateChange(true, playerId);
+        }
+
+        function restorePlayer(playerId) {
+            const player = players.find((p) => p.id === playerId);
+            if (!player || !player.eliminated) return;
+            player.eliminated = false;
+            if (player._tableBeforeElimination != null) {
+                player.table = player._tableBeforeElimination;
+            }
+            delete player._tableBeforeElimination;
+            eliminatedPlayers = eliminatedPlayers.filter((p) => p.id !== playerId);
+            afterPlayerActiveStateChange(false, playerId);
         }
 
         // Automatically combine to Final Table when max players remain
@@ -4950,16 +5504,24 @@
             return wonThisGame ? 'WON' : 'NOT WON';
         }
 
-        function emailStats() {
-            if (!currentGameSaved || currentSavedGameId == null) {
-                showToast('Please save the game before emailing stats.', 'info');
-                return;
-            }
+        function formatEmailPoolWinLine(label, amount, wonThisGame, winnerName) {
+            const status = getEmailPoolStatusLabel(wonThisGame);
+            const nameSuffix = wonThisGame && winnerName ? `  ${winnerName}` : '';
+            return `${label}: ${formatEmailMoney(amount, true)} ${status}${nameSuffix}`;
+        }
+
+        function formatEmailBonusHandLine(description, amount, wonThisGame, winnerName) {
+            const status = getEmailPoolStatusLabel(wonThisGame);
+            const nameSuffix = wonThisGame && winnerName ? `  ${winnerName}` : '';
+            const desc = (description || '-').trim();
+            return `Bonus Hand: ${desc} ${formatEmailMoney(amount, true)} ${status}${nameSuffix}`;
+        }
+
+        function buildStatsReportContent() {
+            if (!currentGameSaved || currentSavedGameId == null) return null;
             const seasonGameNumber = getCurrentSavedSeasonGameNumber();
-            if (!seasonGameNumber) {
-                showToast('Could not find the saved game number. Please save the game again.', 'error');
-                return;
-            }
+            if (!seasonGameNumber) return null;
+
             const todaysDate = document.getElementById('todaysDate').textContent;
             const gameType = document.getElementById('gameTypeStat').textContent;
             const gameCount = document.getElementById('gameCountStat').textContent;
@@ -4976,9 +5538,9 @@
             const birthdayText = buildEmailBirthdayText();
 
             const bonusSettings = getBonusHandSettings();
-            const bonusWonThisGame = document.getElementById('bonusHandWonCheckbox')?.checked === true;
+            const bonusWonThisGame = isBonusHandWonThisGame();
             const badBeatSettings = getBadBeatBonusSettings();
-            const badBeatWonThisGame = document.getElementById('badBeatBonusWonCheckbox')?.checked === true;
+            const badBeatWonThisGame = isBadBeatBonusWonThisGame();
             const ghostSettings = getGhostPlayerCashSettings();
             const totalBuyInForGhost = parseMoneyAmount(document.getElementById('totalCashTaking')?.textContent || '$0');
             const ghostContributionThisGame = ghostSettings.enabled
@@ -4986,9 +5548,9 @@
                 : 0;
 
             const clubName = getClubName();
-            const emailHeading = `${clubName} Stats for Season ${getSeasonNumber()} Game ${seasonGameNumber}`;
+            const heading = `${clubName} Stats for Season ${getSeasonNumber()} Game ${seasonGameNumber}`;
             const bodyLines = [
-                emailHeading,
+                heading,
                 '',
                 `Date: ${todaysDate}`,
                 `Game Type: ${gameType}`,
@@ -5008,10 +5570,14 @@
                     getStatsInputNumber('raffleCash', 0),
                     bonusSettings.amountPerGame
                 );
-                const totalPayout = getPoolDisplayTotal(bonusHandPool, contribution);
+                const totalPayout = getBonusHandPoolDisplayAmount(contribution);
                 bodyLines.push(
-                    `Bonus Hand: ${bonusSettings.description || '-'}`,
-                    `Bonus Hand Pool: ${formatEmailMoney(totalPayout, true)} ${getEmailPoolStatusLabel(bonusWonThisGame)}`
+                    formatEmailBonusHandLine(
+                        bonusSettings.description,
+                        totalPayout,
+                        bonusWonThisGame,
+                        getBonusHandWinnerName()
+                    )
                 );
             }
 
@@ -5022,9 +5588,9 @@
                     : 0;
                 const raffleAfterBonus = Math.max(0, raffleGross - bonusContrib);
                 const contribution = Math.min(raffleAfterBonus, badBeatSettings.amountPerGame);
-                const totalPayout = getPoolDisplayTotal(badBeatBonusPool, contribution);
+                const totalPayout = getBadBeatBonusPoolDisplayAmount(contribution);
                 bodyLines.push(
-                    `Bad Beat Bonus Pool: ${formatEmailMoney(totalPayout, true)} ${getEmailPoolStatusLabel(badBeatWonThisGame)}`
+                    formatEmailPoolWinLine('Bad Beat Bonus', totalPayout, badBeatWonThisGame, getBadBeatBonusWinnerName())
                 );
             }
 
@@ -5059,8 +5625,22 @@
                 pointsTableText
             );
 
-            const subject = encodeURIComponent(emailHeading);
-            const body = encodeURIComponent(bodyLines.join('\n'));
+            return { heading, bodyLines };
+        }
+
+        function emailStats() {
+            const report = buildStatsReportContent();
+            if (!report) {
+                if (!currentGameSaved || currentSavedGameId == null) {
+                    showToast('Please save the game before emailing stats.', 'info');
+                } else {
+                    showToast('Could not find the saved game number. Please save the game again.', 'error');
+                }
+                return;
+            }
+
+            const subject = encodeURIComponent(report.heading);
+            const body = encodeURIComponent(report.bodyLines.join('\n'));
             const recipientEmails = getAdminPlayerEmails();
             if (recipientEmails.length === 0) {
                 showToast('No email addresses found in Settings > Player Management.', 'error');
@@ -5507,7 +6087,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":19,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"birthdayBonusEnabled":false,"clubName":"Poker Club"}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club"}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -5516,7 +6096,7 @@
             if (adminSettings.playerPayoutPercent == null) adminSettings.playerPayoutPercent = 75;
             if (adminSettings.payout1stPercent == null) adminSettings.payout1stPercent = 50;
             if (adminSettings.payout2ndPercent == null) adminSettings.payout2ndPercent = 30;
-            if (adminSettings.seasonNumber == null) adminSettings.seasonNumber = 19;
+            if (adminSettings.seasonNumber == null) adminSettings.seasonNumber = 1;
             if (adminSettings.ghostPlayerCash == null) adminSettings.ghostPlayerCash = 20;
             if (adminSettings.ghostPlayerEnabled == null) adminSettings.ghostPlayerEnabled = false;
             if (adminSettings.bonusHandEnabled == null) adminSettings.bonusHandEnabled = false;
@@ -5529,6 +6109,9 @@
             if (adminSettings.bonusHandManualPaidOut == null) adminSettings.bonusHandManualPaidOut = 0;
             if (adminSettings.badBeatBonusManualPaidOut == null) adminSettings.badBeatBonusManualPaidOut = 0;
             if (adminSettings.maxPlayersPerTable == null) adminSettings.maxPlayersPerTable = 8;
+            if (adminSettings.minGamesForSeasonFinal == null) adminSettings.minGamesForSeasonFinal = 0;
+            if (adminSettings.licenseNumber == null) adminSettings.licenseNumber = '';
+            if (adminSettings.licensedTo == null) adminSettings.licensedTo = '';
             if (adminSettings.birthdayBonusEnabled == null) adminSettings.birthdayBonusEnabled = false;
             if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
         }
@@ -5551,6 +6134,8 @@
             normalizeAdminSettings();
             const maxPlayersInput = document.getElementById('adminMaxPlayersPerTable');
             if (maxPlayersInput) maxPlayersInput.value = adminSettings.maxPlayersPerTable ?? 8;
+            const minGamesInput = document.getElementById('adminMinGamesForSeasonFinal');
+            if (minGamesInput) minGamesInput.value = adminSettings.minGamesForSeasonFinal ?? 0;
         }
         function updatePayout3rdPercentDisplay() {
             const payout1stInput = document.getElementById('adminPayout1stPercent');
@@ -5838,13 +6423,7 @@
                     renderAdminPlayersList();
                     renderAdminSecurityList();
                     renderRegistrationDatalist();
-                    populateAdminClubForm();
-                    populateAdminSettingsForm();
-                    populateAdminSeasonNumberForm();
-                    populateAdminBonusHandForm();
-                    populateAdminGhostCashForm();
-                    populateAdminBadBeatBonusForm();
-                    populateAdminBirthdayBonusForm();
+                    populateAdminGeneralForm();
                     applyClubBranding();
                     updateStats();
                     renderPointsTablePage();
@@ -5911,7 +6490,7 @@
                 playerPayoutPercent: 75,
                 payout1stPercent: 50,
                 payout2ndPercent: 30,
-                seasonNumber: 19,
+                seasonNumber: 1,
                 ghostPlayerCash: 20,
                 ghostPlayerEnabled: false,
                 bonusHandEnabled: false,
@@ -5924,6 +6503,9 @@
                 bonusHandManualPaidOut: 0,
                 badBeatBonusManualPaidOut: 0,
                 maxPlayersPerTable: 8,
+                minGamesForSeasonFinal: 0,
+                licenseNumber: '',
+                licensedTo: '',
                 birthdayBonusEnabled: false,
                 clubName: 'Poker Club'
             };
@@ -5934,6 +6516,8 @@
             tables = [];
             eliminatedPlayers = [];
             declaredWinner = null;
+            gameStarted = false;
+            eliminatedPlayersListVisible = false;
             currentGameSaved = false;
             currentSavedGameId = null;
             originalPlayers = [];
@@ -5943,12 +6527,29 @@
             if (playersList) playersList.innerHTML = '';
             const tablesList = document.getElementById('tablesList');
             if (tablesList) tablesList.innerHTML = '';
+            renderEliminatedPlayersList();
             updateStartGameButton();
             resetRaffleCashInputs();
             const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
-            if (bonusHandWonCheckbox) bonusHandWonCheckbox.checked = false;
+            if (bonusHandWonCheckbox) {
+                bonusHandWonCheckbox.checked = false;
+                bonusHandWonCheckbox.disabled = false;
+            }
+            const bonusHandWinnerName = document.getElementById('bonusHandWinnerName');
+            if (bonusHandWinnerName) {
+                bonusHandWinnerName.value = '';
+                bonusHandWinnerName.disabled = false;
+            }
             const badBeatBonusWonCheckbox = document.getElementById('badBeatBonusWonCheckbox');
-            if (badBeatBonusWonCheckbox) badBeatBonusWonCheckbox.checked = false;
+            if (badBeatBonusWonCheckbox) {
+                badBeatBonusWonCheckbox.checked = false;
+                badBeatBonusWonCheckbox.disabled = false;
+            }
+            const badBeatBonusWinnerName = document.getElementById('badBeatBonusWinnerName');
+            if (badBeatBonusWinnerName) {
+                badBeatBonusWinnerName.value = '';
+                badBeatBonusWinnerName.disabled = false;
+            }
             const gameTypeEl = document.getElementById('gameType');
             if (gameTypeEl) gameTypeEl.value = '';
             const startingStackEl = document.getElementById('startingStack');
@@ -6074,14 +6675,14 @@
                 case 'season-statistics':
                     renderAdminSeasonStatistics();
                     break;
-                case 'table-assignments':
-                    populateAdminTableAssignmentsForm();
-                    break;
                 case 'birthday-bonus':
                     populateAdminBirthdayBonusForm();
                     break;
-                case 'club':
-                    populateAdminClubForm();
+                case 'general':
+                    populateAdminGeneralForm();
+                    break;
+                case 'about':
+                    populateAdminAboutSection();
                     break;
                 case 'blind-timer':
                     renderBlindLevelsList();
@@ -6095,10 +6696,8 @@
 
         function showAdminPanel() {
             renderAdminPlayersList();
-            populateAdminSeasonNumberForm();
-            populateAdminClubForm();
+            populateAdminGeneralForm();
             populateAdminSettingsForm();
-            populateAdminTableAssignmentsForm();
             populateAdminBonusHandForm();
             populateAdminGhostCashForm();
             populateAdminBadBeatBonusForm();
@@ -6110,7 +6709,10 @@
             renderAdminGameManagement();
             renderAdminSecurityList();
             applyClubBranding();
-            const savedSection = localStorage.getItem('adminSettingsSection') || 'backup-restore';
+            let savedSection = localStorage.getItem('adminSettingsSection') || 'backup-restore';
+            if (['club', 'season-number', 'table-assignments'].includes(savedSection)) {
+                savedSection = 'general';
+            }
             showAdminSettingsSection(savedSection);
         }
 
@@ -6244,52 +6846,40 @@
                     adminPlayerForm.removeAttribute('data-edit-idx');
                 });
             }
-            const adminClubForm = document.getElementById('adminClubForm');
-            if (adminClubForm) {
-                adminClubForm.addEventListener('submit', function(e) {
+            const adminGeneralForm = document.getElementById('adminGeneralForm');
+            if (adminGeneralForm) {
+                adminGeneralForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     const clubName = document.getElementById('adminClubName').value.trim();
+                    const seasonNumber = parseInt(document.getElementById('adminSeasonNumber').value, 10);
+                    const maxPlayersPerTable = parseInt(document.getElementById('adminMaxPlayersPerTable').value, 10);
+                    const minGamesForSeasonFinal = parseInt(document.getElementById('adminMinGamesForSeasonFinal').value, 10);
                     if (!clubName) {
                         showToast('Please enter a club name.', 'error');
                         return;
                     }
-                    adminSettings.clubName = clubName;
-                    saveAdminSettings();
-                    populateAdminClubForm();
-                    applyClubBranding();
-                    showToast('Club name saved!', 'success');
-                });
-            }
-            const adminSeasonNumberForm = document.getElementById('adminSeasonNumberForm');
-            if (adminSeasonNumberForm) {
-                adminSeasonNumberForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const seasonNumber = parseInt(document.getElementById('adminSeasonNumber').value, 10);
                     if (isNaN(seasonNumber) || seasonNumber < 1) {
                         showToast('Please enter a valid season number.', 'error');
                         return;
                     }
-                    adminSettings.seasonNumber = seasonNumber;
-                    saveAdminSettings();
-                    populateAdminSeasonNumberForm();
-                    applyClubBranding();
-                    renderAdminSeasonStatistics();
-                    showToast('Season number saved!', 'success');
-                });
-            }
-            const adminTableAssignmentsForm = document.getElementById('adminTableAssignmentsForm');
-            if (adminTableAssignmentsForm) {
-                adminTableAssignmentsForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const maxPlayersPerTable = parseInt(document.getElementById('adminMaxPlayersPerTable').value, 10);
                     if (isNaN(maxPlayersPerTable) || maxPlayersPerTable < 2 || maxPlayersPerTable > 12) {
                         showToast('Please enter a maximum between 2 and 12 players per table.', 'error');
                         return;
                     }
+                    if (isNaN(minGamesForSeasonFinal) || minGamesForSeasonFinal < 0) {
+                        showToast('Please enter a valid minimum games value (0 or higher).', 'error');
+                        return;
+                    }
+                    adminSettings.clubName = clubName;
+                    adminSettings.seasonNumber = seasonNumber;
                     adminSettings.maxPlayersPerTable = maxPlayersPerTable;
+                    adminSettings.minGamesForSeasonFinal = minGamesForSeasonFinal;
                     saveAdminSettings();
-                    populateAdminTableAssignmentsForm();
-                    showToast('Table assignment settings saved!', 'success');
+                    populateAdminGeneralForm();
+                    applyClubBranding();
+                    renderAdminSeasonStatistics();
+                    renderPointsTablePage();
+                    showToast('General settings saved!', 'success');
                 });
             }
             // Admin settings save
@@ -6386,77 +6976,60 @@
             }
         });
 
+        function escapeHtmlForPrint(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
         function printStats() {
-            const clubName = getClubName();
-            // Hide navigation and non-stats content for printing
-            const mainContent = document.querySelector('#stats');
-            if (!mainContent) {
-                window.print();
+            const report = buildStatsReportContent();
+            if (!report) {
+                if (!currentGameSaved || currentSavedGameId == null) {
+                    showToast('Please save the game before printing stats.', 'info');
+                } else {
+                    showToast('Could not find the saved game number. Please save the game again.', 'error');
+                }
                 return;
             }
-            // Add a print-specific class to body
+
             document.body.classList.add('printing-stats');
-            // Save scroll position
             const scrollY = window.scrollY;
-            // Print only the stats section
             const printWindow = window.open('', '', 'width=900,height=1200');
+            const reportText = escapeHtmlForPrint(report.bodyLines.join('\n'));
             printWindow.document.write(`
                 <html>
                 <head>
-                    <title>${clubName} - Stats</title>
-                    <link rel=\"stylesheet\" href=\"https://cdn.tailwindcss.com\">
-                    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">
+                    <title>${escapeHtmlForPrint(report.heading)}</title>
                     <style>
-                        body { background: #fff !important; color: #000 !important; font-family: sans-serif; }
-                        .bg-poker-primary, .bg-poker-secondary { background: #fff !important; }
-                        .text-yellow-400, .text-green-400, .text-indigo-700 { color: #000 !important; }
-                        .shadow, .shadow-2xl { box-shadow: none !important; }
-                        .rounded-xl { border-radius: 0.5rem !important; }
-                        .rounded-lg { border-radius: 0.25rem !important; }
-                        .font-bold { font-weight: bold !important; }
-                        .font-semibold { font-weight: 600 !important; }
-                        .text-center { text-align: center !important; }
-                        .flex { display: flex !important; }
-                        .grid { display: grid !important; }
-                        .overflow-y-auto, .max-h-96 { overflow: visible !important; max-height: none !important; }
-                        /* Compact print styles */
-                        body, td, th, div, span, p, h1, h2, h3, h4, h5, h6 {
-                            font-size: 11px !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
+                        body {
+                            background: #fff;
+                            color: #000;
+                            font-family: Arial, Helvetica, sans-serif;
+                            margin: 1.25rem;
                         }
-                        h1, h2, h3, h4, h5, h6 { font-weight: bold !important; }
-                        .mb-2, .mb-4, .mb-6, .mb-8, .mt-2, .mt-4, .mt-6, .mt-8, .pt-4, .pb-4, .p-4, .p-6, .px-4, .py-4, .px-6, .py-6, .gap-4, .gap-6, .gap-2, .gap-1, .m-2, .m-4, .m-6, .m-8 {
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            gap: 0 !important;
+                        h1 {
+                            font-size: 1.25rem;
+                            font-weight: 700;
+                            margin: 0 0 1rem;
                         }
-                        .grid-cols-1 { grid-template-columns: 1fr !important; }
-                        .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
-                        .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-                        table { border-collapse: collapse !important; width: 100% !important; }
-                        th, td { border: 1px solid #ccc !important; padding: 2px 4px !important; }
-                        .hidden { display: none !important; }
-                        .text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl { font-size: 11px !important; }
-                        .font-mono { font-family: monospace !important; }
-                        /* Remove extra spacing in points table rows */
-                        .pointsTableRow, .flex.items-center.p-2.rounded.mb-1.bg-\[\#056d78\]\/50 { margin-bottom: 0 !important; padding: 2px 0 !important; }
-                        /* Remove extra spacing in grid */
-                        .grid, .flex { gap: 0 !important; }
-                        /* Remove extra spacing in containers */
-                        .container, .page, .rounded-xl, .rounded-lg { padding: 0 !important; }
-                        /* Remove extra spacing in buttons */
-                        button { padding: 0 !important; margin: 0 !important; font-size: 11px !important; }
-                        /* Remove print page breaks */
+                        pre {
+                            font-family: Arial, Helvetica, sans-serif;
+                            font-size: 0.95rem;
+                            line-height: 1.5;
+                            white-space: pre-wrap;
+                            margin: 0;
+                        }
                         @media print {
-                            html, body { width: 100% !important; height: 100% !important; }
-                            .pagebreak { page-break-before: avoid !important; page-break-after: avoid !important; }
+                            body { margin: 0.75rem; }
                         }
                     </style>
                 </head>
                 <body>
-                    <h1 class=\"text-3xl font-bold text-center mb-2\">${clubName} - Stats</h1>
-                    <div>${mainContent.innerHTML}</div>
+                    <h1>${escapeHtmlForPrint(report.heading)}</h1>
+                    <pre>${reportText}</pre>
                 </body>
                 </html>
             `);
