@@ -14,6 +14,9 @@
     <title>Poker Club</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -626,6 +629,67 @@
             opacity: 0.35;
             cursor: not-allowed;
         }
+
+        #remote-control .remote-code-display {
+            font-size: 2.5rem;
+            letter-spacing: 0.35em;
+            font-weight: 700;
+            color: #facc15;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #remote-control #remoteQrCode {
+            display: inline-flex;
+            padding: 0.75rem;
+            background: #fff;
+            border-radius: 0.75rem;
+        }
+
+        #remote-control #remoteQrCode:empty {
+            display: none;
+        }
+
+        #remote-control .remote-eliminate-btn {
+            width: 100%;
+            text-align: left;
+            padding: 0.85rem 1rem;
+            border-radius: 0.75rem;
+            background: rgba(5, 109, 120, 0.45);
+            border: 1px solid rgba(209, 213, 219, 0.15);
+            color: #f9fafb;
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        #remote-control .remote-eliminate-btn:hover:not(:disabled) {
+            background: #b91c1c;
+        }
+
+        #remote-control .remote-eliminate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #remote-control .remote-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(5, 109, 120, 0.4);
+        }
+
+        #remote-control .remote-status-pill.live {
+            background: rgba(22, 163, 74, 0.35);
+            color: #86efac;
+        }
+
+        #remote-control .remote-status-pill.off {
+            background: rgba(107, 114, 128, 0.4);
+            color: #d1d5db;
+        }
         
         .timer-display {
             /* Auto-scales to the viewport: as big as possible while fitting width & height */
@@ -1178,6 +1242,11 @@
                     </button>
                 </li>
                 <li data-requires-full-access>
+                    <button onclick="showPage('remote-control')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
+                        <i class="fas fa-mobile-alt mr-2"></i>Remote
+                    </button>
+                </li>
+                <li data-requires-full-access>
                     <button onclick="showPage('admin')" class="px-4 py-2 bg-red-700 hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-cog mr-2"></i>Settings
                     </button>
@@ -1568,6 +1637,67 @@
                 </div>
             </div>
 
+            <!-- Remote Control Page -->
+            <div id="remote-control" class="page hidden">
+                <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-3xl mx-auto">
+                    <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
+                        <h2 class="text-2xl font-bold text-yellow-400">
+                            <i class="fas fa-mobile-alt mr-2"></i>Remote Control
+                        </h2>
+                        <span id="remoteSyncStatusPill" class="remote-status-pill off">Not connected</span>
+                    </div>
+                    <p class="text-sm text-poker-text/70 mb-4">Host the live game on the laptop, then join from a phone with the QR code or game code to eliminate players without leaving your seat.</p>
+
+                    <div id="remoteFirebaseWarning" class="hidden mb-4 p-3 rounded-lg border border-yellow-500/40 bg-yellow-900/30 text-yellow-100 text-sm">
+                        Firebase is not configured yet. Open <strong>Settings → Remote Sync</strong>, paste your Firebase web config, then return here.
+                    </div>
+
+                    <div id="remoteHostPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
+                        <h3 class="text-lg font-semibold mb-2 text-yellow-400">Laptop — Host this game</h3>
+                        <p class="text-sm text-poker-text/70 mb-3">Start hosting after players are registered. Keep this page open or stay signed in on the laptop so the phone stays in sync.</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button type="button" id="remoteStartHostBtn" onclick="startLiveGameHost()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium text-white">
+                                <i class="fas fa-broadcast-tower mr-2"></i>Start Hosting
+                            </button>
+                            <button type="button" id="remoteStopHostBtn" onclick="stopLiveGameHost()" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white hidden">
+                                <i class="fas fa-stop mr-2"></i>Stop Hosting
+                            </button>
+                        </div>
+                        <div id="remoteHostSessionInfo" class="hidden">
+                            <p class="text-sm mb-1">Game code</p>
+                            <div id="remoteHostCode" class="remote-code-display mb-3">------</div>
+                            <p class="text-sm mb-2">Scan with phone camera / join link</p>
+                            <div id="remoteQrCode" class="mb-3"></div>
+                            <p id="remoteJoinUrlText" class="text-xs text-poker-text/60 break-all"></p>
+                        </div>
+                    </div>
+
+                    <div id="remoteJoinPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
+                        <h3 class="text-lg font-semibold mb-2 text-yellow-400">Phone — Join a game</h3>
+                        <div class="flex flex-col sm:flex-row gap-2 mb-3">
+                            <input type="text" id="remoteJoinCodeInput" maxlength="8" placeholder="Enter game code" class="flex-1 px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text uppercase tracking-widest text-center text-lg" autocomplete="off">
+                            <button type="button" onclick="joinLiveGameRemote()" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium text-white">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Join
+                            </button>
+                            <button type="button" id="remoteLeaveBtn" onclick="leaveLiveGameRemote()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white hidden">
+                                Leave
+                            </button>
+                        </div>
+                        <p id="remoteJoinHint" class="text-xs text-poker-text/60">Or open the QR link from the laptop — it fills the code automatically after login.</p>
+                    </div>
+
+                    <div id="remoteEliminatePanel" class="hidden">
+                        <h3 class="text-lg font-semibold mb-2 text-yellow-400">Eliminate players</h3>
+                        <p id="remoteEliminateMeta" class="text-sm text-poker-text/70 mb-3"></p>
+                        <div id="remoteEliminateList" class="flex flex-col gap-2"></div>
+                        <div id="remoteRestoreListWrap" class="mt-4 hidden">
+                            <h4 class="text-sm font-semibold mb-2 text-poker-text/80">Recently eliminated — tap to restore</h4>
+                            <div id="remoteRestoreList" class="flex flex-col gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Settings Page -->
             <div id="admin" class="page hidden">
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20 max-w-7xl mx-auto">
@@ -1587,6 +1717,7 @@
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="season-statistics" onclick="showAdminSettingsSection('season-statistics')">Season Statistics</button>
                             <button type="button" class="admin-settings-nav-btn active" data-admin-section="backup-restore" onclick="showAdminSettingsSection('backup-restore')">Backup / Restore</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="reset-app" onclick="showAdminSettingsSection('reset-app')">Reset App</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="remote-sync" onclick="showAdminSettingsSection('remote-sync')">Remote Sync</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="about" onclick="showAdminSettingsSection('about')">About</button>
                         </nav>
                         <div id="adminSettingsBody">
@@ -1856,6 +1987,23 @@
                                     </button>
                                 </div>
                             </div>
+                            <div id="adminSection-remote-sync" class="admin-settings-section hidden">
+                                <h3>Remote Sync</h3>
+                                <p class="admin-section-intro">Connect Firebase Realtime Database so a phone can eliminate players in the same live game as the laptop. Hosting stays on GitHub — Firebase is sync only.</p>
+                                <p id="remoteSyncConfigStatus" class="text-sm mb-3 text-poker-text/70">Status: Not configured</p>
+                                <label for="adminFirebaseConfig" class="text-sm font-semibold mb-1 block">Firebase web config (JSON)</label>
+                                <textarea id="adminFirebaseConfig" rows="10" placeholder='{&#10;  "apiKey": "...",&#10;  "authDomain": "...",&#10;  "databaseURL": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text font-mono text-xs mb-3"></textarea>
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <button type="button" onclick="saveFirebaseConfigFromAdmin()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Firebase Config</button>
+                                    <button type="button" onclick="clearFirebaseConfigFromAdmin()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white">Clear Config</button>
+                                </div>
+                                <ol class="text-sm text-poker-text/80 list-decimal pl-5 space-y-1">
+                                    <li>Create a Firebase project and turn on <strong>Realtime Database</strong> (test mode to start).</li>
+                                    <li>Add a Web app and copy its config object into the box above.</li>
+                                    <li>Paste security rules from the setup notes (allow read/write under <code>liveGames</code>).</li>
+                                    <li>On game night: laptop opens <strong>Remote → Start Hosting</strong>; phone scans the QR or enters the code.</li>
+                                </ol>
+                            </div>
                             <div id="adminSection-about" class="admin-settings-section hidden">
                                 <h3>About</h3>
                                 <p class="admin-section-intro">Application information and license details.</p>
@@ -1887,13 +2035,38 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.13</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.14</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.13';
+        const PASC_APP_VERSION = '2026.7.14';
+
+        // Firebase web config for Remote Sync (Realtime Database).
+        const FIREBASE_CONFIG = {
+            apiKey: 'AIzaSyB2TfFImt8tMs5SfMod-gAYeeXwrPLST0Q',
+            authDomain: 'poker-pasc.firebaseapp.com',
+            databaseURL: 'https://poker-pasc-default-rtdb.asia-southeast1.firebasedatabase.app',
+            projectId: 'poker-pasc',
+            storageBucket: 'poker-pasc.firebasestorage.app',
+            messagingSenderId: '274905597840',
+            appId: '1:274905597840:web:02f5d70711426d65e29515'
+        };
+
+        const FIREBASE_CONFIG_KEY = 'pascFirebaseConfig';
+        const LIVE_GAME_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+        let firebaseAppInstance = null;
+        let firebaseDb = null;
+        let liveSyncRole = null;
+        let liveGameCode = null;
+        let liveStateRef = null;
+        let liveCommandsRef = null;
+        let liveStateListener = null;
+        let liveCommandsListener = null;
+        let liveSyncApplyingRemote = false;
+        let pendingLiveJoinCode = null;
 
         // Global variables
         let players = [];
@@ -2191,6 +2364,10 @@
             updateAppNavigation();
             document.getElementById('appShell')?.classList.remove('hidden');
             document.getElementById('appChrome')?.classList.remove('hidden');
+            if (pendingLiveJoinCode && hasFullAppAccess()) {
+                tryAutoJoinPendingLiveCode();
+                return;
+            }
             if (hasFullAppAccess()) {
                 showPage('registration');
             } else {
@@ -2212,7 +2389,7 @@
                 return;
             }
 
-            const restrictedPages = ['registration', 'stats', 'admin'];
+            const restrictedPages = ['registration', 'stats', 'admin', 'remote-control'];
             if (!hasFullAppAccess() && restrictedPages.includes(pageId)) {
                 showPage('points-table');
                 return;
@@ -2244,6 +2421,9 @@
             }
             if (pageId === 'points-table') {
                 renderPointsTablePage();
+            }
+            if (pageId === 'remote-control') {
+                renderRemoteControlPage();
             }
         }
 
@@ -2350,6 +2530,7 @@
 
             gameStarted = true;
             renderTables();
+            publishLiveGameState();
 
             if (isTimerRunning || currentBlindIndex !== 0) {
                 showPage('blind-timer');
@@ -5389,9 +5570,533 @@
             renderPlayersList();
             renderTables();
             updateStats();
+            publishLiveGameState();
             if (wasElimination && players.length >= 2 && activeAfter.length === 1) {
                 showPage('stats');
             }
+        }
+
+        function getStoredFirebaseConfig() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY) || 'null');
+                if (saved && typeof saved === 'object') return saved;
+            } catch (e) { /* ignore */ }
+            return null;
+        }
+
+        function getFirebaseConfig() {
+            const saved = getStoredFirebaseConfig();
+            if (saved && saved.apiKey && saved.databaseURL) return saved;
+            if (FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL) return FIREBASE_CONFIG;
+            return null;
+        }
+
+        function isFirebaseConfigured() {
+            const cfg = getFirebaseConfig();
+            return !!(cfg && cfg.apiKey && cfg.databaseURL);
+        }
+
+        function initFirebaseApp() {
+            if (!isFirebaseConfigured()) return null;
+            if (typeof firebase === 'undefined') {
+                showToast('Firebase libraries failed to load. Check your internet connection.', 'error');
+                return null;
+            }
+            try {
+                if (!firebaseAppInstance) {
+                    const cfg = getFirebaseConfig();
+                    firebaseAppInstance = firebase.apps?.length
+                        ? firebase.app()
+                        : firebase.initializeApp(cfg);
+                    firebaseDb = firebase.database();
+                }
+                return firebaseDb;
+            } catch (err) {
+                console.error(err);
+                showToast('Could not connect to Firebase. Check your config in Settings → Remote Sync.', 'error');
+                return null;
+            }
+        }
+
+        function normalizeLiveGameCode(code) {
+            return String(code || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+        }
+
+        function generateLiveGameCode() {
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += LIVE_GAME_CODE_ALPHABET[Math.floor(Math.random() * LIVE_GAME_CODE_ALPHABET.length)];
+            }
+            return code;
+        }
+
+        function getLiveGameJoinUrl(code) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('join', normalizeLiveGameCode(code));
+            url.hash = '';
+            return url.toString();
+        }
+
+        function capturePendingLiveJoinCodeFromUrl() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const join = normalizeLiveGameCode(params.get('join') || '');
+                if (join) {
+                    pendingLiveJoinCode = join;
+                    params.delete('join');
+                    const clean = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash || ''}`;
+                    window.history.replaceState({}, '', clean || window.location.pathname);
+                }
+            } catch (e) { /* ignore */ }
+        }
+
+        function buildLiveGameStatePayload() {
+            return {
+                players: players.map((p) => ({
+                    id: p.id,
+                    number: p.number,
+                    name: p.name,
+                    table: p.table,
+                    eliminated: !!p.eliminated,
+                    isMember: !!p.isMember,
+                    isCommittee: !!p.isCommittee,
+                    birthdayBonusPaid: !!p.birthdayBonusPaid,
+                    _tableBeforeElimination: p._tableBeforeElimination != null ? p._tableBeforeElimination : null
+                })),
+                tables: Array.isArray(tables) ? [...tables] : [],
+                eliminatedIds: eliminatedPlayers.map((p) => p.id),
+                gameStarted: !!gameStarted,
+                declaredWinnerId: declaredWinner ? declaredWinner.id : null,
+                clubName: getClubName(),
+                season: getSeasonNumber(),
+                updatedAt: Date.now()
+            };
+        }
+
+        function applyLiveGameStatePayload(state) {
+            if (!state || !Array.isArray(state.players)) return;
+            liveSyncApplyingRemote = true;
+            try {
+                players = state.players.map((p) => ({ ...p }));
+                tables = Array.isArray(state.tables) ? [...state.tables] : [];
+                const byId = Object.fromEntries(players.map((p) => [String(p.id), p]));
+                eliminatedPlayers = (state.eliminatedIds || [])
+                    .map((id) => byId[String(id)])
+                    .filter(Boolean);
+                gameStarted = !!state.gameStarted;
+                declaredWinner = state.declaredWinnerId != null
+                    ? players.find((p) => String(p.id) === String(state.declaredWinnerId)) || null
+                    : null;
+            } finally {
+                liveSyncApplyingRemote = false;
+            }
+        }
+
+        async function publishLiveGameState() {
+            if (liveSyncApplyingRemote) return;
+            if (liveSyncRole !== 'host' || !liveGameCode) return;
+            const db = initFirebaseApp();
+            if (!db) return;
+            try {
+                await db.ref(`liveGames/${liveGameCode}/state`).set(buildLiveGameStatePayload());
+                await db.ref(`liveGames/${liveGameCode}/meta`).update({
+                    updatedAt: Date.now(),
+                    clubName: getClubName(),
+                    season: getSeasonNumber()
+                });
+            } catch (err) {
+                console.error(err);
+                showToast('Could not sync live game state to Firebase.', 'error');
+            }
+        }
+
+        function detachLiveListeners() {
+            if (liveStateRef && liveStateListener) {
+                liveStateRef.off('value', liveStateListener);
+            }
+            if (liveCommandsRef && liveCommandsListener) {
+                liveCommandsRef.off('child_added', liveCommandsListener);
+            }
+            liveStateRef = null;
+            liveCommandsRef = null;
+            liveStateListener = null;
+            liveCommandsListener = null;
+        }
+
+        function updateRemoteSyncStatusUi() {
+            const pill = document.getElementById('remoteSyncStatusPill');
+            if (!pill) return;
+            if (liveSyncRole === 'host' && liveGameCode) {
+                pill.textContent = `Hosting ${liveGameCode}`;
+                pill.className = 'remote-status-pill live';
+            } else if (liveSyncRole === 'remote' && liveGameCode) {
+                pill.textContent = `Joined ${liveGameCode}`;
+                pill.className = 'remote-status-pill live';
+            } else {
+                pill.textContent = 'Not connected';
+                pill.className = 'remote-status-pill off';
+            }
+        }
+
+        function renderRemoteHostSessionUi() {
+            const info = document.getElementById('remoteHostSessionInfo');
+            const codeEl = document.getElementById('remoteHostCode');
+            const startBtn = document.getElementById('remoteStartHostBtn');
+            const stopBtn = document.getElementById('remoteStopHostBtn');
+            const qrWrap = document.getElementById('remoteQrCode');
+            const urlEl = document.getElementById('remoteJoinUrlText');
+            const hosting = liveSyncRole === 'host' && !!liveGameCode;
+
+            if (startBtn) startBtn.classList.toggle('hidden', hosting);
+            if (stopBtn) stopBtn.classList.toggle('hidden', !hosting);
+            if (info) info.classList.toggle('hidden', !hosting);
+            if (!hosting) {
+                if (qrWrap) qrWrap.innerHTML = '';
+                return;
+            }
+
+            if (codeEl) codeEl.textContent = liveGameCode;
+            const joinUrl = getLiveGameJoinUrl(liveGameCode);
+            if (urlEl) urlEl.textContent = joinUrl;
+            if (qrWrap) {
+                qrWrap.innerHTML = '';
+                if (typeof QRCode !== 'undefined') {
+                    try {
+                        new QRCode(qrWrap, {
+                            text: joinUrl,
+                            width: 180,
+                            height: 180,
+                            correctLevel: QRCode.CorrectLevel.M
+                        });
+                    } catch (err) {
+                        console.error(err);
+                        qrWrap.textContent = 'QR unavailable — use the code or link below.';
+                    }
+                } else {
+                    qrWrap.textContent = 'QR library unavailable — use the code or link below.';
+                }
+            }
+        }
+
+        function renderRemoteEliminatePanel() {
+            const panel = document.getElementById('remoteEliminatePanel');
+            const list = document.getElementById('remoteEliminateList');
+            const meta = document.getElementById('remoteEliminateMeta');
+            const restoreWrap = document.getElementById('remoteRestoreListWrap');
+            const restoreList = document.getElementById('remoteRestoreList');
+            const leaveBtn = document.getElementById('remoteLeaveBtn');
+            if (!panel || !list) return;
+
+            const joined = liveSyncRole === 'remote' && !!liveGameCode;
+            if (leaveBtn) leaveBtn.classList.toggle('hidden', !joined);
+            panel.classList.toggle('hidden', !joined);
+            if (!joined) {
+                list.innerHTML = '';
+                if (restoreList) restoreList.innerHTML = '';
+                if (restoreWrap) restoreWrap.classList.add('hidden');
+                return;
+            }
+
+            const active = players.filter((p) => !p.eliminated).sort((a, b) => a.number - b.number);
+            const eliminated = [...eliminatedPlayers].reverse();
+            if (meta) {
+                meta.textContent = gameStarted
+                    ? `${active.length} players still in · Season ${getSeasonNumber()}`
+                    : 'Host has not started the game yet. You can still wait here — eliminate unlocks after Start Game.';
+            }
+
+            list.innerHTML = '';
+            if (active.length === 0) {
+                list.innerHTML = '<div class="text-gray-400 text-sm">No active players.</div>';
+            } else {
+                active.forEach((player) => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'remote-eliminate-btn';
+                    btn.disabled = !gameStarted;
+                    btn.innerHTML = `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${player.table != null ? `T${player.table}` : ''}</span>`;
+                    btn.onclick = () => requestRemoteEliminate(player.id);
+                    list.appendChild(btn);
+                });
+            }
+
+            if (restoreWrap && restoreList) {
+                restoreList.innerHTML = '';
+                if (eliminated.length === 0) {
+                    restoreWrap.classList.add('hidden');
+                } else {
+                    restoreWrap.classList.remove('hidden');
+                    eliminated.slice(0, 8).forEach((player) => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'remote-eliminate-btn';
+                        btn.style.background = 'rgba(75, 85, 99, 0.55)';
+                        btn.textContent = `Restore ${player.name}`;
+                        btn.onclick = () => requestRemoteRestore(player.id);
+                        restoreList.appendChild(btn);
+                    });
+                }
+            }
+        }
+
+        function renderRemoteControlPage() {
+            const warning = document.getElementById('remoteFirebaseWarning');
+            if (warning) warning.classList.toggle('hidden', isFirebaseConfigured());
+            updateRemoteSyncStatusUi();
+            renderRemoteHostSessionUi();
+            renderRemoteEliminatePanel();
+            if (pendingLiveJoinCode) {
+                const input = document.getElementById('remoteJoinCodeInput');
+                if (input) input.value = pendingLiveJoinCode;
+            }
+        }
+
+        async function startLiveGameHost() {
+            if (liveSyncRole === 'remote') {
+                showToast('Leave the joined game before hosting.', 'info');
+                return;
+            }
+            if (!isFirebaseConfigured()) {
+                showToast('Configure Firebase in Settings → Remote Sync first.', 'error');
+                showPage('admin');
+                showAdminSettingsSection('remote-sync');
+                return;
+            }
+            if (players.length < 2) {
+                showToast('Register at least 2 players before hosting.', 'info');
+                return;
+            }
+            const db = initFirebaseApp();
+            if (!db) return;
+
+            detachLiveListeners();
+            liveGameCode = generateLiveGameCode();
+            liveSyncRole = 'host';
+
+            try {
+                await db.ref(`liveGames/${liveGameCode}`).set({
+                    meta: {
+                        createdAt: Date.now(),
+                        updatedAt: Date.now(),
+                        clubName: getClubName(),
+                        season: getSeasonNumber(),
+                        status: 'active'
+                    },
+                    state: buildLiveGameStatePayload(),
+                    commands: {}
+                });
+            } catch (err) {
+                console.error(err);
+                liveSyncRole = null;
+                liveGameCode = null;
+                showToast('Could not create live game session. Check Realtime Database rules and URL.', 'error');
+                renderRemoteControlPage();
+                return;
+            }
+
+            liveCommandsRef = db.ref(`liveGames/${liveGameCode}/commands`);
+            liveCommandsListener = (snap) => {
+                const cmd = snap.val();
+                const key = snap.key;
+                if (!cmd || !cmd.type) return;
+                handleHostLiveCommand(cmd, key);
+            };
+            liveCommandsRef.on('child_added', liveCommandsListener);
+
+            renderRemoteControlPage();
+            showToast(`Hosting live game ${liveGameCode}. Scan the QR on your phone.`, 'success');
+        }
+
+        async function stopLiveGameHost() {
+            const code = liveGameCode;
+            const db = initFirebaseApp();
+            detachLiveListeners();
+            liveSyncRole = null;
+            liveGameCode = null;
+            if (db && code) {
+                try {
+                    await db.ref(`liveGames/${code}/meta/status`).set('ended');
+                } catch (e) { /* ignore */ }
+            }
+            renderRemoteControlPage();
+            showToast('Stopped hosting remote control.', 'info');
+        }
+
+        async function handleHostLiveCommand(cmd, key) {
+            if (liveSyncRole !== 'host') return;
+            const playerId = Number(cmd.playerId);
+            if (cmd.type === 'eliminate') {
+                eliminatePlayer(playerId);
+            } else if (cmd.type === 'restore') {
+                restorePlayer(playerId);
+            }
+            const db = initFirebaseApp();
+            if (db && liveGameCode && key) {
+                try {
+                    await db.ref(`liveGames/${liveGameCode}/commands/${key}`).remove();
+                } catch (e) { /* ignore */ }
+            }
+            if (document.getElementById('remote-control') && !document.getElementById('remote-control').classList.contains('hidden')) {
+                renderRemoteControlPage();
+            }
+        }
+
+        async function joinLiveGameRemote(codeOverride) {
+            if (liveSyncRole === 'host') {
+                showToast('Stop hosting on this device before joining as a remote.', 'info');
+                return;
+            }
+            if (!isFirebaseConfigured()) {
+                showToast('Configure Firebase in Settings → Remote Sync first.', 'error');
+                return;
+            }
+            const code = normalizeLiveGameCode(codeOverride || document.getElementById('remoteJoinCodeInput')?.value || pendingLiveJoinCode);
+            if (code.length < 4) {
+                showToast('Enter a valid game code.', 'error');
+                return;
+            }
+            const db = initFirebaseApp();
+            if (!db) return;
+
+            try {
+                const snap = await db.ref(`liveGames/${code}/meta`).once('value');
+                const meta = snap.val();
+                if (!meta || meta.status === 'ended') {
+                    showToast('No active game found for that code.', 'error');
+                    return;
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Could not reach Firebase. Check config and database rules.', 'error');
+                return;
+            }
+
+            detachLiveListeners();
+            liveSyncRole = 'remote';
+            liveGameCode = code;
+            pendingLiveJoinCode = null;
+
+            liveStateRef = db.ref(`liveGames/${code}/state`);
+            liveStateListener = (snap) => {
+                const state = snap.val();
+                if (!state) return;
+                applyLiveGameStatePayload(state);
+                renderRemoteEliminatePanel();
+                updateRemoteSyncStatusUi();
+            };
+            liveStateRef.on('value', liveStateListener);
+
+            renderRemoteControlPage();
+            showToast(`Joined game ${code}.`, 'success');
+        }
+
+        function leaveLiveGameRemote() {
+            detachLiveListeners();
+            liveSyncRole = null;
+            liveGameCode = null;
+            renderRemoteControlPage();
+            showToast('Left remote game.', 'info');
+        }
+
+        async function pushLiveGameCommand(type, playerId) {
+            if (liveSyncRole !== 'remote' || !liveGameCode) {
+                showToast('Join a live game first.', 'info');
+                return;
+            }
+            const db = initFirebaseApp();
+            if (!db) return;
+            try {
+                await db.ref(`liveGames/${liveGameCode}/commands`).push({
+                    type,
+                    playerId,
+                    at: Date.now()
+                });
+            } catch (err) {
+                console.error(err);
+                showToast('Could not send command to host.', 'error');
+            }
+        }
+
+        async function requestRemoteEliminate(playerId) {
+            if (!gameStarted) {
+                showToast('Host must start the game before eliminations.', 'info');
+                return;
+            }
+            const player = players.find((p) => p.id === playerId);
+            if (!player) return;
+            if (!(await showConfirm(`Eliminate ${player.name}?`))) return;
+            await pushLiveGameCommand('eliminate', playerId);
+        }
+
+        async function requestRemoteRestore(playerId) {
+            const player = players.find((p) => p.id === playerId);
+            if (!player) return;
+            if (!(await showConfirm(`Restore ${player.name}?`))) return;
+            await pushLiveGameCommand('restore', playerId);
+        }
+
+        function populateAdminRemoteSyncForm() {
+            const ta = document.getElementById('adminFirebaseConfig');
+            const status = document.getElementById('remoteSyncConfigStatus');
+            const cfg = getFirebaseConfig();
+            if (ta) {
+                const stored = getStoredFirebaseConfig();
+                ta.value = stored ? JSON.stringify(stored, null, 2) : (cfg ? JSON.stringify(cfg, null, 2) : '');
+            }
+            if (status) {
+                status.textContent = isFirebaseConfigured()
+                    ? 'Status: Configured — Remote page is ready'
+                    : 'Status: Not configured';
+                status.className = isFirebaseConfigured()
+                    ? 'text-sm mb-3 text-green-400'
+                    : 'text-sm mb-3 text-poker-text/70';
+            }
+        }
+
+        function saveFirebaseConfigFromAdmin() {
+            const ta = document.getElementById('adminFirebaseConfig');
+            if (!ta) return;
+            let parsed;
+            try {
+                parsed = JSON.parse(ta.value.trim());
+            } catch (e) {
+                showToast('Invalid JSON. Paste the Firebase web config object.', 'error');
+                return;
+            }
+            if (!parsed.apiKey || !parsed.databaseURL) {
+                showToast('Config must include apiKey and databaseURL.', 'error');
+                return;
+            }
+            localStorage.setItem(FIREBASE_CONFIG_KEY, JSON.stringify(parsed));
+            firebaseAppInstance = null;
+            firebaseDb = null;
+            populateAdminRemoteSyncForm();
+            if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+                showToast('Firebase config saved. Refresh the page so the new config is used.', 'success');
+            } else {
+                showToast('Firebase config saved on this device.', 'success');
+            }
+        }
+
+        function clearFirebaseConfigFromAdmin() {
+            localStorage.removeItem(FIREBASE_CONFIG_KEY);
+            firebaseAppInstance = null;
+            firebaseDb = null;
+            const ta = document.getElementById('adminFirebaseConfig');
+            if (ta) ta.value = '';
+            populateAdminRemoteSyncForm();
+            showToast('Firebase config cleared.', 'info');
+        }
+
+        async function tryAutoJoinPendingLiveCode() {
+            if (!pendingLiveJoinCode || !isAppLoggedIn() || !hasFullAppAccess()) return;
+            if (!isFirebaseConfigured()) {
+                showPage('remote-control');
+                renderRemoteControlPage();
+                return;
+            }
+            showPage('remote-control');
+            await joinLiveGameRemote(pendingLiveJoinCode);
         }
 
         function eliminatePlayer(playerId) {
@@ -5838,6 +6543,7 @@
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            capturePendingLiveJoinCodeFromUrl();
             if (isAppLoggedIn()) {
                 showAppAfterLogin();
             } else {
@@ -6866,6 +7572,9 @@
                     break;
                 case 'general':
                     populateAdminGeneralForm();
+                    break;
+                case 'remote-sync':
+                    populateAdminRemoteSyncForm();
                     break;
                 case 'about':
                     populateAdminAboutSection();
