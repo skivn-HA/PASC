@@ -1649,7 +1649,7 @@
                     <p class="text-sm text-poker-text/70 mb-4">Host the live game on the laptop, then join from a phone with the QR code or game code to eliminate players without leaving your seat.</p>
 
                     <div id="remoteFirebaseWarning" class="hidden mb-4 p-3 rounded-lg border border-yellow-500/40 bg-yellow-900/30 text-yellow-100 text-sm">
-                        Firebase is not configured yet. Open <strong>Settings → Remote Sync</strong>, paste your Firebase web config, then return here.
+                        Firebase is not configured yet. Open <strong>Settings → Remote Sync</strong> and save a valid config (must include <code>databaseURL</code>).
                     </div>
 
                     <div id="remoteHostPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
@@ -1989,18 +1989,17 @@
                             </div>
                             <div id="adminSection-remote-sync" class="admin-settings-section hidden">
                                 <h3>Remote Sync</h3>
-                                <p class="admin-section-intro">Connect Firebase Realtime Database so a phone can eliminate players in the same live game as the laptop. Hosting stays on GitHub — Firebase is sync only.</p>
-                                <p id="remoteSyncConfigStatus" class="text-sm mb-3 text-poker-text/70">Status: Not configured</p>
-                                <label for="adminFirebaseConfig" class="text-sm font-semibold mb-1 block">Firebase web config (JSON)</label>
-                                <textarea id="adminFirebaseConfig" rows="10" placeholder='{&#10;  "apiKey": "...",&#10;  "authDomain": "...",&#10;  "databaseURL": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text font-mono text-xs mb-3"></textarea>
+                                <p class="admin-section-intro">Firebase Realtime Database sync for phone remote control. A project config is already built into this app for <strong>poker-pasc</strong>. You only need to paste a config here if you want to override it on this device.</p>
+                                <p id="remoteSyncConfigStatus" class="text-sm mb-3 text-poker-text/70">Status: Checking…</p>
+                                <label for="adminFirebaseConfig" class="text-sm font-semibold mb-1 block">Firebase web config override (JSON) — optional</label>
+                                <textarea id="adminFirebaseConfig" rows="10" placeholder='Leave blank to use the built-in config. To override, paste JSON with apiKey and databaseURL.' class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text font-mono text-xs mb-3"></textarea>
                                 <div class="flex flex-wrap gap-2 mb-4">
-                                    <button type="button" onclick="saveFirebaseConfigFromAdmin()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Firebase Config</button>
-                                    <button type="button" onclick="clearFirebaseConfigFromAdmin()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white">Clear Config</button>
+                                    <button type="button" onclick="saveFirebaseConfigFromAdmin()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Override</button>
+                                    <button type="button" onclick="clearFirebaseConfigFromAdmin()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white">Clear Override (use built-in)</button>
                                 </div>
                                 <ol class="text-sm text-poker-text/80 list-decimal pl-5 space-y-1">
-                                    <li>Create a Firebase project and turn on <strong>Realtime Database</strong> (test mode to start).</li>
-                                    <li>Add a Web app and copy its config object into the box above.</li>
-                                    <li>Paste security rules from the setup notes (allow read/write under <code>liveGames</code>).</li>
+                                    <li>Confirm Realtime Database rules allow <code>liveGames</code> read/write (see setup notes).</li>
+                                    <li>Restrict the Google API key to your site: <code>https://skivn-ha.github.io/*</code></li>
                                     <li>On game night: laptop opens <strong>Remote → Start Hosting</strong>; phone scans the QR or enters the code.</li>
                                 </ol>
                             </div>
@@ -4323,6 +4322,11 @@
             if (activePlayers.length === 2 && declaredWinner && activePlayers.some(p => p.id === declaredWinner.id)) {
                 return declaredWinner;
             }
+            // Recovery: if every player was eliminated, the last one removed was the champion.
+            if (activePlayers.length === 0 && players.length >= 2 && eliminatedPlayers.length === players.length) {
+                return eliminatedPlayers[eliminatedPlayers.length - 1] || declaredWinner || null;
+            }
+            if (activePlayers.length === 0 && declaredWinner) return declaredWinner;
             return null;
         }
 
@@ -5547,11 +5551,13 @@
             const activeAfter = players.filter((p) => !p.eliminated);
 
             if (wasElimination) {
-                if (declaredWinner && declaredWinner.id === playerId) {
-                    declaredWinner = null;
-                }
                 if (activeAfter.length === 1) {
                     declaredWinner = activeAfter[0];
+                } else if (activeAfter.length === 0) {
+                    const justEliminated = players.find((p) => p.id === playerId);
+                    if (justEliminated) declaredWinner = justEliminated;
+                } else if (declaredWinner && declaredWinner.id === playerId) {
+                    declaredWinner = null;
                 }
             } else if (activeAfter.length === 1) {
                 declaredWinner = activeAfter[0];
@@ -5571,9 +5577,31 @@
             renderTables();
             updateStats();
             publishLiveGameState();
-            if (wasElimination && players.length >= 2 && activeAfter.length === 1) {
+            if (wasElimination && players.length >= 2 && activeAfter.length <= 1) {
                 showPage('stats');
             }
+        }
+
+        function eliminatePlayer(playerId) {
+            const player = players.find((p) => p.id === playerId);
+            if (!player || player.eliminated) return;
+            if (!isGameStarted()) {
+                showToast('Please start the game before eliminating players.', 'info');
+                return;
+            }
+            const activePlayers = players.filter((p) => !p.eliminated);
+            if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
+                declaredWinner = player;
+                showToast(`${player.name} is the winner. Save the game on the Stats Dashboard.`, 'info');
+                updateStats();
+                showPage('stats');
+                return;
+            }
+            player.eliminated = true;
+            player._tableBeforeElimination = player.table;
+            player.table = null;
+            eliminatedPlayers.push(player);
+            afterPlayerActiveStateChange(true, playerId);
         }
 
         function getStoredFirebaseConfig() {
@@ -6022,6 +6050,11 @@
                 showToast('Host must start the game before eliminations.', 'info');
                 return;
             }
+            const activePlayers = players.filter((p) => !p.eliminated);
+            if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
+                showToast(`${activePlayers[0].name} is the winner. Ask the host to save the game on Stats.`, 'info');
+                return;
+            }
             const player = players.find((p) => p.id === playerId);
             if (!player) return;
             if (!(await showConfirm(`Eliminate ${player.name}?`))) return;
@@ -6038,18 +6071,34 @@
         function populateAdminRemoteSyncForm() {
             const ta = document.getElementById('adminFirebaseConfig');
             const status = document.getElementById('remoteSyncConfigStatus');
-            const cfg = getFirebaseConfig();
+            const stored = getStoredFirebaseConfig();
+            const builtinReady = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL);
+            const active = getFirebaseConfig();
+
             if (ta) {
-                const stored = getStoredFirebaseConfig();
-                ta.value = stored ? JSON.stringify(stored, null, 2) : (cfg ? JSON.stringify(cfg, null, 2) : '');
+                if (stored && stored.apiKey && stored.databaseURL) {
+                    ta.value = JSON.stringify(stored, null, 2);
+                } else if (builtinReady) {
+                    ta.value = JSON.stringify(FIREBASE_CONFIG, null, 2);
+                } else {
+                    ta.value = '';
+                }
             }
+
             if (status) {
-                status.textContent = isFirebaseConfigured()
-                    ? 'Status: Configured — Remote page is ready'
-                    : 'Status: Not configured';
-                status.className = isFirebaseConfigured()
-                    ? 'text-sm mb-3 text-green-400'
-                    : 'text-sm mb-3 text-poker-text/70';
+                if (stored && stored.apiKey && stored.databaseURL) {
+                    status.textContent = 'Status: Using saved override on this device';
+                    status.className = 'text-sm mb-3 text-green-400';
+                } else if (builtinReady) {
+                    status.textContent = 'Status: Using built-in poker-pasc Firebase config';
+                    status.className = 'text-sm mb-3 text-green-400';
+                } else if (active) {
+                    status.textContent = 'Status: Configured';
+                    status.className = 'text-sm mb-3 text-green-400';
+                } else {
+                    status.textContent = 'Status: Not configured';
+                    status.className = 'text-sm mb-3 text-poker-text/70';
+                }
             }
         }
 
@@ -6072,9 +6121,9 @@
             firebaseDb = null;
             populateAdminRemoteSyncForm();
             if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-                showToast('Firebase config saved. Refresh the page so the new config is used.', 'success');
+                showToast('Override saved. Refresh the page so the new config is used.', 'success');
             } else {
-                showToast('Firebase config saved on this device.', 'success');
+                showToast('Override saved on this device.', 'success');
             }
         }
 
@@ -6082,10 +6131,12 @@
             localStorage.removeItem(FIREBASE_CONFIG_KEY);
             firebaseAppInstance = null;
             firebaseDb = null;
-            const ta = document.getElementById('adminFirebaseConfig');
-            if (ta) ta.value = '';
             populateAdminRemoteSyncForm();
-            showToast('Firebase config cleared.', 'info');
+            if (FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL) {
+                showToast('Override cleared. Using built-in Firebase config.', 'success');
+            } else {
+                showToast('Firebase config cleared.', 'info');
+            }
         }
 
         async function tryAutoJoinPendingLiveCode() {
@@ -6097,20 +6148,6 @@
             }
             showPage('remote-control');
             await joinLiveGameRemote(pendingLiveJoinCode);
-        }
-
-        function eliminatePlayer(playerId) {
-            const player = players.find((p) => p.id === playerId);
-            if (!player || player.eliminated) return;
-            if (!isGameStarted()) {
-                showToast('Please start the game before eliminating players.', 'info');
-                return;
-            }
-            player.eliminated = true;
-            player._tableBeforeElimination = player.table;
-            player.table = null;
-            eliminatedPlayers.push(player);
-            afterPlayerActiveStateChange(true, playerId);
         }
 
         function restorePlayer(playerId) {
