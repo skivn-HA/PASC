@@ -83,8 +83,7 @@
             line-height: 1.2;
         }
 
-        #blindTimerCashPrizes .cash-prize-place,
-        #fullscreenOverlay #fullscreenCashPrizes .cash-prize-place {
+        #blindTimerCashPrizes .cash-prize-place {
             color: #ffffff;
         }
 
@@ -93,37 +92,6 @@
             font-size: 1.5rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        #fullscreenOverlay #fullscreenCashPrizes {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            z-index: 10000;
-            background: rgba(17, 24, 39, 0.95);
-            border: 1px solid rgba(5, 109, 120, 0.5);
-            border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
-        }
-
-        #fullscreenOverlay #fullscreenCashPrizes .cash-prizes-column {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.35rem;
-            font-weight: bold;
-            font-size: clamp(1.7rem, 3.2vw, 2.7rem);
-            line-height: 1.25;
-            white-space: nowrap;
-        }
-
-        #fullscreenOverlay #fullscreenCashPrizes .cash-prizes-label {
-            font-size: clamp(1.5rem, 2.8vw, 2.3rem);
-            margin-bottom: 0.25rem;
-        }
-
-        #fullscreenOverlay #fullscreenContent {
-            padding-top: clamp(0.5rem, 2vh, 1.5rem);
         }
 
         #registrationGameDetailsCard,
@@ -652,8 +620,8 @@
         #remote-control .remote-eliminate-btn {
             width: 100%;
             text-align: left;
-            padding: 0.85rem 1rem;
-            border-radius: 0.75rem;
+            padding: 0.35rem 0.55rem;
+            border-radius: 0.5rem;
             background: rgba(5, 109, 120, 0.45);
             border: 1px solid rgba(209, 213, 219, 0.15);
             color: #f9fafb;
@@ -668,6 +636,13 @@
         #remote-control .remote-eliminate-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        #remote-control #remoteEliminateList,
+        #remote-control #remoteRestoreList {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
         #remote-control .remote-status-pill {
@@ -689,6 +664,86 @@
         #remote-control .remote-status-pill.off {
             background: rgba(107, 114, 128, 0.4);
             color: #d1d5db;
+        }
+
+        #remote-control .remote-joined-header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        #remote-control .remote-leave-link {
+            font-size: 0.75rem;
+            color: rgba(249, 250, 251, 0.65);
+            text-decoration: underline;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        #remote-control .remote-leave-link:hover {
+            color: #f9fafb;
+        }
+
+        #remote-control #remoteBlindTimerPanel {
+            text-align: center;
+            padding: 0.85rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.75rem;
+            background: rgba(17, 24, 39, 0.65);
+            border: 1px solid rgba(5, 109, 120, 0.35);
+        }
+
+        #remote-control #remoteBlindCurrent {
+            color: #facc15;
+            font-weight: 700;
+            font-size: 1.75rem;
+            line-height: 1.25;
+        }
+
+        #remote-control #remoteBlindClock {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 2.35rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-top: 0.35rem;
+            color: #f9fafb;
+        }
+
+        #remote-control #remoteBlindRunningHint {
+            font-size: 0.7rem;
+            margin-top: 0.2rem;
+            color: rgba(249, 250, 251, 0.55);
+        }
+
+        #remote-control #remoteBlindTimerButtons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.45rem;
+            margin-top: 0.75rem;
+        }
+
+        #remote-control #remoteBlindTimerButtons button {
+            padding: 0.45rem 0.7rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #remote-control #remoteBlindTimerButtons .remote-timer-start,
+        #remote-control #remoteBlindTimerButtons .remote-timer-pause {
+            background: #ca8a04;
+        }
+
+        #remote-control #remoteBlindTimerButtons .remote-timer-next,
+        #remote-control #remoteBlindTimerButtons .remote-timer-prev {
+            background: #4f46e5;
         }
         
         .timer-display {
@@ -1214,7 +1269,7 @@
 
         <div id="appShell" class="hidden">
         <!-- Navigation -->
-        <nav class="mb-2 py-1 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
+        <nav id="appMainNav" class="mb-2 py-1 bg-gray-800 rounded-xl shadow-2xl border border-purple-500/30">
             <ul class="flex flex-wrap justify-center">
                 <li data-requires-full-access>
                     <button onclick="showPage('registration')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
@@ -1644,55 +1699,78 @@
                         <h2 class="text-2xl font-bold text-yellow-400">
                             <i class="fas fa-mobile-alt mr-2"></i>Remote Control
                         </h2>
-                        <span id="remoteSyncStatusPill" class="remote-status-pill off">Not connected</span>
-                    </div>
-                    <p class="text-sm text-poker-text/70 mb-4">Host the live game on the laptop, then join from a phone with the QR code or game code to eliminate players without leaving your seat.</p>
-
-                    <div id="remoteFirebaseWarning" class="hidden mb-4 p-3 rounded-lg border border-yellow-500/40 bg-yellow-900/30 text-yellow-100 text-sm">
-                        Firebase is not configured yet. Open <strong>Settings → Remote Sync</strong> and save a valid config (must include <code>databaseURL</code>).
-                    </div>
-
-                    <div id="remoteHostPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
-                        <h3 class="text-lg font-semibold mb-2 text-yellow-400">Laptop — Host this game</h3>
-                        <p class="text-sm text-poker-text/70 mb-3">Start hosting after players are registered. Keep this page open or stay signed in on the laptop so the phone stays in sync.</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <button type="button" id="remoteStartHostBtn" onclick="startLiveGameHost()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium text-white">
-                                <i class="fas fa-broadcast-tower mr-2"></i>Start Hosting
-                            </button>
-                            <button type="button" id="remoteStopHostBtn" onclick="stopLiveGameHost()" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white hidden">
-                                <i class="fas fa-stop mr-2"></i>Stop Hosting
-                            </button>
-                        </div>
-                        <div id="remoteHostSessionInfo" class="hidden">
-                            <p class="text-sm mb-1">Game code</p>
-                            <div id="remoteHostCode" class="remote-code-display mb-3">------</div>
-                            <p class="text-sm mb-2">Scan with phone camera / join link</p>
-                            <div id="remoteQrCode" class="mb-3"></div>
-                            <p id="remoteJoinUrlText" class="text-xs text-poker-text/60 break-all"></p>
+                        <div class="remote-joined-header-actions">
+                            <span id="remoteSyncStatusPill" class="remote-status-pill off">Not connected</span>
+                            <button type="button" id="remoteLeaveBtn" onclick="leaveLiveGameRemote()" class="remote-leave-link hidden">Leave</button>
                         </div>
                     </div>
 
-                    <div id="remoteJoinPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
-                        <h3 class="text-lg font-semibold mb-2 text-yellow-400">Phone — Join a game</h3>
-                        <div class="flex flex-col sm:flex-row gap-2 mb-3">
-                            <input type="text" id="remoteJoinCodeInput" maxlength="8" placeholder="Enter game code" class="flex-1 px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text uppercase tracking-widest text-center text-lg" autocomplete="off">
-                            <button type="button" onclick="joinLiveGameRemote()" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium text-white">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Join
+                    <div id="remoteSetupBlocks">
+                        <p class="text-sm text-poker-text/70 mb-4">Host the live game on the laptop, then join from a phone with the QR code or game code to eliminate players without leaving your seat.</p>
+
+                        <div id="remoteFirebaseWarning" class="hidden mb-4 p-3 rounded-lg border border-yellow-500/40 bg-yellow-900/30 text-yellow-100 text-sm">
+                            Firebase is not configured yet. Open <strong>Settings → Remote Sync</strong> and save a valid config (must include <code>databaseURL</code>).
+                        </div>
+
+                        <div id="remoteHostPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
+                            <h3 class="text-lg font-semibold mb-2 text-yellow-400">Laptop — Host this game</h3>
+                            <p class="text-sm text-poker-text/70 mb-3">Start hosting after players are registered. Keep this page open or stay signed in on the laptop so the phone stays in sync.</p>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button type="button" id="remoteStartHostBtn" onclick="startLiveGameHost()" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg font-medium text-white">
+                                    <i class="fas fa-broadcast-tower mr-2"></i>Start Hosting
+                                </button>
+                                <button type="button" id="remoteStopHostBtn" onclick="stopLiveGameHost()" class="px-4 py-2 bg-red-700 hover:bg-red-800 rounded-lg font-medium text-white hidden">
+                                    <i class="fas fa-stop mr-2"></i>Stop Hosting
+                                </button>
+                            </div>
+                            <div id="remoteHostSessionInfo" class="hidden">
+                                <p class="text-sm mb-1">Game code</p>
+                                <div id="remoteHostCode" class="remote-code-display mb-3">------</div>
+                                <p class="text-sm mb-2">Scan with phone camera / join link</p>
+                                <div id="remoteQrCode" class="mb-3"></div>
+                                <p id="remoteJoinUrlText" class="text-xs text-poker-text/60 break-all"></p>
+                            </div>
+                        </div>
+
+                        <div id="remoteJoinPanel" class="mb-6 p-4 rounded-xl bg-poker-primary/50 border border-poker-accent/20">
+                            <h3 class="text-lg font-semibold mb-2 text-yellow-400">Phone — Join a game</h3>
+                            <div class="flex flex-col sm:flex-row gap-2 mb-3">
+                                <input type="text" id="remoteJoinCodeInput" maxlength="8" placeholder="Enter game code" class="flex-1 px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text uppercase tracking-widest text-center text-lg" autocomplete="off">
+                                <button type="button" onclick="joinLiveGameRemote()" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium text-white">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Join
+                                </button>
+                            </div>
+                            <p id="remoteJoinHint" class="text-xs text-poker-text/60">Or open the QR link from the laptop — it fills the code automatically after login.</p>
+                        </div>
+                    </div>
+
+                    <div id="remoteBlindTimerPanel" class="hidden">
+                        <div id="remoteBlindCurrent">Blinds: -/-</div>
+                        <div id="remoteBlindClock">00:00</div>
+                        <div id="remoteBlindRunningHint"></div>
+                        <div id="remoteBlindTimerButtons">
+                            <button type="button" id="remoteTimerStartBtn" class="remote-timer-start" onclick="requestRemoteTimerCommand('timer-start')">
+                                <i class="fas fa-play mr-1"></i>Start
                             </button>
-                            <button type="button" id="remoteLeaveBtn" onclick="leaveLiveGameRemote()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white hidden">
-                                Leave
+                            <button type="button" id="remoteTimerPauseBtn" class="remote-timer-pause hidden" onclick="requestRemoteTimerCommand('timer-pause')">
+                                <i class="fas fa-pause mr-1"></i>Pause
+                            </button>
+                            <button type="button" class="remote-timer-next" onclick="requestRemoteTimerCommand('timer-next')">
+                                <i class="fas fa-forward mr-1"></i>Next Blind
+                            </button>
+                            <button type="button" class="remote-timer-prev" onclick="requestRemoteTimerCommand('timer-prev')">
+                                <i class="fas fa-backward mr-1"></i>Previous Blind
                             </button>
                         </div>
-                        <p id="remoteJoinHint" class="text-xs text-poker-text/60">Or open the QR link from the laptop — it fills the code automatically after login.</p>
                     </div>
 
                     <div id="remoteEliminatePanel" class="hidden">
                         <h3 class="text-lg font-semibold mb-2 text-yellow-400">Eliminate players</h3>
                         <p id="remoteEliminateMeta" class="text-sm text-poker-text/70 mb-3"></p>
-                        <div id="remoteEliminateList" class="flex flex-col gap-2"></div>
+                        <div id="remoteEliminateList" class="flex flex-col"></div>
                         <div id="remoteRestoreListWrap" class="mt-4 hidden">
                             <h4 class="text-sm font-semibold mb-2 text-poker-text/80">Recently eliminated — tap to restore</h4>
-                            <div id="remoteRestoreList" class="flex flex-col gap-2"></div>
+                            <div id="remoteRestoreList" class="flex flex-col"></div>
                         </div>
                     </div>
                 </div>
@@ -2066,6 +2144,8 @@
         let liveCommandsListener = null;
         let liveSyncApplyingRemote = false;
         let pendingLiveJoinCode = null;
+        let remoteSyncedBlindTimer = null;
+        let remoteBlindTickInterval = null;
 
         // Global variables
         let players = [];
@@ -2322,7 +2402,22 @@
         function hasFullAppAccess() {
             const role = getLoggedInRole();
             if (!role) return true;
-            return role === 'owner' || role === 'committee';
+            return role === 'owner' || role === 'committee' || role === 'dev';
+        }
+
+        function isDevLoggedIn() {
+            return getLoggedInRole() === 'dev';
+        }
+
+        function updateRemoteSyncSettingsVisibility() {
+            const isDev = isDevLoggedIn();
+            document.querySelectorAll('.admin-settings-nav-btn[data-admin-section="remote-sync"]').forEach((btn) => {
+                btn.classList.toggle('hidden', !isDev);
+            });
+            const remoteSection = document.getElementById('adminSection-remote-sync');
+            if (remoteSection && !isDev) {
+                remoteSection.classList.add('hidden');
+            }
         }
 
         function setAppLoggedIn(loggedIn, role = null) {
@@ -2340,6 +2435,14 @@
             document.querySelectorAll('[data-requires-full-access]').forEach((item) => {
                 item.classList.toggle('hidden', !fullAccess);
             });
+            updateRemoteSyncSettingsVisibility();
+            updateRemoteJoinedNavVisibility();
+        }
+
+        function updateRemoteJoinedNavVisibility() {
+            const joinedRemote = liveSyncRole === 'remote' && !!liveGameCode;
+            const nav = document.getElementById('appMainNav');
+            if (nav) nav.classList.toggle('hidden', joinedRemote);
         }
 
         function showLoginScreen() {
@@ -2386,6 +2489,11 @@
             if (pageId !== 'login' && !isAppLoggedIn()) {
                 showLoginScreen();
                 return;
+            }
+
+            // Joined remotes stay on Remote Control until they Leave
+            if (liveSyncRole === 'remote' && liveGameCode && pageId !== 'remote-control' && pageId !== 'login') {
+                pageId = 'remote-control';
             }
 
             const restrictedPages = ['registration', 'stats', 'admin', 'remote-control'];
@@ -3464,6 +3572,9 @@
             // Update button states (update all instances - original and cloned)
             document.querySelectorAll('#startBtn').forEach(btn => btn.classList.remove('hidden'));
             document.querySelectorAll('#pauseBtn').forEach(btn => btn.classList.add('hidden'));
+
+            // Push paused clock so remotes stop their local countdown
+            if (liveSyncRole === 'host') publishLiveGameState();
         }
         
         function nextBlind() {
@@ -3563,6 +3674,7 @@
                 }
             });
             requestAnimationFrame(fitFullscreenTimerText);
+            if (liveSyncRole === 'host') publishLiveGameState();
         }
         
         function formatBlindNumber(num) {
@@ -3635,6 +3747,7 @@
                 fitFullscreenTimerText();
                 fitStandardBlindTimer();
             });
+            if (liveSyncRole === 'host') publishLiveGameState();
         }
 
         function fitStandardBlindTimer() {
@@ -3835,32 +3948,12 @@
             const pairs = [
                 ['blindTimerPayout1st', payout1st],
                 ['blindTimerPayout2nd', payout2nd],
-                ['blindTimerPayout3rd', payout3rd],
-                ['fullscreenPayout1st', payout1st],
-                ['fullscreenPayout2nd', payout2nd],
-                ['fullscreenPayout3rd', payout3rd]
+                ['blindTimerPayout3rd', payout3rd]
             ];
             pairs.forEach(([id, amount]) => {
                 const el = document.getElementById(id);
                 if (el) el.textContent = `$${amount.toFixed(2)}`;
             });
-        }
-
-        function createFullscreenCashPrizes() {
-            const p1 = document.getElementById('blindTimerPayout1st')?.textContent || '$0';
-            const p2 = document.getElementById('blindTimerPayout2nd')?.textContent || '$0';
-            const p3 = document.getElementById('blindTimerPayout3rd')?.textContent || '$0';
-            const box = document.createElement('div');
-            box.id = 'fullscreenCashPrizes';
-            box.innerHTML = `
-                <div class="cash-prizes-column">
-                    <span class="cash-prizes-label"><i class="fas fa-usd mr-1"></i>Cash Prizes</span>
-                    <span class="cash-prize-place">1st: <span id="fullscreenPayout1st">${p1}</span></span>
-                    <span class="cash-prize-place">2nd: <span id="fullscreenPayout2nd">${p2}</span></span>
-                    <span class="cash-prize-place">3rd: <span id="fullscreenPayout3rd">${p3}</span></span>
-                </div>
-            `;
-            return box;
         }
 
         function getGhostPlayerStatus() {
@@ -5547,6 +5640,17 @@
             }
         }
         
+        function exitBlindTimerFullscreenIfNeeded() {
+            if (!document.body.classList.contains('fullscreen-mode')) return;
+            document.body.classList.remove('fullscreen-mode');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            if (fullscreenBtn) {
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand mr-2"></i>Fullscreen Timer';
+            }
+            const overlay = document.getElementById('fullscreenOverlay');
+            if (overlay) overlay.remove();
+        }
+
         function afterPlayerActiveStateChange(wasElimination, playerId) {
             const activeAfter = players.filter((p) => !p.eliminated);
 
@@ -5578,6 +5682,8 @@
             updateStats();
             publishLiveGameState();
             if (wasElimination && players.length >= 2 && activeAfter.length <= 1) {
+                pauseTimer();
+                exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
             }
         }
@@ -5593,7 +5699,9 @@
             if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
                 declaredWinner = player;
                 showToast(`${player.name} is the winner. Save the game on the Stats Dashboard.`, 'info');
+                pauseTimer();
                 updateStats();
+                exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
                 return;
             }
@@ -5678,6 +5786,90 @@
             } catch (e) { /* ignore */ }
         }
 
+        function formatClockFromSeconds(totalSeconds) {
+            const secs = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+            const minutes = Math.floor(secs / 60);
+            const seconds = secs % 60;
+            return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function getLiveBlindTimerSnapshot() {
+            if (!blindLevels.length) {
+                return {
+                    currentText: 'Blinds: -/-',
+                    timeLeft: 0,
+                    isRunning: false,
+                    syncedAt: Date.now()
+                };
+            }
+
+            const level = blindLevels[currentBlindIndex];
+            let currentText = 'Blinds: -/-';
+            if (level?.type === 'break') {
+                currentText = `Break: ${(level.breakTime || 0) / 60} min`;
+            } else if (level) {
+                currentText = `Blinds: ${formatBlinds(level.smallBlind, level.bigBlind)}`;
+            }
+
+            return {
+                currentText,
+                timeLeft: Math.max(0, Number(timeLeft) || 0),
+                isRunning: !!isTimerRunning,
+                syncedAt: Date.now()
+            };
+        }
+
+        function stopRemoteBlindTick() {
+            if (remoteBlindTickInterval) {
+                clearInterval(remoteBlindTickInterval);
+                remoteBlindTickInterval = null;
+            }
+        }
+
+        function startRemoteBlindTick() {
+            stopRemoteBlindTick();
+            if (!remoteSyncedBlindTimer?.isRunning) return;
+            remoteBlindTickInterval = setInterval(() => {
+                if (!remoteSyncedBlindTimer || liveSyncRole !== 'remote') {
+                    stopRemoteBlindTick();
+                    return;
+                }
+                if (!remoteSyncedBlindTimer.isRunning) {
+                    stopRemoteBlindTick();
+                    renderRemoteBlindTimerPanel();
+                    return;
+                }
+                const elapsed = Math.floor((Date.now() - (remoteSyncedBlindTimer.syncedAt || Date.now())) / 1000);
+                const remaining = Math.max(0, (Number(remoteSyncedBlindTimer.timeLeft) || 0) - elapsed);
+                const clockEl = document.getElementById('remoteBlindClock');
+                if (clockEl) clockEl.textContent = formatClockFromSeconds(remaining);
+                if (remaining <= 0) stopRemoteBlindTick();
+            }, 250);
+        }
+
+        function applyRemoteBlindTimerSnapshot(timer) {
+            if (!timer || typeof timer !== 'object') {
+                remoteSyncedBlindTimer = null;
+                stopRemoteBlindTick();
+                return;
+            }
+            const wasRunning = !!remoteSyncedBlindTimer?.isRunning;
+            const isRunning = timer.isRunning === true || timer.isRunning === 'true' || timer.isRunning === 1;
+            remoteSyncedBlindTimer = {
+                currentText: timer.currentText || 'Blinds: -/-',
+                timeLeft: Math.max(0, Number(timer.timeLeft) || 0),
+                isRunning,
+                syncedAt: Number(timer.syncedAt) || Date.now()
+            };
+            if (remoteSyncedBlindTimer.isRunning) {
+                startRemoteBlindTick();
+            } else {
+                stopRemoteBlindTick();
+                // If host just paused, freeze the displayed clock at the paused remaining time
+                if (wasRunning) renderRemoteBlindTimerPanel();
+            }
+        }
+
         function buildLiveGameStatePayload() {
             return {
                 players: players.map((p) => ({
@@ -5697,6 +5889,7 @@
                 declaredWinnerId: declaredWinner ? declaredWinner.id : null,
                 clubName: getClubName(),
                 season: getSeasonNumber(),
+                timer: getLiveBlindTimerSnapshot(),
                 updatedAt: Date.now()
             };
         }
@@ -5715,6 +5908,7 @@
                 declaredWinner = state.declaredWinnerId != null
                     ? players.find((p) => String(p.id) === String(state.declaredWinnerId)) || null
                     : null;
+                applyRemoteBlindTimerSnapshot(state.timer);
             } finally {
                 liveSyncApplyingRemote = false;
             }
@@ -5806,17 +6000,47 @@
             }
         }
 
+        function renderRemoteBlindTimerPanel() {
+            const panel = document.getElementById('remoteBlindTimerPanel');
+            if (!panel) return;
+            const joined = liveSyncRole === 'remote' && !!liveGameCode;
+            panel.classList.toggle('hidden', !joined);
+            if (!joined) return;
+
+            const timer = remoteSyncedBlindTimer || {
+                currentText: 'Blinds: -/-',
+                timeLeft: 0,
+                isRunning: false,
+                syncedAt: Date.now()
+            };
+            const elapsed = timer.isRunning
+                ? Math.floor((Date.now() - (timer.syncedAt || Date.now())) / 1000)
+                : 0;
+            const remaining = timer.isRunning
+                ? Math.max(0, (Number(timer.timeLeft) || 0) - elapsed)
+                : Math.max(0, Number(timer.timeLeft) || 0);
+
+            const currentEl = document.getElementById('remoteBlindCurrent');
+            const clockEl = document.getElementById('remoteBlindClock');
+            const hintEl = document.getElementById('remoteBlindRunningHint');
+            const startBtn = document.getElementById('remoteTimerStartBtn');
+            const pauseBtn = document.getElementById('remoteTimerPauseBtn');
+            if (currentEl) currentEl.textContent = timer.currentText || 'Blinds: -/-';
+            if (clockEl) clockEl.textContent = formatClockFromSeconds(remaining);
+            if (hintEl) hintEl.textContent = timer.isRunning ? 'Synced from host' : 'Timer paused / not started';
+            if (startBtn) startBtn.classList.toggle('hidden', !!timer.isRunning);
+            if (pauseBtn) pauseBtn.classList.toggle('hidden', !timer.isRunning);
+        }
+
         function renderRemoteEliminatePanel() {
             const panel = document.getElementById('remoteEliminatePanel');
             const list = document.getElementById('remoteEliminateList');
             const meta = document.getElementById('remoteEliminateMeta');
             const restoreWrap = document.getElementById('remoteRestoreListWrap');
             const restoreList = document.getElementById('remoteRestoreList');
-            const leaveBtn = document.getElementById('remoteLeaveBtn');
             if (!panel || !list) return;
 
             const joined = liveSyncRole === 'remote' && !!liveGameCode;
-            if (leaveBtn) leaveBtn.classList.toggle('hidden', !joined);
             panel.classList.toggle('hidden', !joined);
             if (!joined) {
                 list.innerHTML = '';
@@ -5830,7 +6054,7 @@
             if (meta) {
                 meta.textContent = gameStarted
                     ? `${active.length} players still in · Season ${getSeasonNumber()}`
-                    : 'Host has not started the game yet. You can still wait here — eliminate unlocks after Start Game.';
+                    : 'Host has not started the game yet. Eliminate unlocks after Start Game.';
             }
 
             list.innerHTML = '';
@@ -5868,10 +6092,28 @@
         }
 
         function renderRemoteControlPage() {
+            const joined = liveSyncRole === 'remote' && !!liveGameCode;
+            const setup = document.getElementById('remoteSetupBlocks');
+            if (setup) setup.classList.toggle('hidden', joined);
+
+            const leaveBtn = document.getElementById('remoteLeaveBtn');
+            if (leaveBtn) leaveBtn.classList.toggle('hidden', !joined);
+
+            updateRemoteJoinedNavVisibility();
+
             const warning = document.getElementById('remoteFirebaseWarning');
-            if (warning) warning.classList.toggle('hidden', isFirebaseConfigured());
+            if (warning) {
+                warning.classList.toggle('hidden', joined || isFirebaseConfigured());
+            }
+
             updateRemoteSyncStatusUi();
-            renderRemoteHostSessionUi();
+            if (!joined) renderRemoteHostSessionUi();
+
+            const hosting = liveSyncRole === 'host' && !!liveGameCode;
+            const joinPanel = document.getElementById('remoteJoinPanel');
+            if (joinPanel) joinPanel.classList.toggle('hidden', hosting || joined);
+
+            renderRemoteBlindTimerPanel();
             renderRemoteEliminatePanel();
             if (pendingLiveJoinCode) {
                 const input = document.getElementById('remoteJoinCodeInput');
@@ -5885,9 +6127,11 @@
                 return;
             }
             if (!isFirebaseConfigured()) {
-                showToast('Configure Firebase in Settings → Remote Sync first.', 'error');
-                showPage('admin');
-                showAdminSettingsSection('remote-sync');
+                showToast('Firebase is not configured. Log in as dev to open Settings → Remote Sync.', 'error');
+                if (isDevLoggedIn()) {
+                    showPage('admin');
+                    showAdminSettingsSection('remote-sync');
+                }
                 return;
             }
             if (players.length < 2) {
@@ -5957,6 +6201,14 @@
                 eliminatePlayer(playerId);
             } else if (cmd.type === 'restore') {
                 restorePlayer(playerId);
+            } else if (cmd.type === 'timer-start') {
+                startTimer();
+            } else if (cmd.type === 'timer-pause') {
+                pauseTimer();
+            } else if (cmd.type === 'timer-next') {
+                nextBlind();
+            } else if (cmd.type === 'timer-prev') {
+                prevBlind();
             }
             const db = initFirebaseApp();
             if (db && liveGameCode && key) {
@@ -6009,6 +6261,7 @@
                 const state = snap.val();
                 if (!state) return;
                 applyLiveGameStatePayload(state);
+                renderRemoteBlindTimerPanel();
                 renderRemoteEliminatePanel();
                 updateRemoteSyncStatusUi();
             };
@@ -6020,6 +6273,8 @@
 
         function leaveLiveGameRemote() {
             detachLiveListeners();
+            stopRemoteBlindTick();
+            remoteSyncedBlindTimer = null;
             liveSyncRole = null;
             liveGameCode = null;
             renderRemoteControlPage();
@@ -6034,15 +6289,19 @@
             const db = initFirebaseApp();
             if (!db) return;
             try {
-                await db.ref(`liveGames/${liveGameCode}/commands`).push({
-                    type,
-                    playerId,
-                    at: Date.now()
-                });
+                const payload = { type, at: Date.now() };
+                if (playerId != null && !Number.isNaN(Number(playerId))) {
+                    payload.playerId = Number(playerId);
+                }
+                await db.ref(`liveGames/${liveGameCode}/commands`).push(payload);
             } catch (err) {
                 console.error(err);
                 showToast('Could not send command to host.', 'error');
             }
+        }
+
+        async function requestRemoteTimerCommand(type) {
+            await pushLiveGameCommand(type);
         }
 
         async function requestRemoteEliminate(playerId) {
@@ -6879,7 +7138,6 @@
                 exitBtn.onclick = toggleFullscreen;
                 
                 overlay.appendChild(exitBtn);
-                overlay.appendChild(createFullscreenCashPrizes());
                 overlay.appendChild(fullscreenContent);
                 document.body.appendChild(overlay);
                 updateBlindDisplay();
@@ -6978,6 +7236,8 @@
         // Owner login credentials (SHA-256 hashes only — default username: admin, password: pasc)
         const OWNER_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
         const OWNER_PASS_HASH = 'b683573ac88ce4a7b5cd04d849743c2d9f1ee543f62a6c4e51e7cd8927f47869';
+        const DEV_USER_HASH = 'ef260e9aa3c673af240d17a2660480361a8e081d1ffeca2a5ed0e3219fc18567';
+        const DEV_PASS_HASH = 'fba2eac3ee47ff78190eab8acfc21686955e4aed6fd45a5524ad84b537aeeb23';
 
         async function sha256(text) {
             const buffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -6994,6 +7254,10 @@
 
             if (userHash === OWNER_USER_HASH && passHash === OWNER_PASS_HASH) {
                 return { ok: true, role: 'owner' };
+            }
+
+            if (userHash === DEV_USER_HASH && passHash === DEV_PASS_HASH) {
+                return { ok: true, role: 'dev' };
             }
 
             const player = adminPlayers.find(p =>
@@ -7578,6 +7842,10 @@
         }
 
         function showAdminSettingsSection(sectionId) {
+            if (sectionId === 'remote-sync' && !isDevLoggedIn()) {
+                sectionId = 'general';
+            }
+
             document.querySelectorAll('.admin-settings-section').forEach((section) => {
                 section.classList.add('hidden');
             });
@@ -7645,6 +7913,10 @@
             if (['club', 'season-number', 'table-assignments'].includes(savedSection)) {
                 savedSection = 'general';
             }
+            if (savedSection === 'remote-sync' && !isDevLoggedIn()) {
+                savedSection = 'general';
+            }
+            updateRemoteSyncSettingsVisibility();
             showAdminSettingsSection(savedSection);
         }
 
@@ -7702,6 +7974,10 @@
 
                     const loginUserHash = await sha256(normalizeAdminUsername(loginUsername));
                     if (loginUserHash === OWNER_USER_HASH) {
+                        showToast('That username is reserved. Choose a different one.', 'error');
+                        return;
+                    }
+                    if (loginUserHash === DEV_USER_HASH) {
                         showToast('That username is reserved. Choose a different one.', 'error');
                         return;
                     }
