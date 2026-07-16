@@ -207,6 +207,39 @@
             gap: 0.75rem !important;
         }
 
+        #admin #adminGeneralForm {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem !important;
+            max-width: 42rem;
+        }
+
+        #admin #adminGeneralForm .admin-general-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #admin #adminGeneralForm .admin-general-field label {
+            margin-bottom: 0.125rem;
+        }
+
+        #admin #adminGeneralForm .admin-general-input-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        #admin #adminGeneralForm .admin-general-input-row p {
+            margin: 0;
+            flex: 1;
+            min-width: 12rem;
+        }
+
+        #admin #adminSection-general .admin-section-intro {
+            margin-bottom: 0.5rem;
+        }
+
         #admin #adminGhostCashForm {
             gap: 0.5rem !important;
         }
@@ -617,6 +650,23 @@
             display: none;
         }
 
+        #blind-timer #blindTimerRemoteQrCode {
+            display: inline-flex;
+            padding: 0.5rem;
+            background: #fff;
+            border-radius: 0.5rem;
+        }
+
+        #blind-timer #blindTimerRemoteQrCode:empty {
+            display: none;
+        }
+
+        #blind-timer #blindTimerRemoteCode {
+            font-size: 2.0rem;
+            letter-spacing: 0.35em;
+            font-variant-numeric: tabular-nums;
+        }
+
         #remote-control .remote-eliminate-btn {
             width: 100%;
             text-align: left;
@@ -631,6 +681,15 @@
 
         #remote-control .remote-eliminate-btn:hover:not(:disabled) {
             background: #b91c1c;
+        }
+
+        #remote-control .remote-winner-btn {
+            background: rgba(22, 101, 52, 0.55);
+            border-color: rgba(250, 204, 21, 0.35);
+        }
+
+        #remote-control .remote-winner-btn:hover:not(:disabled) {
+            background: #15803d;
         }
 
         #remote-control .remote-eliminate-btn:disabled {
@@ -1296,7 +1355,7 @@
                         <i class="fas fa-trophy mr-2"></i>Points Table
                     </button>
                 </li>
-                <li data-requires-full-access>
+                <li data-requires-full-access id="navRemoteControl">
                     <button onclick="showPage('remote-control')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-mobile-alt mr-2"></i>Remote
                     </button>
@@ -1454,6 +1513,12 @@
                             <span class="cash-prize-place">2nd: <span id="blindTimerPayout2nd">$0</span></span>
                             <span class="cash-prize-place">3rd: <span id="blindTimerPayout3rd">$0</span></span>
                         </div>
+                    </div>
+                    <div id="blindTimerRemoteInvite" class="absolute bottom-3 right-3 bg-poker-primary/95 rounded-lg border border-[#056d78]/50 px-3 py-2 text-right hidden z-10">
+                        <div class="text-xs text-poker-text/80">Remote Control Game Code</div>
+                        <div id="blindTimerRemoteCode" class="font-mono font-bold text-yellow-400">------</div>
+                        <div id="blindTimerRemoteQrCode" class="mt-1"></div>
+                        <div id="blindTimerRemoteExpires" class="text-[11px] text-poker-text/70 mt-1"></div>
                     </div>
                     <h2 class="text-2xl font-bold mb-4 text-yellow-400 pr-4">
                         <i class="fas fa-clock mr-2"></i>Blind Timer
@@ -1824,34 +1889,39 @@
                             </div>
                             <div id="adminSection-general" class="admin-settings-section hidden">
                                 <h3>General</h3>
-                                <p class="admin-section-intro">Club name, season number, table seating limits, and season final qualification rules used across registration, reports, and the Points Table.</p>
-                                <form id="adminGeneralForm" class="flex flex-col gap-6">
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col flex-1 min-w-[200px] max-w-md">
-                                            <label for="adminClubName" class="text-sm font-semibold mb-1">Club Name</label>
-                                            <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                        </div>
+                                <p class="admin-section-intro">Club name, season number, table seating limits, season final qualification rules, and whether the Remote tab appears in the main navigation.</p>
+                                <form id="adminGeneralForm">
+                                    <div class="admin-general-field">
+                                        <label for="adminClubName" class="text-sm font-semibold">Club Name</label>
+                                        <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:60%;">
                                     </div>
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col">
-                                            <label for="adminSeasonNumber" class="text-sm font-semibold mb-1">Season Number</label>
-                                            <input type="number" id="adminSeasonNumber" min="1" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                        </div>
+                                    <div class="admin-general-field">
+                                        <label for="adminSeasonNumber" class="text-sm font-semibold">Season Number</label>
+                                        <input type="number" id="adminSeasonNumber" min="1" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
                                     </div>
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col">
-                                            <label for="adminMaxPlayersPerTable" class="text-sm font-semibold mb-1">Maximum Players per Table</label>
-                                            <input type="number" id="adminMaxPlayersPerTable" min="2" max="12" step="1" value="8" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                        </div>
+                                    <div class="admin-general-field">
+                                        <label for="adminMaxPlayersPerTable" class="text-sm font-semibold">Maximum Players per Table</label>
+                                        <input type="number" id="adminMaxPlayersPerTable" min="2" max="12" step="1" value="8" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
                                     </div>
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col max-w-md">
-                                            <label for="adminMinGamesForSeasonFinal" class="text-sm font-semibold mb-1">Minimum Games Played to Qualify for Season Final</label>
+                                    <div class="admin-general-field">
+                                        <label for="adminMinGamesForSeasonFinal" class="text-sm font-semibold">Minimum Games Played to Qualify for Season Final</label>
+                                        <div class="admin-general-input-row">
                                             <input type="number" id="adminMinGamesForSeasonFinal" min="0" step="1" value="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                            <p class="text-xs text-poker-text/70 mt-1">Set to 0 to disable. Players need at least this many saved games to show as qualified on the Points Table.</p>
+                                            <p class="text-xs text-poker-text/70">Set to 0 to disable. Players need at least this many saved games to show as qualified on the Points Table.</p>
                                         </div>
                                     </div>
-                                    <button type="submit" class="self-start px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                    <div class="admin-general-field">
+                                        <span class="text-sm font-semibold">Remote Control</span>
+                                        <div class="admin-general-input-row mt-1">
+                                            <button type="button" onclick="toggleRemoteControlEnabled()" id="toggleRemoteControlBtn" class="self-start px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium transition-colors duration-300 text-white">
+                                                <i class="fas fa-toggle-on mr-2"></i>Enabled
+                                            </button>
+                                            <label for="adminRemoteCodeDisplayMinutes" class="text-xs text-poker-text/80">Show code/QR on Blind Timer for</label>
+                                            <input type="number" id="adminRemoteCodeDisplayMinutes" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:86px;">
+                                            <span class="text-xs text-poker-text/80">minutes</span>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="self-start mt-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                                 </form>
                             </div>
                             <div id="adminSection-security" class="admin-settings-section hidden">
@@ -2146,6 +2216,8 @@
         let pendingLiveJoinCode = null;
         let remoteSyncedBlindTimer = null;
         let remoteBlindTickInterval = null;
+        let blindTimerRemoteInviteHideAt = 0;
+        let blindTimerRemoteInviteTimeout = null;
 
         // Global variables
         let players = [];
@@ -2436,7 +2508,131 @@
                 item.classList.toggle('hidden', !fullAccess);
             });
             updateRemoteSyncSettingsVisibility();
+            updateRemoteControlNavVisibility();
             updateRemoteJoinedNavVisibility();
+        }
+
+        function getRemoteControlSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.remoteControlEnabled !== false,
+                codeDisplayMinutes: Math.max(0, parseInt(adminSettings.remoteCodeDisplayMinutes, 10) || 0)
+            };
+        }
+
+        function renderQrCodeInto(element, text, size = 180) {
+            if (!element) return;
+            element.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    new QRCode(element, {
+                        text,
+                        width: size,
+                        height: size,
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                    return;
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+            element.textContent = 'QR unavailable.';
+        }
+
+        function renderBlindTimerRemoteInviteCard() {
+            const card = document.getElementById('blindTimerRemoteInvite');
+            const codeEl = document.getElementById('blindTimerRemoteCode');
+            const qrEl = document.getElementById('blindTimerRemoteQrCode');
+            const expiresEl = document.getElementById('blindTimerRemoteExpires');
+            if (!card || !codeEl || !qrEl) return;
+
+            const msLeft = blindTimerRemoteInviteHideAt - Date.now();
+            const settings = getRemoteControlSettings();
+            const shouldShow = isGameStarted()
+                && liveSyncRole === 'host'
+                && !!liveGameCode
+                && settings.enabled
+                && msLeft > 0;
+
+            card.classList.toggle('hidden', !shouldShow);
+            if (!shouldShow) {
+                qrEl.innerHTML = '';
+                return;
+            }
+
+            codeEl.textContent = liveGameCode;
+            renderQrCodeInto(qrEl, getLiveGameJoinUrl(liveGameCode), 180);
+            if (expiresEl) {
+                const minsLeft = Math.max(1, Math.ceil(msLeft / 60000));
+                expiresEl.textContent = `Visible for ~${minsLeft} more min`;
+            }
+        }
+
+        function clearBlindTimerRemoteInviteWindow() {
+            if (blindTimerRemoteInviteTimeout) {
+                clearTimeout(blindTimerRemoteInviteTimeout);
+                blindTimerRemoteInviteTimeout = null;
+            }
+            blindTimerRemoteInviteHideAt = 0;
+            renderBlindTimerRemoteInviteCard();
+        }
+
+        function beginBlindTimerRemoteInviteWindow() {
+            const settings = getRemoteControlSettings();
+            if (!settings.enabled || settings.codeDisplayMinutes <= 0) {
+                clearBlindTimerRemoteInviteWindow();
+                return;
+            }
+            const windowMs = settings.codeDisplayMinutes * 60 * 1000;
+            blindTimerRemoteInviteHideAt = Date.now() + windowMs;
+            if (blindTimerRemoteInviteTimeout) clearTimeout(blindTimerRemoteInviteTimeout);
+            blindTimerRemoteInviteTimeout = setTimeout(() => {
+                blindTimerRemoteInviteHideAt = 0;
+                blindTimerRemoteInviteTimeout = null;
+                renderBlindTimerRemoteInviteCard();
+            }, windowMs);
+            renderBlindTimerRemoteInviteCard();
+        }
+
+        function updateRemoteControlToggleButton() {
+            const btn = document.getElementById('toggleRemoteControlBtn');
+            if (!btn) return;
+            const enabled = getRemoteControlSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function updateRemoteControlNavVisibility() {
+            const enabled = getRemoteControlSettings().enabled;
+            const fullAccess = hasFullAppAccess();
+            const navItem = document.getElementById('navRemoteControl');
+            if (navItem) {
+                navItem.classList.toggle('hidden', !enabled || !fullAccess);
+            }
+        }
+
+        function toggleRemoteControlEnabled() {
+            normalizeAdminSettings();
+            adminSettings.remoteControlEnabled = !getRemoteControlSettings().enabled;
+            saveAdminSettings();
+            updateRemoteControlToggleButton();
+            updateRemoteControlNavVisibility();
+            if (!getRemoteControlSettings().enabled) {
+                clearBlindTimerRemoteInviteWindow();
+            }
+            const remotePage = document.getElementById('remote-control');
+            const onRemotePage = remotePage && !remotePage.classList.contains('hidden');
+            const inLiveRemoteSession = liveSyncRole === 'remote' && !!liveGameCode;
+            if (!getRemoteControlSettings().enabled && onRemotePage && !inLiveRemoteSession && !pendingLiveJoinCode) {
+                showPage(hasFullAppAccess() ? 'registration' : 'points-table');
+            }
         }
 
         function updateRemoteJoinedNavVisibility() {
@@ -2502,6 +2698,14 @@
                 return;
             }
 
+            if (pageId === 'remote-control' && !getRemoteControlSettings().enabled) {
+                const inLiveRemoteSession = liveSyncRole === 'remote' && !!liveGameCode;
+                if (!inLiveRemoteSession && !pendingLiveJoinCode) {
+                    showPage(hasFullAppAccess() ? 'registration' : 'points-table');
+                    return;
+                }
+            }
+
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.add('hidden');
                 page.classList.remove('fade-in');
@@ -2522,6 +2726,7 @@
             if (pageId === 'blind-timer') {
                 updateStats();
                 requestAnimationFrame(() => requestAnimationFrame(fitStandardBlindTimer));
+                renderBlindTimerRemoteInviteCard();
             }
             if (pageId === 'admin') {
                 showAdminPanel();
@@ -2624,7 +2829,7 @@
             return gameStarted;
         }
 
-        function startGame() {
+        async function startGame() {
             const gameType = (document.getElementById('gameType')?.value || '').trim();
             if (!gameType) {
                 showToast('Please select a game type in Game Details before starting.', 'error');
@@ -2638,6 +2843,14 @@
             gameStarted = true;
             renderTables();
             publishLiveGameState();
+            if (getRemoteControlSettings().enabled && liveSyncRole !== 'host') {
+                await startLiveGameHost({ silentSuccessToast: true });
+            }
+            if (getRemoteControlSettings().enabled && liveSyncRole === 'host' && liveGameCode) {
+                beginBlindTimerRemoteInviteWindow();
+            } else {
+                clearBlindTimerRemoteInviteWindow();
+            }
 
             if (isTimerRunning || currentBlindIndex !== 0) {
                 showPage('blind-timer');
@@ -3307,6 +3520,19 @@
             updateEliminatedPlayersToggleLabel();
         }
 
+        function isLastActivePlayer(playerId) {
+            const activePlayers = players.filter((p) => !p.eliminated);
+            return activePlayers.length === 1 && activePlayers[0].id === playerId;
+        }
+
+        function getTablePlayerActionButton(player) {
+            if (!isGameStarted()) return '';
+            if (isLastActivePlayer(player.id)) {
+                return `<button onclick="eliminatePlayer(${player.id})" class="px-3 py-1 bg-gradient-to-r from-yellow-500 to-green-600 hover:from-yellow-600 hover:to-green-700 rounded text-xs font-bold ml-2 text-white shadow">Winner</button>`;
+            }
+            return `<button onclick="eliminatePlayer(${player.id})" class="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded text-xs font-bold ml-2 text-white shadow">Eliminate</button>`;
+        }
+
         function renderTables() {
             const container = document.getElementById('tablesList');
             container.innerHTML = '';
@@ -3337,9 +3563,7 @@
                                     <span class="text-white font-medium">${player.name}</span>${birthdayIcon}${committeeIcon}
                                 </div>
                                 <div class="flex items-center gap-1">
-                                    ${isGameStarted()
-                                        ? `<button onclick="eliminatePlayer(${player.id})" class="px-3 py-1 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 rounded text-xs font-bold ml-2 text-white shadow">Eliminate</button>`
-                                        : ''}
+                                    ${getTablePlayerActionButton(player)}
                                 </div>
                             </div>
                         `}).join('')}
@@ -4525,6 +4749,12 @@
             populateAdminClubForm();
             populateAdminSeasonNumberForm();
             populateAdminTableAssignmentsForm();
+            const remoteCodeDisplayInput = document.getElementById('adminRemoteCodeDisplayMinutes');
+            if (remoteCodeDisplayInput) {
+                remoteCodeDisplayInput.value = getRemoteControlSettings().codeDisplayMinutes;
+            }
+            updateRemoteControlToggleButton();
+            updateRemoteControlNavVisibility();
         }
 
         function populateAdminSeasonNumberForm() {
@@ -5651,6 +5881,12 @@
             if (overlay) overlay.remove();
         }
 
+        function stopLiveHostingIfGameFinished() {
+            if (liveSyncRole === 'host' && liveGameCode) {
+                void stopLiveGameHost();
+            }
+        }
+
         function afterPlayerActiveStateChange(wasElimination, playerId) {
             const activeAfter = players.filter((p) => !p.eliminated);
 
@@ -5685,6 +5921,7 @@
                 pauseTimer();
                 exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
+                stopLiveHostingIfGameFinished();
             }
         }
 
@@ -5703,6 +5940,7 @@
                 updateStats();
                 exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
+                stopLiveHostingIfGameFinished();
                 return;
             }
             player.eliminated = true;
@@ -5981,22 +6219,7 @@
             const joinUrl = getLiveGameJoinUrl(liveGameCode);
             if (urlEl) urlEl.textContent = joinUrl;
             if (qrWrap) {
-                qrWrap.innerHTML = '';
-                if (typeof QRCode !== 'undefined') {
-                    try {
-                        new QRCode(qrWrap, {
-                            text: joinUrl,
-                            width: 180,
-                            height: 180,
-                            correctLevel: QRCode.CorrectLevel.M
-                        });
-                    } catch (err) {
-                        console.error(err);
-                        qrWrap.textContent = 'QR unavailable — use the code or link below.';
-                    }
-                } else {
-                    qrWrap.textContent = 'QR library unavailable — use the code or link below.';
-                }
+                renderQrCodeInto(qrWrap, joinUrl, 180);
             }
         }
 
@@ -6062,11 +6285,15 @@
                 list.innerHTML = '<div class="text-gray-400 text-sm">No active players.</div>';
             } else {
                 active.forEach((player) => {
+                    const isWinnerAction = active.length === 1;
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'remote-eliminate-btn';
+                    btn.className = isWinnerAction ? 'remote-eliminate-btn remote-winner-btn' : 'remote-eliminate-btn';
                     btn.disabled = !gameStarted;
-                    btn.innerHTML = `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${player.table != null ? `T${player.table}` : ''}</span>`;
+                    const tableLabel = player.table != null ? `T${player.table}` : '';
+                    btn.innerHTML = isWinnerAction
+                        ? `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${tableLabel ? `${tableLabel} · ` : ''}Winner</span>`
+                        : `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${tableLabel}</span>`;
                     btn.onclick = () => requestRemoteEliminate(player.id);
                     list.appendChild(btn);
                 });
@@ -6121,9 +6348,15 @@
             }
         }
 
-        async function startLiveGameHost() {
+        async function startLiveGameHost(options = {}) {
+            const { silentSuccessToast = false } = options;
             if (liveSyncRole === 'remote') {
                 showToast('Leave the joined game before hosting.', 'info');
+                return;
+            }
+            if (liveSyncRole === 'host' && liveGameCode) {
+                renderRemoteControlPage();
+                renderBlindTimerRemoteInviteCard();
                 return;
             }
             if (!isFirebaseConfigured()) {
@@ -6176,7 +6409,10 @@
             liveCommandsRef.on('child_added', liveCommandsListener);
 
             renderRemoteControlPage();
-            showToast(`Hosting live game ${liveGameCode}. Scan the QR on your phone.`, 'success');
+            renderBlindTimerRemoteInviteCard();
+            if (!silentSuccessToast) {
+                showToast(`Hosting live game ${liveGameCode}. Scan the QR on your phone.`, 'success');
+            }
         }
 
         async function stopLiveGameHost() {
@@ -6190,6 +6426,7 @@
                     await db.ref(`liveGames/${code}/meta/status`).set('ended');
                 } catch (e) { /* ignore */ }
             }
+            clearBlindTimerRemoteInviteWindow();
             renderRemoteControlPage();
             showToast('Stopped hosting remote control.', 'info');
         }
@@ -6310,12 +6547,13 @@
                 return;
             }
             const activePlayers = players.filter((p) => !p.eliminated);
-            if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
-                showToast(`${activePlayers[0].name} is the winner. Ask the host to save the game on Stats.`, 'info');
-                return;
-            }
             const player = players.find((p) => p.id === playerId);
             if (!player) return;
+            if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
+                if (!(await showConfirm(`Declare ${player.name} as winner?`))) return;
+                await pushLiveGameCommand('eliminate', playerId);
+                return;
+            }
             if (!(await showConfirm(`Eliminate ${player.name}?`))) return;
             await pushLiveGameCommand('eliminate', playerId);
         }
@@ -7280,7 +7518,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club"}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -7307,6 +7545,8 @@
             if (adminSettings.licensedTo == null) adminSettings.licensedTo = '';
             if (adminSettings.birthdayBonusEnabled == null) adminSettings.birthdayBonusEnabled = false;
             if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
+            if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = true;
+            if (adminSettings.remoteCodeDisplayMinutes == null) adminSettings.remoteCodeDisplayMinutes = 3;
         }
         normalizeAdminSettings();
         function populateAdminSettingsForm() {
@@ -7700,7 +7940,9 @@
                 licenseNumber: '',
                 licensedTo: '',
                 birthdayBonusEnabled: false,
-                clubName: 'Poker Club'
+                clubName: 'Poker Club',
+                remoteControlEnabled: true,
+                remoteCodeDisplayMinutes: 3
             };
         }
 
@@ -8062,6 +8304,7 @@
                     const seasonNumber = parseInt(document.getElementById('adminSeasonNumber').value, 10);
                     const maxPlayersPerTable = parseInt(document.getElementById('adminMaxPlayersPerTable').value, 10);
                     const minGamesForSeasonFinal = parseInt(document.getElementById('adminMinGamesForSeasonFinal').value, 10);
+                    const remoteCodeDisplayMinutes = parseInt(document.getElementById('adminRemoteCodeDisplayMinutes').value, 10);
                     if (!clubName) {
                         showToast('Please enter a club name.', 'error');
                         return;
@@ -8078,15 +8321,21 @@
                         showToast('Please enter a valid minimum games value (0 or higher).', 'error');
                         return;
                     }
+                    if (isNaN(remoteCodeDisplayMinutes) || remoteCodeDisplayMinutes < 0) {
+                        showToast('Please enter valid remote code display minutes (0 or higher).', 'error');
+                        return;
+                    }
                     adminSettings.clubName = clubName;
                     adminSettings.seasonNumber = seasonNumber;
                     adminSettings.maxPlayersPerTable = maxPlayersPerTable;
                     adminSettings.minGamesForSeasonFinal = minGamesForSeasonFinal;
+                    adminSettings.remoteCodeDisplayMinutes = remoteCodeDisplayMinutes;
                     saveAdminSettings();
                     populateAdminGeneralForm();
                     applyClubBranding();
                     renderAdminSeasonStatistics();
                     renderPointsTablePage();
+                    renderBlindTimerRemoteInviteCard();
                     showToast('General settings saved!', 'success');
                 });
             }
