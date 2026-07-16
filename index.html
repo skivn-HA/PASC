@@ -715,6 +715,10 @@
             background: rgba(5, 109, 120, 0.4);
         }
 
+        #remote-control .remote-status-pill.hidden {
+            display: none;
+        }
+
         #remote-control .remote-status-pill.live {
             background: rgba(22, 163, 74, 0.35);
             color: #86efac;
@@ -725,25 +729,23 @@
             color: #d1d5db;
         }
 
+        #remote-control .remote-status-pill.leave {
+            background: rgba(220, 38, 38, 0.55);
+            color: #fecaca;
+            border: none;
+            cursor: pointer;
+        }
+
+        #remote-control .remote-status-pill.leave:hover {
+            background: rgba(185, 28, 28, 0.75);
+            color: #fee2e2;
+        }
+
         #remote-control .remote-joined-header-actions {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 0.5rem;
-        }
-
-        #remote-control .remote-leave-link {
-            font-size: 0.75rem;
-            color: rgba(249, 250, 251, 0.65);
-            text-decoration: underline;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        #remote-control .remote-leave-link:hover {
-            color: #f9fafb;
         }
 
         #remote-control #remoteBlindTimerPanel {
@@ -1766,7 +1768,7 @@
                         </h2>
                         <div class="remote-joined-header-actions">
                             <span id="remoteSyncStatusPill" class="remote-status-pill off">Not connected</span>
-                            <button type="button" id="remoteLeaveBtn" onclick="leaveLiveGameRemote()" class="remote-leave-link hidden">Leave</button>
+                            <button type="button" id="remoteLeaveBtn" onclick="leaveLiveGameRemote()" class="remote-status-pill leave hidden">Leave</button>
                         </div>
                     </div>
 
@@ -2182,13 +2184,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.14</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.16</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.14';
+        const PASC_APP_VERSION = '2026.7.16';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -2218,6 +2220,10 @@
         let remoteBlindTickInterval = null;
         let blindTimerRemoteInviteHideAt = 0;
         let blindTimerRemoteInviteTimeout = null;
+        let liveAnnouncementSeq = 0;
+        let lastLiveAnnouncement = null;
+        let remoteLastAnnouncementSeq = 0;
+        let remoteAnnouncementsEnabled = false;
 
         // Global variables
         let players = [];
@@ -4122,49 +4128,65 @@
             return words(num);
         }
 
+        function performSpeakBlindsUp(smallBlind, bigBlind) {
+            if (!('speechSynthesis' in window) || selectedVoice === null) return;
+            const message1 = 'Players, blinds are up.';
+            const utterance1 = new SpeechSynthesisUtterance(message1);
+            if (selectedVoice) utterance1.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance1);
+            setTimeout(() => {
+                const message2 = `${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
+                const utterance2 = new SpeechSynthesisUtterance(message2);
+                if (selectedVoice) utterance2.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance2);
+            }, 400);
+        }
+
         function speakBlindsUp(smallBlind, bigBlind) {
-            if ('speechSynthesis' in window && selectedVoice !== null) {
-                // First utterance: 'Players, blinds are up.'
-                const message1 = 'Players, blinds are up.';
-                const utterance1 = new SpeechSynthesisUtterance(message1);
-                if (selectedVoice) utterance1.voice = selectedVoice;
-                window.speechSynthesis.speak(utterance1);
-                // Second utterance: blind values, after 0.4s pause
-                setTimeout(() => {
-                    // Speak numbers as words
-                    const message2 = `${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
-                    const utterance2 = new SpeechSynthesisUtterance(message2);
-                    if (selectedVoice) utterance2.voice = selectedVoice;
-                    window.speechSynthesis.speak(utterance2);
-                }, 400);
-            }
+            if (liveSyncRole === 'remote') return;
+            performSpeakBlindsUp(smallBlind, bigBlind);
+            queueLiveAnnouncement('blindsUp', { smallBlind, bigBlind });
         }
         
+        function performSpeakGameStart(smallBlind, bigBlind) {
+            if (!('speechSynthesis' in window) || selectedVoice === null) return;
+            const message1 = 'Players, the game has started, shuffle up and deal, good luck.';
+            const utterance1 = new SpeechSynthesisUtterance(message1);
+            if (selectedVoice) utterance1.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance1);
+            setTimeout(() => {
+                const message2 = `blinds ${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
+                const utterance2 = new SpeechSynthesisUtterance(message2);
+                if (selectedVoice) utterance2.voice = selectedVoice;
+                window.speechSynthesis.speak(utterance2);
+            }, 800);
+        }
+
         function speakGameStart(smallBlind, bigBlind) {
-            if ('speechSynthesis' in window && selectedVoice !== null) {
-                // First utterance: 'Players, the game has started, shuffle up and deal, good luck.'
-                const message1 = 'Players, the game has started, shuffle up and deal, good luck.';
-                const utterance1 = new SpeechSynthesisUtterance(message1);
-                if (selectedVoice) utterance1.voice = selectedVoice;
-                window.speechSynthesis.speak(utterance1);
-                // Second utterance: blind values, after 0.8s pause
-                setTimeout(() => {
-                    // Speak numbers as words
-                    const message2 = `blinds ${numberToWords(smallBlind)} ${numberToWords(bigBlind)}`;
-                    const utterance2 = new SpeechSynthesisUtterance(message2);
-                    if (selectedVoice) utterance2.voice = selectedVoice;
-                    window.speechSynthesis.speak(utterance2);
-                }, 800);
-            }
+            if (liveSyncRole === 'remote') return;
+            performSpeakGameStart(smallBlind, bigBlind);
+            queueLiveAnnouncement('gameStart', { smallBlind, bigBlind });
         }
         
+        function performSpeakBreak(minutes) {
+            if (!('speechSynthesis' in window) || selectedVoice === null) return;
+            const message = `Players, we now have a break for ${minutes} minutes.`;
+            const utterance = new SpeechSynthesisUtterance(message);
+            if (selectedVoice) utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
         function speakBreak(minutes) {
-            if ('speechSynthesis' in window && selectedVoice !== null) {
-                const message = `Players, we now have a break for ${minutes} minutes.`;
-                const utterance = new SpeechSynthesisUtterance(message);
-                if (selectedVoice) utterance.voice = selectedVoice;
-                window.speechSynthesis.speak(utterance);
-            }
+            if (liveSyncRole === 'remote') return;
+            performSpeakBreak(minutes);
+            queueLiveAnnouncement('break', { minutes });
+        }
+
+        function performSpeakGhostPlayer(name) {
+            if (!('speechSynthesis' in window) || selectedVoice === null || !name) return;
+            const msg = new SpeechSynthesisUtterance(`Players, the ghost player today is ${name}`);
+            if (selectedVoice) msg.voice = selectedVoice;
+            window.speechSynthesis.speak(msg);
         }
         
         // Stats functions
@@ -4613,11 +4635,9 @@
                 
                 window.selectedGhostPlayer = ghostCandidates[finalRandomIdx];
                 const newGhostStatus = getGhostPlayerStatus();
-                // Announce
                 if ('speechSynthesis' in window) {
-                    const msg = new SpeechSynthesisUtterance(`Players, the ghost player today is ${window.selectedGhostPlayer.name}`);
-                    if (selectedVoice) msg.voice = selectedVoice;
-                    window.speechSynthesis.speak(msg);
+                    performSpeakGhostPlayer(window.selectedGhostPlayer.name);
+                    queueLiveAnnouncement('ghostPlayer', { name: window.selectedGhostPlayer.name });
                 }
                 ghostSection.classList.remove('hidden');
                 ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
@@ -6128,6 +6148,7 @@
                 clubName: getClubName(),
                 season: getSeasonNumber(),
                 timer: getLiveBlindTimerSnapshot(),
+                announcement: lastLiveAnnouncement,
                 updatedAt: Date.now()
             };
         }
@@ -6147,8 +6168,70 @@
                     ? players.find((p) => String(p.id) === String(state.declaredWinnerId)) || null
                     : null;
                 applyRemoteBlindTimerSnapshot(state.timer);
+                handleRemoteSyncedAnnouncement(state.announcement);
             } finally {
                 liveSyncApplyingRemote = false;
+            }
+        }
+
+        function queueLiveAnnouncement(type, data = {}) {
+            if (liveSyncRole !== 'host' || !liveGameCode) return;
+            liveAnnouncementSeq += 1;
+            lastLiveAnnouncement = {
+                seq: liveAnnouncementSeq,
+                type,
+                ...data,
+                at: Date.now()
+            };
+            publishLiveGameState();
+        }
+
+        function ensureAnnouncementVoice() {
+            if (selectedVoice !== null || !('speechSynthesis' in window)) return;
+            const voices = window.speechSynthesis.getVoices().filter((voice) => !voice.name.includes('Microsoft David'));
+            if (voices.length > 0) {
+                selectedVoice = voices.find((v) => v.default) || voices[0];
+            }
+        }
+
+        function unlockSpeechOnUserGesture() {
+            if (!('speechSynthesis' in window)) return;
+            try {
+                const utterance = new SpeechSynthesisUtterance(' ');
+                utterance.volume = 0.01;
+                window.speechSynthesis.speak(utterance);
+            } catch (e) { /* ignore */ }
+        }
+
+        function handleRemoteSyncedAnnouncement(announcement) {
+            if (liveSyncRole !== 'remote' || !remoteAnnouncementsEnabled || !announcement) return;
+            const seq = Number(announcement.seq) || 0;
+            if (seq <= remoteLastAnnouncementSeq) return;
+            remoteLastAnnouncementSeq = seq;
+            playSyncedAnnouncement(announcement);
+        }
+
+        function playSyncedAnnouncement(announcement) {
+            if (!announcement || liveSyncRole !== 'remote') return;
+            ensureAnnouncementVoice();
+            switch (announcement.type) {
+                case 'warning':
+                    performSpeakWarning();
+                    break;
+                case 'gameStart':
+                    performSpeakGameStart(announcement.smallBlind, announcement.bigBlind);
+                    break;
+                case 'blindsUp':
+                    performSpeakBlindsUp(announcement.smallBlind, announcement.bigBlind);
+                    break;
+                case 'break':
+                    performSpeakBreak(announcement.minutes);
+                    break;
+                case 'ghostPlayer':
+                    performSpeakGhostPlayer(announcement.name);
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -6421,6 +6504,7 @@
             detachLiveListeners();
             liveSyncRole = null;
             liveGameCode = null;
+            lastLiveAnnouncement = null;
             if (db && code) {
                 try {
                     await db.ref(`liveGames/${code}/meta/status`).set('ended');
@@ -6492,6 +6576,21 @@
             liveSyncRole = 'remote';
             liveGameCode = code;
             pendingLiveJoinCode = null;
+            remoteAnnouncementsEnabled = false;
+            remoteLastAnnouncementSeq = 0;
+            ensureAnnouncementVoice();
+            unlockSpeechOnUserGesture();
+
+            let initialState = null;
+            try {
+                const initialSnap = await db.ref(`liveGames/${code}/state`).once('value');
+                initialState = initialSnap.val();
+                if (initialState?.announcement?.seq) {
+                    remoteLastAnnouncementSeq = Number(initialState.announcement.seq) || 0;
+                }
+            } catch (err) {
+                console.error(err);
+            }
 
             liveStateRef = db.ref(`liveGames/${code}/state`);
             liveStateListener = (snap) => {
@@ -6503,6 +6602,14 @@
                 updateRemoteSyncStatusUi();
             };
             liveStateRef.on('value', liveStateListener);
+            remoteAnnouncementsEnabled = true;
+
+            if (initialState) {
+                applyLiveGameStatePayload(initialState);
+                renderRemoteBlindTimerPanel();
+                renderRemoteEliminatePanel();
+                updateRemoteSyncStatusUi();
+            }
 
             renderRemoteControlPage();
             showToast(`Joined game ${code}.`, 'success');
@@ -6512,6 +6619,8 @@
             detachLiveListeners();
             stopRemoteBlindTick();
             remoteSyncedBlindTimer = null;
+            remoteAnnouncementsEnabled = false;
+            remoteLastAnnouncementSeq = 0;
             liveSyncRole = null;
             liveGameCode = null;
             renderRemoteControlPage();
@@ -6538,6 +6647,7 @@
         }
 
         async function requestRemoteTimerCommand(type) {
+            unlockSpeechOnUserGesture();
             await pushLiveGameCommand(type);
         }
 
@@ -6802,13 +6912,18 @@
             }
         }
         
+        function performSpeakWarning() {
+            if (!('speechSynthesis' in window) || selectedVoice === null) return;
+            const message = 'Players, Blinds are up in 30 seconds.';
+            const utterance = new SpeechSynthesisUtterance(message);
+            if (selectedVoice) utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
         function speakWarning() {
-            const message = "Players, Blinds are up in 30 seconds.";
-            if ('speechSynthesis' in window && selectedVoice !== null) {
-                const utterance = new SpeechSynthesisUtterance(message);
-                if (selectedVoice) utterance.voice = selectedVoice;
-                window.speechSynthesis.speak(utterance);
-            }
+            if (liveSyncRole === 'remote') return;
+            performSpeakWarning();
+            queueLiveAnnouncement('warning', {});
         }
         
         // Voice selection logic
