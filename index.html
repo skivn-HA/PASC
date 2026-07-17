@@ -7,11 +7,11 @@
     <meta name="description" content="Poker club — registration, blind timer, and stats">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Poker Club">
+    <meta name="apple-mobile-web-app-title" content="Poker Manager">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="Logos/Logo-S19-1.1.png">
-    <title>Poker Club</title>
+    <title>Poker Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
@@ -2247,6 +2247,8 @@
         normalizeBirthdayBonusPaidSeason();
         let blindWarningGiven = false;
         let selectedVoice = null;
+        const PASC_VOICE_STORAGE_KEY = 'pascAnnouncementVoice';
+        let voiceSelectListenerAttached = false;
         let originalPlayers = [];
         let ghostEligible = false;
         
@@ -6188,10 +6190,7 @@
 
         function ensureAnnouncementVoice() {
             if (selectedVoice !== null || !('speechSynthesis' in window)) return;
-            const voices = window.speechSynthesis.getVoices().filter((voice) => !voice.name.includes('Microsoft David'));
-            if (voices.length > 0) {
-                selectedVoice = voices.find((v) => v.default) || voices[0];
-            }
+            selectSavedOrDefaultVoice();
         }
 
         function unlockSpeechOnUserGesture() {
@@ -6926,45 +6925,103 @@
             queueLiveAnnouncement('warning', {});
         }
         
-        // Voice selection logic
+        // Voice selection is stored locally because each device exposes different voices.
+        const APPLE_NOVELTY_VOICE_NAMES = new Set([
+            'albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles', 'cellos',
+            'good news', 'jester', 'organ', 'superstar', 'trinoids', 'whisper',
+            'wobble', 'zarvox'
+        ]);
+
+        function getVoiceStorageId(voice) {
+            if (!voice) return '';
+            return `${voice.voiceURI || voice.name}::${voice.lang || ''}`;
+        }
+
+        function getAvailableAnnouncementVoices() {
+            if (!('speechSynthesis' in window)) return [];
+            const voices = window.speechSynthesis.getVoices()
+                .filter((voice) => /^en(?:-|_)/i.test(voice.lang || ''))
+                .filter((voice) => !APPLE_NOVELTY_VOICE_NAMES.has((voice.name || '').trim().toLowerCase()));
+
+            const distinct = new Map();
+            voices.forEach((voice) => {
+                const key = `${(voice.name || '').trim().toLowerCase()}::${(voice.lang || '').toLowerCase()}`;
+                const existing = distinct.get(key);
+                if (!existing || (!existing.localService && voice.localService) || (!existing.default && voice.default)) {
+                    distinct.set(key, voice);
+                }
+            });
+            return [...distinct.values()].sort((a, b) => {
+                if (a.default !== b.default) return a.default ? -1 : 1;
+                if (a.localService !== b.localService) return a.localService ? -1 : 1;
+                return `${a.lang} ${a.name}`.localeCompare(`${b.lang} ${b.name}`);
+            });
+        }
+
+        function getSavedVoiceId() {
+            return localStorage.getItem(PASC_VOICE_STORAGE_KEY) || '';
+        }
+
+        function selectSavedOrDefaultVoice() {
+            const voices = getAvailableAnnouncementVoices();
+            const savedId = getSavedVoiceId();
+            if (savedId === 'no-voice') {
+                selectedVoice = null;
+                return null;
+            }
+            selectedVoice = voices.find((voice) => getVoiceStorageId(voice) === savedId)
+                || voices.find((voice) => voice.default)
+                || voices.find((voice) => voice.localService)
+                || voices[0]
+                || null;
+            return selectedVoice;
+        }
+
         function populateVoiceList() {
             const voiceSelect = document.getElementById('voiceSelect');
             if (!voiceSelect) return;
-            const voices = window.speechSynthesis.getVoices();
+            const voices = getAvailableAnnouncementVoices();
+            const savedId = getSavedVoiceId();
+            selectSavedOrDefaultVoice();
             voiceSelect.innerHTML = '';
-            
-            // Add 'No Voice' option
+
             const noVoiceOption = document.createElement('option');
             noVoiceOption.value = 'no-voice';
             noVoiceOption.textContent = 'No Voice (Disable Announcements)';
             voiceSelect.appendChild(noVoiceOption);
-            
-            voices
-                .filter(voice => !voice.name.includes('Microsoft David'))
-                .forEach((voice, i) => {
-                    const option = document.createElement('option');
-                    option.value = voice.name;
-                    option.textContent = `${voice.name} (${voice.lang})${voice.default ? ' (default)' : ''}`;
-                    voiceSelect.appendChild(option);
-                });
-            // Set selectedVoice to default
-            const filteredVoices = voices.filter(voice => !voice.name.includes('Microsoft David'));
-            if (filteredVoices.length > 0) {
-                selectedVoice = filteredVoices.find(v => v.default) || filteredVoices[0];
-                voiceSelect.value = selectedVoice.name;
+
+            voices.forEach((voice) => {
+                const option = document.createElement('option');
+                option.value = getVoiceStorageId(voice);
+                const source = voice.localService ? 'device' : 'online';
+                option.textContent = `${voice.name} (${voice.lang}, ${source})${voice.default ? ' — default' : ''}`;
+                voiceSelect.appendChild(option);
+            });
+
+            if (savedId === 'no-voice') {
+                voiceSelect.value = 'no-voice';
+            } else if (selectedVoice) {
+                voiceSelect.value = getVoiceStorageId(selectedVoice);
+            } else {
+                voiceSelect.value = 'no-voice';
             }
         }
         
         function setupVoiceSelectListener() {
             const voiceSelect = document.getElementById('voiceSelect');
-            if (!voiceSelect) return;
+            if (!voiceSelect || voiceSelectListenerAttached) return;
+            voiceSelectListenerAttached = true;
             voiceSelect.addEventListener('change', () => {
-                if (voiceSelect.value === 'no-voice') {
+                const selectedId = voiceSelect.value;
+                localStorage.setItem(PASC_VOICE_STORAGE_KEY, selectedId);
+                if (selectedId === 'no-voice') {
                     selectedVoice = null;
-                } else {
-                    const voices = window.speechSynthesis.getVoices();
-                    selectedVoice = voices.find(v => v.name === voiceSelect.value);
+                    window.speechSynthesis?.cancel();
+                    return;
                 }
+                selectedVoice = getAvailableAnnouncementVoices()
+                    .find((voice) => getVoiceStorageId(voice) === selectedId)
+                    || null;
             });
         }
         

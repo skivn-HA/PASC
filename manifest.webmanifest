@@ -1,6 +1,6 @@
 {
-  "name": "Poker Club",
-  "short_name": "Poker Club",
+  "name": "Poker Manager",
+  "short_name": "Poker Manager",
   "description": "Poker tournament registration, blind timer, and stats dashboard",
   "start_url": "./index.html",
   "scope": "./",
