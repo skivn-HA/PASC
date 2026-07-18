@@ -422,6 +422,102 @@
             font-weight: 600;
         }
 
+        .pasc-help-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 31000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(3px);
+        }
+
+        .pasc-help-overlay.hidden {
+            display: none;
+        }
+
+        .pasc-help-modal {
+            width: min(96vw, 48rem);
+            max-height: min(90vh, 52rem);
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(160deg, #1f2937 0%, #111827 100%);
+            border: 1px solid rgba(5, 109, 120, 0.55);
+            border-radius: 1rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+            overflow: hidden;
+        }
+
+        .pasc-help-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(209, 213, 219, 0.15);
+            background: rgba(5, 109, 120, 0.2);
+        }
+
+        .pasc-help-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #facc15;
+        }
+
+        .pasc-help-close {
+            flex-shrink: 0;
+            padding: 0.4rem 0.85rem;
+            border-radius: 0.5rem;
+            background: #b91c1c;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .pasc-help-close:hover {
+            background: #991b1b;
+        }
+
+        .pasc-help-body {
+            padding: 1rem 1.25rem 1.5rem;
+            overflow-y: auto;
+            color: #e5e7eb;
+            font-size: 0.925rem;
+            line-height: 1.55;
+        }
+
+        .pasc-help-body h3 {
+            margin: 1.25rem 0 0.4rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #facc15;
+        }
+
+        .pasc-help-body h3:first-child {
+            margin-top: 0;
+        }
+
+        .pasc-help-body p,
+        .pasc-help-body ul {
+            margin: 0 0 0.65rem;
+        }
+
+        .pasc-help-body ul {
+            padding-left: 1.2rem;
+            list-style: disc;
+        }
+
+        .pasc-help-body li {
+            margin-bottom: 0.3rem;
+        }
+
+        .pasc-help-body strong {
+            color: #f9fafb;
+        }
+
         #admin #adminSecurityList table th,
         #admin #adminSecurityList table td {
             text-align: left;
@@ -1324,6 +1420,101 @@
             <div id="pascModalActions" class="pasc-modal-actions"></div>
         </div>
     </div>
+    <div id="pascHelpOverlay" class="pasc-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pascHelpTitle">
+        <div class="pasc-help-modal">
+            <div class="pasc-help-header">
+                <h2 id="pascHelpTitle"><i class="fas fa-question-circle mr-2"></i>Poker Manager Help</h2>
+                <button type="button" class="pasc-help-close" onclick="closeAppHelp()">Close</button>
+            </div>
+            <div class="pasc-help-body">
+                <h3>What this app is</h3>
+                <p><strong>Poker Manager</strong> is a club tournament helper for social poker nights. It runs in your browser (and can be installed as an app on phones). It handles player registration, table seating, blind timing, cash tracking, points, and optional phone remote control.</p>
+                <p>Club data is saved in the browser on this device. Use <strong>Settings → Backup / Restore</strong> regularly so you do not lose players, settings, or season history.</p>
+
+                <h3>Typical game night flow</h3>
+                <ul>
+                    <li><strong>Settings:</strong> Confirm club name, season, blinds, payout %, and optional features (ghost player, bonus hand, raffle, remote).</li>
+                    <li><strong>Registration:</strong> Enter game details, add players, assign tables, then press <strong>START GAME</strong>.</li>
+                    <li><strong>Blind Timer:</strong> Run the clock, announce blinds, and (if Remote is enabled) show the join code/QR for phones.</li>
+                    <li><strong>Eliminate players</strong> from Table Assignments or from a joined phone Remote until one winner remains.</li>
+                    <li><strong>Game Dashboard:</strong> Review cash, pools, and results, then <strong>Save Game</strong> to the Points Table.</li>
+                    <li>Optionally email or print the game stats, and back up club data after the night.</li>
+                </ul>
+
+                <h3>Main tabs</h3>
+                <ul>
+                    <li><strong>Registration:</strong> Game details, player check-in, table assignments, raffle cash (if enabled), start game.</li>
+                    <li><strong>Game Dashboard:</strong> Live cash breakdown, prize pools, ghost/bonus/bad beat tracking, points for the current game, save/email/print.</li>
+                    <li><strong>Blind Timer:</strong> Levels, countdown, fullscreen timer, voice announcements, cash prize display.</li>
+                    <li><strong>Numbers:</strong> Random number picker for draws or side games.</li>
+                    <li><strong>Points Table:</strong> Season standings from saved games, qualification for season final, player emails.</li>
+                    <li><strong>Remote:</strong> Host or join live remote control (if enabled in General settings).</li>
+                    <li><strong>Settings:</strong> All club configuration (committee access required).</li>
+                </ul>
+
+                <h3>Registration &amp; tables</h3>
+                <ul>
+                    <li>Players can be typed in or chosen from the Player Management list.</li>
+                    <li>Tables fill using the <strong>Maximum Players per Table</strong> setting.</li>
+                    <li>After Start Game, use <strong>Eliminate</strong> on each player. When one player remains, use <strong>Winner</strong>.</li>
+                    <li>The app can auto-combine remaining players toward a final table as seats free up.</li>
+                </ul>
+
+                <h3>Blind Timer &amp; voice</h3>
+                <ul>
+                    <li>Configure levels, break times, and announcement voice in <strong>Settings → Blind Timer</strong>.</li>
+                    <li>Voice choice is saved per device. Phones may only expose a few real system voices.</li>
+                    <li>On Android, install more voices in the phone’s Text-to-speech settings if options sound the same.</li>
+                </ul>
+
+                <h3>Game Dashboard &amp; cash</h3>
+                <ul>
+                    <li>Buy-in cash splits using Club Cash % and Player Cash Payout % from settings.</li>
+                    <li>Top 3 places use the payout percentages (3rd is calculated automatically).</li>
+                    <li><strong>Raffle Cash</strong> (if enabled) is entered on Registration and Game Dashboard and feeds club cash / optional bonus pools.</li>
+                    <li><strong>Ghost Player</strong>, <strong>Bonus Hand</strong>, and <strong>Bad Beat Bonus</strong> each have enable/disable settings and season pools.</li>
+                    <li>Save Game locks the night into Points Table / Game Management history.</li>
+                </ul>
+
+                <h3>Points Table &amp; season</h3>
+                <ul>
+                    <li>Points are awarded from finishing places in each saved game.</li>
+                    <li><strong>Minimum Games Played to Qualify for Season Final</strong> marks who has played enough games (0 = off).</li>
+                    <li>Birthday bonuses can highlight players in their birthday month when enabled.</li>
+                    <li><strong>Season Statistics</strong> summarises season cash and optional club expenses.</li>
+                    <li><strong>Clear Season Data</strong> removes game history for a new season without wiping players/settings.</li>
+                </ul>
+
+                <h3>Remote Control</h3>
+                <ul>
+                    <li>Enable in <strong>Settings → General</strong>. Disable hides the Remote tab.</li>
+                    <li>When enabled, starting a game can auto-host; the Blind Timer can show the game code and QR for a set number of minutes.</li>
+                    <li>Phone joins with the code/QR, then can eliminate/restore players and control the blind timer.</li>
+                    <li>While joined, the phone can keep the screen awake and play synced voice announcements.</li>
+                    <li>After a winner is declared, remotes automatically leave about 1 minute later. Hosting stops when the game finishes.</li>
+                </ul>
+
+                <h3>Settings overview</h3>
+                <ul>
+                    <li><strong>General:</strong> Club name, season, max players/table, season-final qualification, raffle on/off, remote on/off and QR display minutes.</li>
+                    <li><strong>Blind Timer:</strong> Voice, blind levels, set all times, breaks.</li>
+                    <li><strong>Player Management:</strong> Player records (name, email, phone, DOB, membership, committee).</li>
+                    <li><strong>Club Cash &amp; Payout:</strong> Club vs player cash split and 1st/2nd place payout %.</li>
+                    <li><strong>Ghost Player / Bonus Hand / Bad Beat / Birthday:</strong> Optional season features and pool amounts.</li>
+                    <li><strong>Security:</strong> Login usernames/passwords for members. Committee gets full access; others get Points Table, Blind Timer, and Numbers.</li>
+                    <li><strong>Game Management:</strong> List/delete saved games.</li>
+                    <li><strong>Season Statistics:</strong> Season totals and expenses.</li>
+                    <li><strong>Backup / Restore:</strong> Export, email to committee, or import a full club data file.</li>
+                    <li><strong>Reset App:</strong> Clear season data or factory reset everything.</li>
+                    <li><strong>Remote Sync:</strong> Dev-only Firebase override for live remote hosting.</li>
+                    <li><strong>About:</strong> App name, version, license details, and this Help guide.</li>
+                </ul>
+
+                <h3>Backup tip</h3>
+                <p>Export or Email Data after each club night. The export file includes the app version, club name, and local export time. Store it somewhere safe — browser data alone can be lost if site data is cleared.</p>
+            </div>
+        </div>
+    </div>
     <div class="w-full flex justify-center m-0 leading-none">
         <div class="flex items-center justify-center">
             <img id="clubLogoPrimary" src="Logos/Logo-S19-1.1.png" alt="Club logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
@@ -2224,6 +2415,9 @@
                                         <dd id="aboutLicensedTo">—</dd>
                                     </div>
                                 </dl>
+                                <button type="button" onclick="openAppHelp()" class="mt-4 px-4 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium text-white">
+                                    <i class="fas fa-question-circle mr-2"></i>Help
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -4807,6 +5001,34 @@
                 licensedToEl.textContent = licensedTo || getClubName() || '—';
             }
         }
+
+        function openAppHelp() {
+            const overlay = document.getElementById('pascHelpOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAppHelp() {
+            const overlay = document.getElementById('pascHelpOverlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key !== 'Escape') return;
+            const overlay = document.getElementById('pascHelpOverlay');
+            if (overlay && !overlay.classList.contains('hidden')) {
+                closeAppHelp();
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            const overlay = document.getElementById('pascHelpOverlay');
+            if (!overlay || overlay.classList.contains('hidden')) return;
+            if (event.target === overlay) closeAppHelp();
+        });
 
         function populateAdminClubForm() {
             normalizeAdminSettings();
