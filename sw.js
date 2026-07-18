@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pasc-v33';
+const CACHE_NAME = 'pasc-v34';
 
 const PRECACHE_ASSETS = [
   './index.html',

@@ -189,6 +189,29 @@
             margin-bottom: 0.375rem !important;
         }
 
+        #admin #adminPlayerForm .admin-player-field {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            min-width: 0;
+        }
+
+        #admin #adminPlayerForm .admin-player-field label {
+            flex: 0 0 8.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            white-space: nowrap;
+            text-align: right;
+            line-height: 1.25;
+        }
+
+        #admin #adminPlayerForm .admin-player-field input,
+        #admin #adminPlayerForm .admin-player-field select {
+            flex: 1;
+            min-width: 0;
+        }
+
         #admin #adminPlayersList {
             margin-top: 0.125rem;
         }
@@ -1851,12 +1874,12 @@
                         <nav id="adminSettingsNav" aria-label="Settings sections">
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="general" onclick="showAdminSettingsSection('general')">General</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">Club Cash &amp; Payout</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="birthday-bonus" onclick="showAdminSettingsSection('birthday-bonus')">Birthday Bonus</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="game-management" onclick="showAdminSettingsSection('game-management')">Game Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="season-statistics" onclick="showAdminSettingsSection('season-statistics')">Season Statistics</button>
@@ -1870,21 +1893,42 @@
                                 <h3>Player Management</h3>
                                 <p class="admin-section-intro">Add and maintain player records used for registration, emails, birthdays, and committee membership.</p>
                                 <form id="adminPlayerForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <input type="text" id="adminPlayerName" placeholder="Player Name" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <input type="email" id="adminPlayerEmail" placeholder="Email Address" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <input type="text" id="adminPlayerPhone" placeholder="Phone Number" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <input type="date" id="adminPlayerDob" placeholder="Date of Birth" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <input type="number" id="adminPlayerYears" placeholder="Years of Membership" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                    <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                        <option value="">Membership Status</option>
-                                        <option value="yes">Member</option>
-                                        <option value="no">Non-Member</option>
-                                    </select>
-                                    <select id="adminPlayerCommittee" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                        <option value="">Committee Member?</option>
-                                        <option value="yes">Yes</option>
-                                        <option value="no">No</option>
-                                    </select>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerName">Player Name</label>
+                                        <input type="text" id="adminPlayerName" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerEmail">Email Address</label>
+                                        <input type="email" id="adminPlayerEmail" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerPhone">Phone Number</label>
+                                        <input type="text" id="adminPlayerPhone" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerDob">Date of Birth</label>
+                                        <input type="date" id="adminPlayerDob" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerYears">Years of Membership</label>
+                                        <input type="number" id="adminPlayerYears" min="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerMember">Membership Status</label>
+                                        <select id="adminPlayerMember" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                            <option value="">Select…</option>
+                                            <option value="yes">Member</option>
+                                            <option value="no">Non-Member</option>
+                                        </select>
+                                    </div>
+                                    <div class="admin-player-field">
+                                        <label for="adminPlayerCommittee">Committee Member?</label>
+                                        <select id="adminPlayerCommittee" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                            <option value="">Select…</option>
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
                                     <button type="submit" class="col-span-1 md:col-span-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Add/Update Player</button>
                                 </form>
                                 <div id="adminPlayersList" class="overflow-x-auto"></div>
@@ -8072,11 +8116,23 @@
             }
             return false;
         }
+        function getLocalExportTimestamp(date = new Date()) {
+            const pad = (n) => String(n).padStart(2, '0');
+            const offsetMinutes = -date.getTimezoneOffset();
+            const sign = offsetMinutes >= 0 ? '+' : '-';
+            const absOffset = Math.abs(offsetMinutes);
+            const offsetHours = pad(Math.floor(absOffset / 60));
+            const offsetMins = pad(absOffset % 60);
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` +
+                `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}` +
+                `${sign}${offsetHours}:${offsetMins}`;
+        }
+
         function getAdminExportData() {
             return {
-                version: '1.0.5',
-                type: 'pasc-admin-data',
-                exportedAt: new Date().toISOString(),
+                version: PASC_APP_VERSION,
+                type: `${getClubName()} Admin Data`,
+                exportedAt: getLocalExportTimestamp(),
                 adminPlayers,
                 adminSettings,
                 adminMemberStats,
