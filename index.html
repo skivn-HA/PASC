@@ -1339,7 +1339,7 @@
                 </li>
                 <li data-requires-full-access>
                     <button onclick="showPage('stats')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
-                        <i class="fas fa-chart-bar mr-2"></i>Stats Dashboard
+                        <i class="fas fa-chart-bar mr-2"></i>Game Dashboard
                     </button>
                 </li>
                 <li>
@@ -1581,11 +1581,11 @@
                 </div>
             </div>
             
-            <!-- Stats Dashboard Page -->
+            <!-- Game Dashboard Page -->
             <div id="stats" class="page hidden">
                 <div class="bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
                     <h2 class="text-2xl font-bold mb-4 text-yellow-400">
-                        <i class="fas fa-chart-bar mr-2"></i>Stats Dashboard
+                        <i class="fas fa-chart-bar mr-2"></i>Game Dashboard
                     </h2>
                     
                     <div class="flex justify-end mb-4 gap-2">
@@ -1622,7 +1622,7 @@
                             
                             <h3 class="text-lg font-semibold mb-2">Total Buy-in Cash</h3>
                             <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
-                            <div class="border-t border-poker-accent/20 pt-2 mt-3">
+                            <div id="statsRaffleCashSection" class="border-t border-poker-accent/20 pt-2 mt-3">
                                 <h3 class="text-lg font-semibold mb-2">Raffle Cash</h3>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
@@ -1680,7 +1680,7 @@
                             <div class="text-2xl font-bold text-green-400" id="pascCashTakings">$0</div>
                             <div class="mt-2 text-sm text-poker-text">
                                 <div>Club Game Cash: <span id="pascGameCashSummary">$0</span></div>
-                                <div>Raffle: <span id="raffleCashSummary">$0</span></div>
+                                <div id="statsRaffleCashSummaryRow">Raffle: <span id="raffleCashSummary">$0</span></div>
                             </div>
                         </div>
                         <!-- Ghost Player Section (now in grid) -->
@@ -1911,6 +1911,12 @@
                                             <input type="number" id="adminMinGamesForSeasonFinal" min="0" step="1" value="0" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
                                             <p class="text-xs text-poker-text/70">Set to 0 to disable. Players need at least this many saved games to show as qualified on the Points Table.</p>
                                         </div>
+                                    </div>
+                                    <div class="admin-general-field">
+                                        <span class="text-sm font-semibold">Raffle Cash</span>
+                                        <button type="button" onclick="toggleRaffleCashEnabled()" id="toggleRaffleCashBtn" class="self-start mt-1 px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium transition-colors duration-300 text-white">
+                                            <i class="fas fa-toggle-on mr-2"></i>Enabled
+                                        </button>
                                     </div>
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Remote Control</span>
@@ -2184,13 +2190,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.16</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.18</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.16';
+        const PASC_APP_VERSION = '2026.7.18';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -2224,6 +2230,8 @@
         let lastLiveAnnouncement = null;
         let remoteLastAnnouncementSeq = 0;
         let remoteAnnouncementsEnabled = false;
+        let remoteWakeLockSentinel = null;
+        let remoteAutoLeaveTimeout = null;
 
         // Global variables
         let players = [];
@@ -2668,6 +2676,7 @@
 
         function showAppAfterLogin() {
             updateAppNavigation();
+            updateRaffleCashVisibility();
             document.getElementById('appShell')?.classList.remove('hidden');
             document.getElementById('appChrome')?.classList.remove('hidden');
             if (pendingLiveJoinCode && hasFullAppAccess()) {
@@ -4247,6 +4256,10 @@
         function updateRaffleCashAlert() {
             const raffleCashInput = document.getElementById('raffleCash');
             if (!raffleCashInput) return;
+            if (!getRaffleCashSettings().enabled) {
+                raffleCashInput.classList.remove('raffle-cash-alert');
+                return;
+            }
             const raffleCashGross = parseFloat(raffleCashInput.value) || 0;
             const shouldAlert = !currentGameSaved && isGameResultsReady() && raffleCashGross <= 0;
             raffleCashInput.classList.toggle('raffle-cash-alert', shouldAlert);
@@ -4496,7 +4509,9 @@
 
             // Cash taken from raffle (manual entry)
             const raffleCashInput = document.getElementById('raffleCash');
-            const raffleCashGross = raffleCashInput ? (parseFloat(raffleCashInput.value) || 0) : 0;
+            const raffleCashGross = getRaffleCashSettings().enabled && raffleCashInput
+                ? (parseFloat(raffleCashInput.value) || 0)
+                : 0;
             const bonusSettings = getBonusHandSettings();
             const bonusWonThisGame = isBonusHandWonThisGame();
             let bonusContribution = 0;
@@ -4767,6 +4782,52 @@
             return gamesPlayed >= minGames ? 'Yes' : 'No';
         }
 
+        function getRaffleCashSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.raffleCashEnabled !== false
+            };
+        }
+
+        function updateRaffleCashToggleButton() {
+            const btn = document.getElementById('toggleRaffleCashBtn');
+            if (!btn) return;
+            const enabled = getRaffleCashSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function updateRaffleCashVisibility() {
+            const enabled = getRaffleCashSettings().enabled;
+            const registrationCard = document.getElementById('registrationRaffleCashCard');
+            const statsSection = document.getElementById('statsRaffleCashSection');
+            const summaryRow = document.getElementById('statsRaffleCashSummaryRow');
+            if (registrationCard) registrationCard.classList.toggle('hidden', !enabled);
+            if (statsSection) statsSection.classList.toggle('hidden', !enabled);
+            if (summaryRow) summaryRow.classList.toggle('hidden', !enabled);
+            if (!enabled) {
+                resetRaffleCashInputs();
+                const raffleCashInput = document.getElementById('raffleCash');
+                if (raffleCashInput) raffleCashInput.classList.remove('raffle-cash-alert');
+            }
+        }
+
+        function toggleRaffleCashEnabled() {
+            normalizeAdminSettings();
+            adminSettings.raffleCashEnabled = !getRaffleCashSettings().enabled;
+            saveAdminSettings();
+            updateRaffleCashToggleButton();
+            updateRaffleCashVisibility();
+            updateStats();
+        }
+
         function populateAdminGeneralForm() {
             populateAdminClubForm();
             populateAdminSeasonNumberForm();
@@ -4777,6 +4838,8 @@
             }
             updateRemoteControlToggleButton();
             updateRemoteControlNavVisibility();
+            updateRaffleCashToggleButton();
+            updateRaffleCashVisibility();
         }
 
         function populateAdminSeasonNumberForm() {
@@ -5101,7 +5164,9 @@
             const rebuyAddonEl = document.getElementById('rebuyAddon');
             const bonusSettings = getBonusHandSettings();
             const bonusWonThisGame = isBonusHandWonThisGame();
-            const raffleCashGross = getStatsInputNumber('raffleCash', parseMoneyAmount(getStatsText('raffleCashSummary', '$0')));
+            const raffleCashGross = getRaffleCashSettings().enabled
+                ? getStatsInputNumber('raffleCash', parseMoneyAmount(getStatsText('raffleCashSummary', '$0')))
+                : 0;
             let bonusContribution = 0;
             if (bonusSettings.enabled) {
                 bonusContribution = Math.min(raffleCashGross, bonusSettings.amountPerGame);
@@ -5207,8 +5272,8 @@
             updateStats();
             const results = getGameResults();
             const stats = collectStatsDashboardSnapshot(results);
-            const raffleCashGross = getStatsInputNumber('raffleCash', 0);
-            if (raffleCashGross <= 0) {
+            const raffleCashGross = getRaffleCashSettings().enabled ? getStatsInputNumber('raffleCash', 0) : 0;
+            if (getRaffleCashSettings().enabled && raffleCashGross <= 0) {
                 if (!(await showConfirm('You have not entered the raffle cash amount. Do you want to continue?', {
                     confirmText: 'Continue',
                     cancelText: 'Go Back',
@@ -5299,7 +5364,7 @@
             currentGameSaved = true;
             updateStats();
             updateSaveGameButton();
-            showToast('Game saved to Points Table with full Stats Dashboard data.', 'success');
+            showToast('Game saved to Points Table with full Game Dashboard data.', 'success');
         }
 
         function getPointsTableAggregates() {
@@ -5376,7 +5441,7 @@
                     emailBtn.disabled = true;
                     emailBtn.title = 'No saved games to email yet';
                 }
-                container.innerHTML = '<div class="text-gray-400">No saved games yet. Finish a tournament on the Stats Dashboard and press Save Game.</div>';
+                container.innerHTML = '<div class="text-gray-400">No saved games yet. Finish a tournament on the Game Dashboard and press Save Game.</div>';
                 return;
             }
 
@@ -5903,10 +5968,41 @@
             if (overlay) overlay.remove();
         }
 
-        function stopLiveHostingIfGameFinished() {
-            if (liveSyncRole === 'host' && liveGameCode) {
-                void stopLiveGameHost();
+        function isGameFinishedWithWinner() {
+            if (!declaredWinner || players.length < 2) return false;
+            const activePlayers = players.filter((p) => !p.eliminated);
+            return activePlayers.length <= 1;
+        }
+
+        async function stopLiveHostingIfGameFinished() {
+            if (liveSyncRole !== 'host' || !liveGameCode) return;
+            try {
+                await publishLiveGameState();
+            } catch (e) { /* ignore */ }
+            await stopLiveGameHost();
+        }
+
+        function clearRemoteAutoLeaveTimeout() {
+            if (remoteAutoLeaveTimeout) {
+                clearTimeout(remoteAutoLeaveTimeout);
+                remoteAutoLeaveTimeout = null;
             }
+        }
+
+        function scheduleRemoteAutoLeaveAfterWinner() {
+            if (liveSyncRole !== 'remote' || !liveGameCode) return;
+            if (!isGameFinishedWithWinner()) {
+                clearRemoteAutoLeaveTimeout();
+                return;
+            }
+            if (remoteAutoLeaveTimeout) return;
+            showToast('Game finished. Leaving remote in 1 minute.', 'info');
+            remoteAutoLeaveTimeout = setTimeout(() => {
+                remoteAutoLeaveTimeout = null;
+                if (liveSyncRole === 'remote' && liveGameCode && isGameFinishedWithWinner()) {
+                    leaveLiveGameRemote('Game finished. Left remote control.');
+                }
+            }, 60 * 1000);
         }
 
         function afterPlayerActiveStateChange(wasElimination, playerId) {
@@ -5943,7 +6039,7 @@
                 pauseTimer();
                 exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
-                stopLiveHostingIfGameFinished();
+                void stopLiveHostingIfGameFinished();
             }
         }
 
@@ -5957,12 +6053,12 @@
             const activePlayers = players.filter((p) => !p.eliminated);
             if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
                 declaredWinner = player;
-                showToast(`${player.name} is the winner. Save the game on the Stats Dashboard.`, 'info');
+                showToast(`${player.name} is the winner. Save the game on the Game Dashboard.`, 'info');
                 pauseTimer();
                 updateStats();
                 exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
-                stopLiveHostingIfGameFinished();
+                void stopLiveHostingIfGameFinished();
                 return;
             }
             player.eliminated = true;
@@ -6171,6 +6267,9 @@
                     : null;
                 applyRemoteBlindTimerSnapshot(state.timer);
                 handleRemoteSyncedAnnouncement(state.announcement);
+                if (liveSyncRole === 'remote') {
+                    scheduleRemoteAutoLeaveAfterWinner();
+                }
             } finally {
                 liveSyncApplyingRemote = false;
             }
@@ -6200,6 +6299,36 @@
                 utterance.volume = 0.01;
                 window.speechSynthesis.speak(utterance);
             } catch (e) { /* ignore */ }
+        }
+
+        async function releaseRemoteWakeLock() {
+            if (!remoteWakeLockSentinel) return;
+            try {
+                await remoteWakeLockSentinel.release();
+            } catch (e) { /* ignore */ }
+            remoteWakeLockSentinel = null;
+        }
+
+        async function requestRemoteWakeLock() {
+            if (liveSyncRole !== 'remote' || !liveGameCode || !('wakeLock' in navigator)) return;
+            if (document.visibilityState !== 'visible') return;
+            if (remoteWakeLockSentinel && !remoteWakeLockSentinel.released) return;
+            try {
+                remoteWakeLockSentinel = await navigator.wakeLock.request('screen');
+                remoteWakeLockSentinel.addEventListener('release', () => {
+                    remoteWakeLockSentinel = null;
+                });
+            } catch (e) {
+                remoteWakeLockSentinel = null;
+            }
+        }
+
+        async function syncRemoteWakeLock() {
+            if (liveSyncRole === 'remote' && liveGameCode) {
+                await requestRemoteWakeLock();
+            } else {
+                await releaseRemoteWakeLock();
+            }
         }
 
         function handleRemoteSyncedAnnouncement(announcement) {
@@ -6575,6 +6704,7 @@
             liveSyncRole = 'remote';
             liveGameCode = code;
             pendingLiveJoinCode = null;
+            clearRemoteAutoLeaveTimeout();
             remoteAnnouncementsEnabled = false;
             remoteLastAnnouncementSeq = 0;
             ensureAnnouncementVoice();
@@ -6611,19 +6741,22 @@
             }
 
             renderRemoteControlPage();
+            await requestRemoteWakeLock();
             showToast(`Joined game ${code}.`, 'success');
         }
 
-        function leaveLiveGameRemote() {
+        function leaveLiveGameRemote(toastMessage = 'Left remote game.') {
+            clearRemoteAutoLeaveTimeout();
             detachLiveListeners();
             stopRemoteBlindTick();
+            void releaseRemoteWakeLock();
             remoteSyncedBlindTimer = null;
             remoteAnnouncementsEnabled = false;
             remoteLastAnnouncementSeq = 0;
             liveSyncRole = null;
             liveGameCode = null;
             renderRemoteControlPage();
-            showToast('Left remote game.', 'info');
+            showToast(toastMessage, 'info');
         }
 
         async function pushLiveGameCommand(type, playerId) {
@@ -7156,15 +7289,19 @@
                 `Player Buy-in Cost: ${playerBuyInCost}`,
                 `Total Buy-in Cash: ${totalCashTaking}`,
                 '',
-                `Club Game Cash (${pascPercent}): ${pascGameCash}`,
-                `Raffle Cash: ${raffleCash}`,
+                `Club Game Cash (${pascPercent}): ${pascGameCash}`
+            ];
+            if (getRaffleCashSettings().enabled) {
+                bodyLines.push(`Raffle Cash: ${raffleCash}`);
+            }
+            bodyLines.push(
                 `Total Club Cash: ${pascCashTakings}`,
                 ''
-            ];
+            );
 
             if (bonusSettings.enabled) {
                 const contribution = Math.min(
-                    getStatsInputNumber('raffleCash', 0),
+                    getRaffleCashSettings().enabled ? getStatsInputNumber('raffleCash', 0) : 0,
                     bonusSettings.amountPerGame
                 );
                 const totalPayout = getBonusHandPoolDisplayAmount(contribution);
@@ -7179,7 +7316,7 @@
             }
 
             if (badBeatSettings.enabled) {
-                const raffleGross = getStatsInputNumber('raffleCash', 0);
+                const raffleGross = getRaffleCashSettings().enabled ? getStatsInputNumber('raffleCash', 0) : 0;
                 const bonusContrib = bonusSettings.enabled
                     ? Math.min(raffleGross, bonusSettings.amountPerGame)
                     : 0;
@@ -7273,6 +7410,12 @@
                     populateVoiceList();
                 };
             }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    void syncRemoteWakeLock();
+                }
+            });
             
             // Allow Enter key to confirm player registration
             const playerNameInput = document.getElementById('playerName');
@@ -7690,7 +7833,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"raffleCashEnabled":true}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -7719,8 +7862,10 @@
             if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
             if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = true;
             if (adminSettings.remoteCodeDisplayMinutes == null) adminSettings.remoteCodeDisplayMinutes = 3;
+            if (adminSettings.raffleCashEnabled == null) adminSettings.raffleCashEnabled = true;
         }
         normalizeAdminSettings();
+        updateRaffleCashVisibility();
         function populateAdminSettingsForm() {
             normalizeAdminSettings();
             const pascPercentInput = document.getElementById('adminPascPercent');
@@ -8114,7 +8259,8 @@
                 birthdayBonusEnabled: false,
                 clubName: 'Poker Club',
                 remoteControlEnabled: true,
-                remoteCodeDisplayMinutes: 3
+                remoteCodeDisplayMinutes: 3,
+                raffleCashEnabled: true
             };
         }
 
