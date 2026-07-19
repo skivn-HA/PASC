@@ -107,6 +107,11 @@
             margin-bottom: 0.25rem;
         }
 
+        #registrationRaffleCashCard h2 {
+            margin-bottom: 0;
+            flex-shrink: 0;
+        }
+
         #registrationGameDetailsCard h2 + div,
         #registrationGameDetailsCard > div,
         #registrationRaffleCashCard > div {
@@ -673,6 +678,18 @@
         #points-table .points-table-email-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+        }
+
+        body.points-table-display-mode #appMainNav,
+        body.points-table-display-mode #appLogoutBtn,
+        body.points-table-display-mode #openPointsTableWindowBtn,
+        body.points-table-display-mode #emailPointsTableBtn,
+        body.points-table-display-mode #points-table .points-email-btn {
+            display: none !important;
+        }
+
+        body.points-table-display-mode #points-table > .bg-poker-secondary {
+            max-width: none;
         }
 
         #points-table .points-table-page-intro {
@@ -1596,13 +1613,13 @@
                 <div id="registrationTopRow" class="flex flex-col md:flex-row gap-2 mb-2">
                     <!-- Player Registration Card -->
                     <div class="flex-1 bg-poker-secondary rounded-xl shadow-2xl p-6 border border-poker-accent/20">
-                        <h2 class="text-2xl font-bold mb-4 text-yellow-400">
+                        <h2 id="registrationCardHeading" class="text-2xl font-bold mb-4 text-yellow-400">
                             <i class="fas fa-user-plus mr-2"></i>Player Registration
                         </h2>
-                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                        <div id="soloRegistrationRow" class="flex flex-col md:flex-row gap-4 mb-4">
                             <div class="relative w-full md:w-[37.5%]">
                                 <input type="text" id="playerName" placeholder="Enter player or select from dropdown" autocomplete="off" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
-                                <button type="button" onmousedown="togglePlayerNameDropdown(event)" tabindex="-1" title="Select a player" class="absolute right-2 top-1/2 -translate-y-1/2 text-poker-text/70 hover:text-poker-text px-1">
+                                <button type="button" onmousedown="togglePlayerNameDropdown(event, 'playerName', 'playerNameDropdown')" tabindex="-1" title="Select a player" class="absolute right-2 top-1/2 -translate-y-1/2 text-poker-text/70 hover:text-poker-text px-1">
                                     <i class="fas fa-chevron-down"></i>
                                 </button>
                                 <div id="playerNameDropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-96 overflow-y-auto">
@@ -1613,8 +1630,31 @@
                                 <i class="fas fa-plus mr-2"></i>Add Player
                             </button>
                         </div>
+                        <div id="teamRegistrationRow" class="hidden mb-4">
+                            <div class="flex flex-col md:flex-row gap-4 items-end">
+                                <div class="relative w-full md:flex-1">
+                                    <label for="teamPlayer1" class="block mb-1 font-semibold text-poker-text text-sm">Player 1</label>
+                                    <input type="text" id="teamPlayer1" placeholder="Select first player" autocomplete="off" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                    <button type="button" onmousedown="togglePlayerNameDropdown(event, 'teamPlayer1', 'teamPlayer1Dropdown')" tabindex="-1" title="Select a player" class="absolute right-2 bottom-2 text-poker-text/70 hover:text-poker-text px-1">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div id="teamPlayer1Dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-96 overflow-y-auto"></div>
+                                </div>
+                                <div class="relative w-full md:flex-1">
+                                    <label for="teamPlayer2" class="block mb-1 font-semibold text-poker-text text-sm">Player 2</label>
+                                    <input type="text" id="teamPlayer2" placeholder="Select second player" autocomplete="off" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                    <button type="button" onmousedown="togglePlayerNameDropdown(event, 'teamPlayer2', 'teamPlayer2Dropdown')" tabindex="-1" title="Select a player" class="absolute right-2 bottom-2 text-poker-text/70 hover:text-poker-text px-1">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                    <div id="teamPlayer2Dropdown" class="hidden absolute left-0 right-0 top-full mt-2 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-96 overflow-y-auto"></div>
+                                </div>
+                                <button type="button" onclick="registerTeam()" class="px-6 py-2 bg-poker-highlight hover:bg-poker-accent rounded-lg font-medium transition-colors duration-300 text-white whitespace-nowrap">
+                                    <i class="fas fa-user-friends mr-2"></i>Add Team
+                                </button>
+                            </div>
+                        </div>
                         <div class="mb-4">
-                            <h3 class="text-xl font-semibold mb-2">Registered Players</h3>
+                            <h3 id="registeredPlayersHeading" class="text-xl font-semibold mb-2">Registered Players</h3>
                             <div id="playersList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                                 <!-- Players will be added here -->
                             </div>
@@ -1625,6 +1665,9 @@
                             </button>
                             <button onclick="clearPlayers()" class="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors duration-300 text-white">
                                 <i class="fas fa-trash mr-2"></i>Clear All
+                            </button>
+                            <button type="button" onclick="openPointsTableInNewWindow()" class="px-6 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium transition-colors duration-300 text-white">
+                                <i class="fas fa-external-link-alt mr-2"></i>Open Points Table
                             </button>
                         </div>
                     </div>
@@ -1658,6 +1701,13 @@
                             </select>
                         </div>
                         <div>
+                            <label for="teamsEvent" class="block mb-1 font-semibold text-poker-text">Teams Event</label>
+                            <select id="teamsEvent" onchange="onTeamsEventChange()" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div>
                             <label for="buyIn" class="block mb-1 font-semibold text-poker-text">Buy-in Cost</label>
                             <div class="relative">
                                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 text-lg pointer-events-none">$</span>
@@ -1682,15 +1732,19 @@
                         </button>
                         </div>
                         <div id="registrationRaffleCashCard" class="w-full bg-poker-secondary rounded-xl shadow-2xl p-4 border border-poker-accent/20 flex flex-col gap-1">
-                        <h2 class="text-xl font-bold mb-0.5 text-yellow-400">
-                            <i class="fas fa-ticket mr-2"></i>Raffle Cash
-                        </h2>
-                        <div>
-                            <div class="relative">
-                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
-                                <input type="number" id="raffleCashRegistration" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCashRegistration')" class="w-full pl-7 pr-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                            <div id="registrationRaffleCashRow" class="flex items-center justify-between gap-2">
+                                <h2 class="text-xl font-bold text-yellow-400 mb-0">
+                                    <i class="fas fa-ticket mr-2"></i>Raffle Cash
+                                </h2>
+                                <div class="relative w-24 flex-shrink-0">
+                                    <span class="absolute left-2 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none text-sm">$</span>
+                                    <input type="number" id="raffleCashRegistration" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCashRegistration')" class="w-full pl-5 pr-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
+                                </div>
                             </div>
-                        </div>
+                            <div id="registrationGameVouchersRow" class="flex items-center justify-between gap-2">
+                                <h2 class="text-xl font-bold text-yellow-400 mb-0 shrink-0">Game Vouchers Used</h2>
+                                <input type="number" id="gameVouchersRegistration" min="0" step="1" value="0" oninput="syncGameVouchersInput('gameVouchersRegistration')" class="w-20 flex-shrink-0 px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight text-center" aria-label="Game Vouchers Used">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1836,12 +1890,17 @@
                             
                             <h3 class="text-lg font-semibold mb-2">Total Buy-in Cash</h3>
                             <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
+                            <div id="gameVouchersCashNote" class="text-sm text-poker-text/70 mt-1 hidden">Vouchers: -$0</div>
                             <div id="statsRaffleCashSection" class="border-t border-poker-accent/20 pt-2 mt-3">
                                 <h3 class="text-lg font-semibold mb-2">Raffle Cash</h3>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
                                     <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCash')" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
                                 </div>
+                            </div>
+                            <div id="statsGameVouchersSection" class="border-t border-poker-accent/20 pt-2 mt-3">
+                                <h3 class="text-lg font-semibold mb-2">Game Vouchers Used</h3>
+                                <input type="number" id="gameVouchersUsed" min="0" step="1" value="0" oninput="syncGameVouchersInput('gameVouchersUsed')" class="w-full px-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
                             </div>
                         </div>
                         <div class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10">
@@ -1942,9 +2001,12 @@
                             <input type="number" id="numbersMax" value="200" class="numbers-input w-full px-4 py-3 rounded-lg bg-poker-primary text-poker-text text-xl text-center">
                         </div>
                     </div>
-                    <div class="text-center mb-8">
+                    <div class="text-center mb-8 flex flex-wrap justify-center gap-4">
                         <button type="button" onclick="generateRandomNumber()" id="numbersGoBtn" class="px-16 py-6 bg-green-600 hover:bg-green-700 rounded-2xl font-bold text-3xl transition-colors duration-300 text-white shadow-lg">
                             GO
+                        </button>
+                        <button type="button" onclick="resetRandomNumberGenerator()" id="numbersResetBtn" class="px-16 py-6 bg-red-600 hover:bg-red-700 rounded-2xl font-bold text-3xl transition-colors duration-300 text-white shadow-lg">
+                            Reset
                         </button>
                     </div>
                     <div class="text-center">
@@ -1961,10 +2023,16 @@
                         <h2 class="text-2xl font-bold text-yellow-400">
                             <i class="fas fa-trophy mr-2"></i>Points Table
                         </h2>
-                        <button type="button" id="emailPointsTableBtn" onclick="emailPointsTablePage()" class="points-table-email-btn" disabled title="Email points table to all members with a registered email address">
-                            <i class="fas fa-envelope" aria-hidden="true"></i>
-                            <span class="sr-only">Email Points Table</span>
-                        </button>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="openPointsTableWindowBtn" onclick="openPointsTableInNewWindow()" class="points-table-email-btn" title="Open Points Table in a new window for players to view">
+                                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                <span class="sr-only">Open in new window</span>
+                            </button>
+                            <button type="button" id="emailPointsTableBtn" onclick="emailPointsTablePage()" class="points-table-email-btn" disabled title="Email points table to all members with a registered email address">
+                                <i class="fas fa-envelope" aria-hidden="true"></i>
+                                <span class="sr-only">Email Points Table</span>
+                            </button>
+                        </div>
                     </div>
                     <p class="points-table-page-intro">Season standings across all saved games. Players are ranked by total points, highest first.</p>
                     <div id="pointsTableLeaderboard" class="overflow-x-auto">
@@ -2154,6 +2222,17 @@
                                         </button>
                                     </div>
                                     <div class="admin-general-field">
+                                        <span class="text-sm font-semibold">Game Vouchers Used</span>
+                                        <div class="admin-general-input-row mt-1">
+                                            <button type="button" onclick="toggleGameVouchersEnabled()" id="toggleGameVouchersBtn" class="self-start px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium transition-colors duration-300 text-white">
+                                                <i class="fas fa-toggle-on mr-2"></i>Enabled
+                                            </button>
+                                            <label for="adminGameVoucherValue" class="text-xs text-poker-text/80">Voucher Value</label>
+                                            <span class="text-xs text-poker-text/80">$</span>
+                                            <input type="number" id="adminGameVoucherValue" min="0" step="1" value="50" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:86px;">
+                                        </div>
+                                    </div>
+                                    <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Remote Control</span>
                                         <div class="admin-general-input-row mt-1">
                                             <button type="button" onclick="toggleRemoteControlEnabled()" id="toggleRemoteControlBtn" class="self-start px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium transition-colors duration-300 text-white">
@@ -2327,7 +2406,7 @@
                                     </div>
                                 </div>
                                 <div class="mb-6" id="blindLevelsSection">
-                                    <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Blind Levels</h4>
+                                    <label class="block mb-1 font-medium">Blind Levels:</label>
                                     <div class="flex flex-col md:flex-row gap-4 mb-4">
                                         <input type="number" id="smallBlindInput" placeholder="Small Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
                                         <input type="number" id="bigBlindInput" placeholder="Big Blind" class="px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
@@ -2336,15 +2415,21 @@
                                             <i class="fas fa-plus mr-2"></i>Add Level
                                         </button>
                                     </div>
-                                    <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-clock"></i>Set Blind Times</h4>
+                                    <label class="block mb-1 font-medium">Set Blind Times:</label>
                                     <div class="flex items-center gap-2 mb-2">
                                         <input type="number" id="setAllBlindTimeInput" placeholder="Blind Time (min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:180px;">
                                         <button onclick="setAllBlindTimes()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
                                             <i class="fas fa-clock mr-2"></i>Set Blind Times
                                         </button>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="block mb-1 font-medium">Show Next Blind Level:</label>
+                                        <button type="button" onclick="toggleShowNextBlindLevelEnabled()" id="toggleShowNextBlindLevelBtn" class="px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium transition-colors duration-300 text-white">
+                                            <i class="fas fa-toggle-on mr-2"></i>Enabled
+                                        </button>
+                                    </div>
                                     <div id="breaksSection" class="mb-2 mt-4">
-                                        <h4 class="text-lg font-semibold mb-2 text-yellow-400 flex items-center gap-2"><i class="fas fa-coffee"></i>Breaks</h4>
+                                        <label class="block mb-1 font-medium">Breaks:</label>
                                         <div class="flex flex-wrap gap-2 items-center">
                                             <select id="breakAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
                                             <input type="number" id="breakTimeInput" placeholder="(min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:90px;">
@@ -2428,13 +2513,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.18</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.19</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.18';
+        const PASC_APP_VERSION = '2026.7.19';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -2915,8 +3000,14 @@
         function showAppAfterLogin() {
             updateAppNavigation();
             updateRaffleCashVisibility();
+            updateGameVouchersVisibility();
             document.getElementById('appShell')?.classList.remove('hidden');
             document.getElementById('appChrome')?.classList.remove('hidden');
+            if (isPointsTableDisplayMode()) {
+                applyPointsTableDisplayMode();
+                showPage('points-table');
+                return;
+            }
             if (pendingLiveJoinCode && hasFullAppAccess()) {
                 tryAutoJoinPendingLiveCode();
                 return;
@@ -2933,6 +3024,66 @@
                 toggleFullscreen();
             }
             showLoginScreen();
+        }
+
+        function isPointsTableDisplayMode() {
+            try {
+                return new URLSearchParams(window.location.search).get('view') === 'points-table';
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function getPointsTableDisplayUrl() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('view', 'points-table');
+            url.hash = '';
+            return url.toString();
+        }
+
+        function applyPointsTableDisplayMode() {
+            if (!isPointsTableDisplayMode()) return;
+            document.body.classList.add('points-table-display-mode');
+            updateRemoteJoinedNavVisibility();
+            const nav = document.getElementById('appMainNav');
+            if (nav) nav.classList.add('hidden');
+        }
+
+        function openPointsTableInNewWindow() {
+            if (!isAppLoggedIn()) {
+                showToast('Log in first, then open the Points Table window.', 'info');
+                return;
+            }
+            const win = window.open(getPointsTableDisplayUrl(), 'pascPointsTableDisplay');
+            if (!win) {
+                showToast('Pop-up blocked. Allow pop-ups for this site, then try again.', 'error');
+                return;
+            }
+            try { win.focus(); } catch (e) { /* ignore */ }
+        }
+
+        function reloadSharedPointsTableData() {
+            try {
+                pointsTableHistory = JSON.parse(localStorage.getItem('pointsTableHistory') || '[]');
+            } catch (e) {
+                pointsTableHistory = [];
+            }
+            try {
+                const savedSettings = JSON.parse(localStorage.getItem('adminSettings') || 'null');
+                if (savedSettings && typeof savedSettings === 'object') {
+                    adminSettings = savedSettings;
+                    normalizeAdminSettings();
+                }
+            } catch (e) { /* ignore */ }
+            try {
+                adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
+            } catch (e) { /* ignore */ }
+        }
+
+        function refreshPointsTableDisplayFromStorage() {
+            reloadSharedPointsTableData();
+            applyClubBranding();
+            renderPointsTablePage();
         }
 
         // Page navigation
@@ -3040,6 +3191,23 @@
             resultEl.classList.add('fade-in');
         }
 
+        function resetRandomNumberGenerator() {
+            const minInput = document.getElementById('numbersMin');
+            const maxInput = document.getElementById('numbersMax');
+            const resultEl = document.getElementById('numbersResult');
+            const errorEl = document.getElementById('numbersError');
+            if (minInput) minInput.value = '1';
+            if (maxInput) maxInput.value = '200';
+            if (resultEl) {
+                resultEl.textContent = '—';
+                resultEl.classList.remove('fade-in');
+            }
+            if (errorEl) {
+                errorEl.classList.add('hidden');
+                errorEl.textContent = '';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             ['numbersMin', 'numbersMax'].forEach(id => {
                 const el = document.getElementById(id);
@@ -3094,6 +3262,19 @@
                 showToast('Please add at least one blind level in Settings > Blind Timer.', 'error');
                 return;
             }
+            if (isTeamsEvent()) {
+                if (players.length < 4 || players.length % 2 !== 0) {
+                    showToast('Teams events need at least 2 teams (4 players).', 'error');
+                    return;
+                }
+                if (players.some((p) => !p.teamId)) {
+                    showToast('All players must be registered as teams for a Teams Event.', 'error');
+                    return;
+                }
+                applyTeamsSeating({ shuffle: true });
+                renderTables();
+                renderPlayersList();
+            }
 
             gameStarted = true;
             renderTables();
@@ -3118,6 +3299,66 @@
         }
         
         // Player registration functions
+        function isTeamsEventSetting() {
+            return document.getElementById('teamsEvent')?.value === 'yes';
+        }
+
+        function isTeamsEvent() {
+            if (isTeamsEventSetting()) return true;
+            // Remotes sync players with teamId; treat as teams when any player is teamed
+            return players.some((p) => !!p.teamId);
+        }
+
+        function updateRegistrationMode() {
+            const teams = isTeamsEventSetting();
+            const soloRow = document.getElementById('soloRegistrationRow');
+            const teamRow = document.getElementById('teamRegistrationRow');
+            const heading = document.getElementById('registeredPlayersHeading');
+            const cardHeading = document.getElementById('registrationCardHeading');
+            if (soloRow) soloRow.classList.toggle('hidden', teams);
+            if (teamRow) teamRow.classList.toggle('hidden', !teams);
+            if (heading) heading.textContent = teams ? 'Registered Teams' : 'Registered Players';
+            if (cardHeading) {
+                cardHeading.innerHTML = teams
+                    ? '<i class="fas fa-user-friends mr-2"></i>Teams Registration'
+                    : '<i class="fas fa-user-plus mr-2"></i>Player Registration';
+            }
+            hideAllPlayerNameDropdowns();
+        }
+
+        async function onTeamsEventChange() {
+            const teams = isTeamsEventSetting();
+            if (players.length > 0) {
+                const switchingToTeams = teams && players.some((p) => !p.teamId);
+                const switchingToSolo = !teams && players.some((p) => p.teamId);
+                if (switchingToTeams || switchingToSolo) {
+                    const ok = await showConfirm(
+                        'Changing Teams Event will clear the current registered players. Continue?',
+                        { danger: true }
+                    );
+                    if (!ok) {
+                        document.getElementById('teamsEvent').value = teams ? 'no' : 'yes';
+                        return;
+                    }
+                    players = [];
+                    tables = [];
+                    eliminatedPlayers = [];
+                    declaredWinner = null;
+                    originalPlayers = [];
+                    window.selectedGhostPlayer = null;
+                    const playersList = document.getElementById('playersList');
+                    if (playersList) playersList.innerHTML = '';
+                    const tablesList = document.getElementById('tablesList');
+                    if (tablesList) tablesList.innerHTML = '';
+                    renderEliminatedPlayersList();
+                    updateStartGameButton();
+                    updateStats();
+                }
+            }
+            updateRegistrationMode();
+            renderPlayersList();
+        }
+
         function getMaxPlayersPerTable() {
             if (typeof adminSettings !== 'undefined') {
                 normalizeAdminSettings();
@@ -3161,7 +3402,7 @@
             });
         }
 
-        async function registerPlayerByName(name, idSuffix = 0) {
+        async function registerPlayerByName(name, idSuffix = 0, teamId = null) {
             const trimmedName = (name || '').trim();
             if (!trimmedName) return 'empty';
 
@@ -3195,7 +3436,8 @@
                 eliminated: false,
                 isMember: isMember,
                 isCommittee: isCommittee,
-                birthdayBonusPaid: false
+                birthdayBonusPaid: false,
+                teamId: teamId || null
             };
 
             players.push(player);
@@ -3273,6 +3515,69 @@
             if (tables.length > 0) renderTables();
             nameInput.value = '';
             hidePlayerNameDropdown();
+            updateStats();
+        }
+
+        async function registerTeam() {
+            if (!isTeamsEventSetting()) {
+                showToast('Turn on Teams Event in Game Details first.', 'error');
+                return;
+            }
+            const input1 = document.getElementById('teamPlayer1');
+            const input2 = document.getElementById('teamPlayer2');
+            const name1 = (input1?.value || '').trim();
+            const name2 = (input2?.value || '').trim();
+            if (!name1 || !name2) {
+                showToast('Select both players for the team.', 'error');
+                return;
+            }
+            if (name1.toLowerCase() === name2.toLowerCase()) {
+                showToast('A team needs two different players.', 'error');
+                return;
+            }
+            if (players.some((p) => p.name.toLowerCase() === name1.toLowerCase())) {
+                showToast(`Player "${name1}" is already registered in this game.`, 'error');
+                return;
+            }
+            if (players.some((p) => p.name.toLowerCase() === name2.toLowerCase())) {
+                showToast(`Player "${name2}" is already registered in this game.`, 'error');
+                return;
+            }
+
+            const teamId = `team-${Date.now()}`;
+            const result1 = await registerPlayerByName(name1, 0, teamId);
+            if (result1 === 'cancelled') return;
+            if (result1 !== 'added') {
+                showToast(`Could not add "${name1}".`, 'error');
+                return;
+            }
+            const result2 = await registerPlayerByName(name2, 1, teamId);
+            if (result2 !== 'added') {
+                // Roll back first player if second could not be added
+                players = players.filter((p) => p.teamId !== teamId);
+                originalPlayers = originalPlayers.filter((p) => p.teamId !== teamId);
+                players.forEach((p, i) => { p.number = i + 1; });
+                if (result2 === 'cancelled') {
+                    renderPlayersList();
+                    updateStats();
+                    return;
+                }
+                showToast(`Could not add "${name2}".`, 'error');
+                renderPlayersList();
+                updateStats();
+                return;
+            }
+
+            const teammates = players.filter((p) => p.teamId === teamId);
+            if (teammates.length === 2 && tables.length > 0) {
+                applyTeamsSeating({ shuffle: true });
+            }
+
+            if (input1) input1.value = '';
+            if (input2) input2.value = '';
+            hideAllPlayerNameDropdowns();
+            renderPlayersList();
+            if (tables.length > 0) renderTables();
             updateStats();
         }
         
@@ -3411,10 +3716,16 @@
                 playerCard.className = `player-card bg-poker-primary rounded-lg p-4 shadow ${player.eliminated ? 'eliminated' : ''}`;
                 const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
                 const birthdayIcon = getBirthdayIcon(player);
+                const teammate = player.teamId
+                    ? players.find((p) => p.teamId === player.teamId && p.id !== player.id)
+                    : null;
+                const teamLabel = teammate
+                    ? `<div class="text-xs text-poker-text/60 mt-1">Team with ${teammate.name}</div>`
+                    : '';
                 playerCard.innerHTML = `
                     <div class=\"flex justify-between items-center\">\n                <div class=\"flex items-center\">\n                    <span class=\"font-bold text-yellow-400\">#${player.number}</span>\n                    <span class=\"ml-2\">${player.name}</span>${birthdayIcon}\n                </div>\n                <div class=\"flex items-center\">\n                        ${committeeIcon}<button onclick=\"removePlayer(${player.id})\" class=\"ml-2 text-red-400 hover:text-red-200\" title=\"Remove player\"><i class=\"fas fa-times\"></i></button>
                     </div>
-            </div>\n        `;
+            </div>${teamLabel}\n        `;
                 container.appendChild(playerCard);
             });
         }
@@ -3422,14 +3733,21 @@
         async function removePlayer(id) {
             const player = players.find(p => p.id === id);
             if (!player) return;
-            if (!(await showConfirm(`Remove ${player.name} from the game?`, { danger: true }))) return;
-            players = players.filter(p => p.id !== id);
-            originalPlayers = originalPlayers.filter(p => p.id !== id);
-            eliminatedPlayers = eliminatedPlayers.filter(p => p.id !== id);
-            if (declaredWinner && declaredWinner.id === id) {
+            const toRemove = (isTeamsEvent() && player.teamId)
+                ? players.filter((p) => p.teamId === player.teamId)
+                : [player];
+            const label = toRemove.length > 1
+                ? `team ${toRemove.map((p) => p.name).join(' & ')}`
+                : player.name;
+            if (!(await showConfirm(`Remove ${label} from the game?`, { danger: true }))) return;
+            const ids = new Set(toRemove.map((p) => p.id));
+            players = players.filter(p => !ids.has(p.id));
+            originalPlayers = originalPlayers.filter(p => !ids.has(p.id));
+            eliminatedPlayers = eliminatedPlayers.filter(p => !ids.has(p.id));
+            if (declaredWinner && ids.has(declaredWinner.id)) {
                 declaredWinner = null;
             }
-            if (window.selectedGhostPlayer && window.selectedGhostPlayer.id === id) {
+            if (window.selectedGhostPlayer && ids.has(window.selectedGhostPlayer.id)) {
                 window.selectedGhostPlayer = null;
             }
             // Renumber remaining players sequentially
@@ -3529,6 +3847,8 @@
             if (ss) { ss.value = g.startingStack || ''; formatStartingStack(ss); }
             const rebuy = document.getElementById('rebuyAddon');
             if (rebuy) rebuy.value = g.rebuyAddon || 'no';
+            const teamsEvent = document.getElementById('teamsEvent');
+            if (teamsEvent) teamsEvent.value = g.teamsEvent || 'no';
             const buyIn = document.getElementById('buyIn');
             if (buyIn) buyIn.value = g.buyIn || '';
             const gameCount = document.getElementById('gameCount');
@@ -3536,6 +3856,7 @@
             const blindTime = document.getElementById('blindTime');
             if (blindTime) blindTime.value = g.blindTime || '';
             syncBlindTimeToTimer();
+            updateRegistrationMode();
             updateStats();
             updateStartGameButton();
         }
@@ -3549,6 +3870,7 @@
                 gameType,
                 startingStack: document.getElementById('startingStack').value,
                 rebuyAddon: document.getElementById('rebuyAddon').value,
+                teamsEvent: document.getElementById('teamsEvent')?.value || 'no',
                 buyIn: document.getElementById('buyIn').value,
                 gameCount: document.getElementById('gameCount').value,
                 blindTime: document.getElementById('blindTime').value
@@ -3573,9 +3895,257 @@
             }
         }
 
+        const TEAMS_SPLIT_BLIND_COUNT = 5;
+        const TEAMS_MAX_TEAMS_PER_TABLE = 8;
+        let liveTeamsPairedPhase = null;
+
+        function shuffleArray(items) {
+            const arr = [...items];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function getActiveTeamPlayers() {
+            return players.filter((p) => !p.eliminated && p.teamId);
+        }
+
+        function getActiveTeamCount() {
+            return new Set(getActiveTeamPlayers().map((p) => p.teamId)).size;
+        }
+
+        function getTeamPairs(playerList = getActiveTeamPlayers()) {
+            const teamsMap = new Map();
+            playerList.forEach((p) => {
+                if (!p.teamId) return;
+                if (!teamsMap.has(p.teamId)) teamsMap.set(p.teamId, []);
+                teamsMap.get(p.teamId).push(p);
+            });
+            return [...teamsMap.values()];
+        }
+
+        function getCurrentNonBreakBlindNumber(index = currentBlindIndex) {
+            if (!blindLevels.length) return 1;
+            let count = 0;
+            const maxIdx = Math.min(Math.max(index, 0), blindLevels.length - 1);
+            for (let i = 0; i <= maxIdx; i++) {
+                if (blindLevels[i].type !== 'break') count++;
+            }
+            return count;
+        }
+
+        function isTeamsPairedSeatingPhase() {
+            if (!isTeamsEvent()) return false;
+            if (liveSyncRole === 'remote' && liveTeamsPairedPhase != null) {
+                return !!liveTeamsPairedPhase;
+            }
+            return getCurrentNonBreakBlindNumber() >= (TEAMS_SPLIT_BLIND_COUNT + 1);
+        }
+
+        function getMaxTeamsPerTable() {
+            return TEAMS_MAX_TEAMS_PER_TABLE;
+        }
+
+        function seatTeamsSplit(activePlayers = getActiveTeamPlayers(), { shuffle = true } = {}) {
+            const maxPerTable = getMaxPlayersPerTable();
+            let pairs = getTeamPairs(activePlayers).filter((pair) => pair.length > 0);
+            pairs = shuffle
+                ? shuffleArray(pairs)
+                : pairs.sort((a, b) => String(a[0].teamId).localeCompare(String(b[0].teamId)));
+            if (pairs.length === 0) return;
+
+            let numTables = Math.max(2, Math.ceil(activePlayers.length / maxPerTable));
+            tables = Array.from({ length: numTables }, (_, i) => i + 1);
+            const counts = tables.map(() => 0);
+            const teamAtTable = tables.map(() => new Set());
+
+            function pickTable(excludeTable, teamId) {
+                let best = -1;
+                let bestCount = Infinity;
+                for (let i = 0; i < tables.length; i++) {
+                    if (excludeTable != null && tables[i] === excludeTable) continue;
+                    if (counts[i] >= maxPerTable) continue;
+                    if (teamId && teamAtTable[i].has(teamId)) continue;
+                    if (counts[i] < bestCount || (counts[i] === bestCount && i < best)) {
+                        best = i;
+                        bestCount = counts[i];
+                    }
+                }
+                if (best < 0) {
+                    for (let i = 0; i < tables.length; i++) {
+                        if (excludeTable != null && tables[i] === excludeTable) continue;
+                        if (counts[i] >= maxPerTable) continue;
+                        if (counts[i] < bestCount || best < 0) {
+                            best = i;
+                            bestCount = counts[i];
+                        }
+                    }
+                }
+                return best;
+            }
+
+            pairs.forEach((pair) => {
+                const members = shuffle ? shuffleArray(pair) : [...pair];
+                let firstIdx = pickTable(null, members[0].teamId);
+                if (firstIdx < 0) {
+                    tables.push(tables.length + 1);
+                    counts.push(0);
+                    teamAtTable.push(new Set());
+                    firstIdx = tables.length - 1;
+                    numTables = tables.length;
+                }
+                members[0].table = tables[firstIdx];
+                counts[firstIdx] += 1;
+                teamAtTable[firstIdx].add(members[0].teamId);
+
+                if (!members[1]) return;
+                let secondIdx = pickTable(members[0].table, members[1].teamId);
+                if (secondIdx < 0) {
+                    tables.push(tables.length + 1);
+                    counts.push(0);
+                    teamAtTable.push(new Set());
+                    secondIdx = tables.length - 1;
+                    numTables = tables.length;
+                }
+                members[1].table = tables[secondIdx];
+                counts[secondIdx] += 1;
+                teamAtTable[secondIdx].add(members[1].teamId);
+            });
+
+            players.forEach((p) => {
+                if (p.eliminated) p.table = null;
+            });
+            syncOriginalPlayersTables();
+        }
+
+        function seatTeamsPaired(activePlayers = getActiveTeamPlayers(), { shuffle = true } = {}) {
+            let pairs = getTeamPairs(activePlayers).filter((pair) => pair.length > 0);
+            pairs = shuffle
+                ? shuffleArray(pairs)
+                : pairs.sort((a, b) => String(a[0].teamId).localeCompare(String(b[0].teamId)));
+            const teamCount = pairs.length;
+            if (teamCount === 0) return;
+
+            const maxTeams = getMaxTeamsPerTable();
+            if (teamCount <= maxTeams) {
+                tables = ['final'];
+                pairs.forEach((pair) => {
+                    pair.forEach((p) => { p.table = 'final'; });
+                });
+                players.forEach((p) => {
+                    if (p.eliminated) p.table = null;
+                });
+                syncOriginalPlayersTables();
+                return;
+            }
+
+            const numTables = Math.ceil(teamCount / maxTeams);
+            tables = Array.from({ length: numTables }, (_, i) => i + 1);
+            const teamCounts = tables.map(() => 0);
+
+            pairs.forEach((pair) => {
+                let bestIdx = 0;
+                for (let i = 1; i < teamCounts.length; i++) {
+                    if (teamCounts[i] < teamCounts[bestIdx]) bestIdx = i;
+                }
+                if (teamCounts[bestIdx] >= maxTeams) {
+                    for (let i = 0; i < teamCounts.length; i++) {
+                        if (teamCounts[i] < maxTeams) {
+                            bestIdx = i;
+                            break;
+                        }
+                    }
+                }
+                pair.forEach((p) => { p.table = tables[bestIdx]; });
+                teamCounts[bestIdx] += 1;
+            });
+
+            players.forEach((p) => {
+                if (p.eliminated) p.table = null;
+            });
+            syncOriginalPlayersTables();
+        }
+
+        function applyTeamsSeating({ shuffle = false, announce = false } = {}) {
+            if (!isTeamsEvent()) return false;
+            const active = getActiveTeamPlayers();
+            if (active.length === 0) return false;
+            if (isTeamsPairedSeatingPhase()) {
+                seatTeamsPaired(active, { shuffle });
+                if (announce) {
+                    const teamCount = getActiveTeamCount();
+                    if (teamCount <= getMaxTeamsPerTable()) {
+                        showToast('Final table: teams play together.', 'info');
+                    } else {
+                        showToast('Blind 6+: teammates now share one seat at the same table.', 'info');
+                    }
+                }
+            } else {
+                seatTeamsSplit(active, { shuffle });
+                if (announce) {
+                    showToast('Early blinds: teammates are seated at different tables.', 'info');
+                }
+            }
+            return true;
+        }
+
+        function maybeUpdateTeamsSeatingForBlindChange(wasPaired) {
+            if (!isTeamsEvent() || !gameStarted) return;
+            const nowPaired = isTeamsPairedSeatingPhase();
+            if (wasPaired === nowPaired) {
+                if (nowPaired) checkForFinalTable();
+                return;
+            }
+            applyTeamsSeating({ shuffle: true, announce: true });
+            renderTables();
+            renderPlayersList();
+            if (liveSyncRole === 'host') publishLiveGameState();
+        }
+
+        function getTableSeatEntries(tableNumber) {
+            const tablePlayers = players.filter((p) => tableMatches(p.table, tableNumber) && !p.eliminated);
+            if (isTeamsEvent() && isTeamsPairedSeatingPhase()) {
+                const seats = [];
+                const seen = new Set();
+                tablePlayers.forEach((player) => {
+                    const key = player.teamId || `solo-${player.id}`;
+                    if (seen.has(key)) return;
+                    seen.add(key);
+                    const members = player.teamId
+                        ? tablePlayers.filter((p) => p.teamId === player.teamId)
+                        : [player];
+                    seats.push({
+                        id: members[0].id,
+                        members,
+                        label: members.map((m) => m.name).join(' & ')
+                    });
+                });
+                return seats;
+            }
+            return tablePlayers.map((player) => ({
+                id: player.id,
+                members: [player],
+                label: player.name
+            }));
+        }
+
         function assignTables() {
             if (players.length === 0) {
                 showToast('No players to assign to tables', 'error');
+                return;
+            }
+            if (isTeamsEvent()) {
+                if (players.length % 2 !== 0 || players.some((p) => !p.teamId)) {
+                    showToast('Register complete teams before assigning tables.', 'error');
+                    return;
+                }
+                players.forEach((player) => { player.table = null; });
+                applyTeamsSeating({ shuffle: true });
+                renderTables();
+                renderPlayersList();
+                updateStats();
                 return;
             }
             
@@ -3640,6 +4210,11 @@
             if (assignedPlayers.length === 0) {
                 tables = [];
                 players.forEach((p) => { p.table = null; });
+                return;
+            }
+
+            if (isTeamsEvent()) {
+                applyTeamsSeating({ shuffle: false });
                 return;
             }
 
@@ -3777,6 +4352,12 @@
 
         function isLastActivePlayer(playerId) {
             const activePlayers = players.filter((p) => !p.eliminated);
+            if (isTeamsEvent()) {
+                const player = players.find((p) => p.id === playerId);
+                if (!player || player.eliminated || !player.teamId) return false;
+                const remainingTeamIds = new Set(activePlayers.map((p) => p.teamId).filter(Boolean));
+                return remainingTeamIds.size === 1 && remainingTeamIds.has(player.teamId);
+            }
             return activePlayers.length === 1 && activePlayers[0].id === playerId;
         }
 
@@ -3792,7 +4373,7 @@
             const container = document.getElementById('tablesList');
             container.innerHTML = '';
             tables.forEach(tableNumber => {
-                const tablePlayers = players.filter(p => tableMatches(p.table, tableNumber) && !p.eliminated);
+                const seats = getTableSeatEntries(tableNumber);
                 const tableCard = document.createElement('div');
                 const isFinal = tableNumber === 'final';
                 tableCard.className = `rounded-xl shadow border ${isFinal ? 'border-yellow-400/40' : 'border-poker-accent/10'} bg-poker-primary`;
@@ -3808,20 +4389,24 @@
                         <h3 class=\"text-xl font-bold text-white\">${tableTitle}</h3>
                     </div>
                     <div class=\"p-4 space-y-2\">
-                        ${tablePlayers.map((player, idx) => {
-                            const committeeIcon = player.isCommittee ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>' : '';
-                            const birthdayIcon = getBirthdayIcon(player);
+                        ${seats.map((seat, idx) => {
+                            const primary = seat.members[0];
+                            const committeeIcon = seat.members.some((m) => m.isCommittee)
+                                ? '<i class="fas fa-crown text-yellow-400 ml-2" title="Committee Member"></i>'
+                                : '';
+                            const birthdayIcon = seat.members.map((m) => getBirthdayIcon(m)).join('');
                             return `
                             <div class="flex justify-between items-center p-2 rounded-lg border border-poker-accent/10 transition-colors bg-poker-secondary hover:border-poker-highlight/40">
-                                <div class="flex items-center gap-2">
-                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow">${idx + 1}</span>
-                                    <span class="text-white font-medium">${player.name}</span>${birthdayIcon}${committeeIcon}
+                                <div class="flex items-center gap-2 min-w-0">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-poker-highlight text-poker-primary font-extrabold text-2xl shadow flex-shrink-0">${idx + 1}</span>
+                                    <span class="text-white font-medium break-words">${seat.label}</span>${birthdayIcon}${committeeIcon}
                                 </div>
-                                <div class="flex items-center gap-1">
-                                    ${getTablePlayerActionButton(player)}
+                                <div class="flex items-center gap-1 flex-shrink-0">
+                                    ${getTablePlayerActionButton(primary)}
                                 </div>
                             </div>
-                        `}).join('')}
+                        `;
+                        }).join('')}
                     </div>
                 `;
                 container.appendChild(tableCard);
@@ -3859,6 +4444,7 @@
                 updateStartGameButton();
                 resetBlindTimerToFirstLevel();
                 resetRaffleCashInputs();
+                resetGameVouchersInputs();
                 const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
                 if (bonusHandWonCheckbox) {
                     bonusHandWonCheckbox.checked = false;
@@ -4023,7 +4609,7 @@
                 timeLeft--;
                 blindLevels[currentBlindIndex].timeLeft = timeLeft;
                 
-                // 30-second warning (skip for breaks)
+                // 30-second warning (skip while currently on a break)
                 if (timeLeft === 30 && !blindWarningGiven && blindLevels[currentBlindIndex].type !== 'break') {
                     blindWarningGiven = true;
                     speakWarning();
@@ -4060,6 +4646,7 @@
             if (blindLevels.length === 0) return;
             
             pauseTimer();
+            const wasPaired = isTeamsPairedSeatingPhase();
             
             currentBlindIndex = (currentBlindIndex + 1) % blindLevels.length;
             const nextLevel = blindLevels[currentBlindIndex];
@@ -4080,12 +4667,14 @@
                 speakBlindsUp(nextLevel.smallBlind, nextLevel.bigBlind);
                 startTimer();
             }
+            maybeUpdateTeamsSeatingForBlindChange(wasPaired);
         }
         
         function prevBlind() {
             if (blindLevels.length === 0) return;
             
             pauseTimer();
+            const wasPaired = isTeamsPairedSeatingPhase();
             
             currentBlindIndex = (currentBlindIndex - 1 + blindLevels.length) % blindLevels.length;
             const prevLevel = blindLevels[currentBlindIndex];
@@ -4104,6 +4693,7 @@
                     startTimer();
                 }
             }
+            maybeUpdateTeamsSeatingForBlindChange(wasPaired);
         }
         
         function resetCurrentBlind() {
@@ -4190,6 +4780,50 @@
             }
         }
 
+        function getShowNextBlindLevelSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.showNextBlindLevel !== false
+            };
+        }
+
+        function updateShowNextBlindLevelToggleButton() {
+            const btn = document.getElementById('toggleShowNextBlindLevelBtn');
+            if (!btn) return;
+            const enabled = getShowNextBlindLevelSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function updateNextBlindVisibility() {
+            const showNext = getShowNextBlindLevelSettings().enabled;
+            document.querySelectorAll('#nextBlind').forEach((element) => {
+                if (!showNext) {
+                    element.style.setProperty('display', 'none', 'important');
+                } else if (window.innerWidth <= 640 && !document.body.classList.contains('fullscreen-mode')) {
+                    element.style.setProperty('display', 'none', 'important');
+                } else {
+                    element.style.removeProperty('display');
+                }
+            });
+        }
+
+        function toggleShowNextBlindLevelEnabled() {
+            normalizeAdminSettings();
+            adminSettings.showNextBlindLevel = !getShowNextBlindLevelSettings().enabled;
+            saveAdminSettings();
+            updateShowNextBlindLevelToggleButton();
+            updateNextBlindVisibility();
+            updateBlindDisplay();
+        }
+
         function updateBlindDisplay() {
             if (blindLevels.length === 0) {
                 document.querySelectorAll('#currentBlind').forEach(element => {
@@ -4198,6 +4832,7 @@
                 document.querySelectorAll('#nextBlind').forEach(element => {
                     element.textContent = 'Next: -/-';
                 });
+                updateNextBlindVisibility();
                 return;
             }
             
@@ -4220,6 +4855,7 @@
             document.querySelectorAll('#nextBlind').forEach(element => {
                 element.textContent = nextBlindText;
             });
+            updateNextBlindVisibility();
             
             renderBlindLevelsList();
             requestAnimationFrame(() => {
@@ -4241,7 +4877,7 @@
             if (!timer) return;
 
             const container = timer.parentElement;
-            const hideNextBlind = window.innerWidth <= 640;
+            const hideNextBlind = !getShowNextBlindLevelSettings().enabled || window.innerWidth <= 640;
             if (nextBlind) {
                 if (hideNextBlind) {
                     nextBlind.style.setProperty('display', 'none', 'important');
@@ -4326,7 +4962,8 @@
             if (blindLabel) fitTextToWidth(blindLabel, getFullscreenFontCap(8, 10), 12);
             if (blindValues) fitTextToWidth(blindValues, getFullscreenFontCap(18, 24), 16);
             else if (currentBlind) fitTextToWidth(currentBlind, getFullscreenFontCap(16, 22));
-            if (nextBlind) fitTextToWidth(nextBlind, getFullscreenFontCap(6, 8), 12);
+            const nextVisible = nextBlind && getComputedStyle(nextBlind).display !== 'none';
+            if (nextVisible) fitTextToWidth(nextBlind, getFullscreenFontCap(6, 8), 12);
 
             if (!timer) return;
 
@@ -4338,7 +4975,7 @@
             const sliderHeight = slider ? slider.offsetHeight : 20;
             const buttonsHeight = buttons ? buttons.offsetHeight : 56;
             const currentHeight = currentBlind ? currentBlind.offsetHeight : 0;
-            const nextHeight = nextBlind ? nextBlind.offsetHeight : 0;
+            const nextHeight = nextVisible ? nextBlind.offsetHeight : 0;
             const sectionGaps = 36;
             const reservedHeight = currentHeight + nextHeight + sliderHeight + buttonsHeight + sectionGaps;
             const maxByHeight = Math.max((overlay.clientHeight - reservedHeight) * 0.95, 24);
@@ -4346,8 +4983,9 @@
 
             fitTextToWidth(timer, maxFont, 24);
 
-            if (nextBlind && slider) {
-                let availableHeight = slider.getBoundingClientRect().top - nextBlind.getBoundingClientRect().bottom - 8;
+            const heightAnchor = nextVisible ? nextBlind : currentBlind;
+            if (heightAnchor && slider) {
+                let availableHeight = slider.getBoundingClientRect().top - heightAnchor.getBoundingClientRect().bottom - 8;
                 let fontSize = parseFloat(timer.style.fontSize) || maxFont;
                 while (fontSize > 24 && timer.offsetHeight > availableHeight) {
                     fontSize -= 1;
@@ -4431,11 +5069,47 @@
             queueLiveAnnouncement('break', { minutes });
         }
 
-        function performSpeakGhostPlayer(name) {
+        function performSpeakGhostPlayer(name, isTeam = false) {
             if (!('speechSynthesis' in window) || selectedVoice === null || !name) return;
-            const msg = new SpeechSynthesisUtterance(`Players, the ghost player today is ${name}`);
+            const spokenName = String(name).replace(/\s*&\s*/g, ' and ');
+            const message = isTeam
+                ? `Players, the ghost team today is ${spokenName}`
+                : `Players, the ghost player today is ${spokenName}`;
+            const msg = new SpeechSynthesisUtterance(message);
             if (selectedVoice) msg.voice = selectedVoice;
             window.speechSynthesis.speak(msg);
+        }
+
+        function getGhostTeamMembers(ghostPlayer = window.selectedGhostPlayer) {
+            if (!ghostPlayer) return [];
+            if (isTeamsEvent() && ghostPlayer.teamId) {
+                const fromOriginal = originalPlayers.filter((p) => p.teamId === ghostPlayer.teamId);
+                if (fromOriginal.length) return fromOriginal;
+                return players.filter((p) => p.teamId === ghostPlayer.teamId);
+            }
+            return [ghostPlayer];
+        }
+
+        function getGhostDisplayName(ghostPlayer = window.selectedGhostPlayer) {
+            const members = getGhostTeamMembers(ghostPlayer);
+            if (members.length > 1) return members.map((m) => m.name).join(' & ');
+            return ghostPlayer?.name || '';
+        }
+
+        function isGhostSelectionTarget(player) {
+            if (!window.selectedGhostPlayer || !player) return false;
+            if (isTeamsEvent() && window.selectedGhostPlayer.teamId && player.teamId) {
+                return player.teamId === window.selectedGhostPlayer.teamId;
+            }
+            return player.id === window.selectedGhostPlayer.id;
+        }
+
+        function updateGhostFeatureHeadings(isTeam) {
+            const label = isTeam ? 'Ghost Team' : 'Ghost Player';
+            const statsHeading = document.querySelector('#ghostPlayerSection h3');
+            const timerHeading = document.querySelector('#blindTimerGhostPlayer h3');
+            if (statsHeading) statsHeading.textContent = label;
+            if (timerHeading) timerHeading.textContent = label;
         }
         
         // Stats functions
@@ -4453,6 +5127,33 @@
 
         function getGhostPlayerStatus() {
             if (!getGhostPlayerCashSettings().enabled || !window.selectedGhostPlayer) return '';
+
+            if (isTeamsEvent() && window.selectedGhostPlayer.teamId) {
+                const ghostTeamId = window.selectedGhostPlayer.teamId;
+                const activePlayers = players.filter((p) => !p.eliminated);
+                const remainingTeamIds = new Set(activePlayers.map((p) => p.teamId).filter(Boolean));
+                if (remainingTeamIds.size === 1 && remainingTeamIds.has(ghostTeamId)) {
+                    return 'WINNER';
+                }
+                if (activePlayers.some((p) => p.teamId === ghostTeamId)) {
+                    return '';
+                }
+
+                const totalTeams = new Set(players.map((p) => p.teamId).filter(Boolean)).size;
+                const teamElimOrder = [];
+                const seen = new Set();
+                eliminatedPlayers.forEach((player) => {
+                    if (!player.eliminated || !player.teamId) return;
+                    if (seen.has(player.teamId)) return;
+                    seen.add(player.teamId);
+                    teamElimOrder.push(player.teamId);
+                });
+                const elimIdx = teamElimOrder.indexOf(ghostTeamId);
+                if (elimIdx === -1) return '';
+                const place = totalTeams - elimIdx;
+                return place <= 3 ? 'WINNER' : 'NOT WON';
+            }
+
             const ghostId = window.selectedGhostPlayer.id;
             const activePlayers = players.filter(p => !p.eliminated);
 
@@ -4484,11 +5185,89 @@
             updateStats();
         }
 
+        const GAME_VOUCHER_VALUE_DEFAULT = 50;
+
+        function getGameVouchersSettings() {
+            normalizeAdminSettings();
+            const value = parseFloat(adminSettings.gameVoucherValue);
+            return {
+                enabled: adminSettings.gameVouchersEnabled !== false,
+                value: Number.isFinite(value) && value >= 0 ? value : GAME_VOUCHER_VALUE_DEFAULT
+            };
+        }
+
+        function getGameVouchersUsed() {
+            if (!getGameVouchersSettings().enabled) return 0;
+            const statsEl = document.getElementById('gameVouchersUsed');
+            const regEl = document.getElementById('gameVouchersRegistration');
+            const raw = statsEl?.value ?? regEl?.value ?? '0';
+            const count = parseInt(raw, 10);
+            return Number.isFinite(count) && count > 0 ? count : 0;
+        }
+
+        function getGameVouchersCash(count = getGameVouchersUsed()) {
+            return Math.max(0, count) * getGameVouchersSettings().value;
+        }
+
+        function syncGameVouchersInput(sourceId) {
+            const source = document.getElementById(sourceId);
+            if (!source) return;
+            const value = source.value;
+            const statsEl = document.getElementById('gameVouchersUsed');
+            const regEl = document.getElementById('gameVouchersRegistration');
+            if (statsEl && statsEl.id !== sourceId) statsEl.value = value;
+            if (regEl && regEl.id !== sourceId) regEl.value = value;
+            updateStats();
+        }
+
         function resetRaffleCashInputs() {
             const raffleCashEl = document.getElementById('raffleCash');
             const raffleCashRegistrationEl = document.getElementById('raffleCashRegistration');
             if (raffleCashEl) raffleCashEl.value = '0';
             if (raffleCashRegistrationEl) raffleCashRegistrationEl.value = '0';
+        }
+
+        function resetGameVouchersInputs() {
+            const statsEl = document.getElementById('gameVouchersUsed');
+            const regEl = document.getElementById('gameVouchersRegistration');
+            if (statsEl) statsEl.value = '0';
+            if (regEl) regEl.value = '0';
+        }
+
+        function updateGameVouchersToggleButton() {
+            const btn = document.getElementById('toggleGameVouchersBtn');
+            if (!btn) return;
+            const enabled = getGameVouchersSettings().enabled;
+            if (enabled) {
+                btn.innerHTML = '<i class="fas fa-toggle-on mr-2"></i>Enabled';
+                btn.classList.remove('bg-zinc-700', 'hover:bg-zinc-600');
+                btn.classList.add('bg-green-700', 'hover:bg-green-800');
+            } else {
+                btn.innerHTML = '<i class="fas fa-toggle-off mr-2"></i>Disabled';
+                btn.classList.remove('bg-green-700', 'hover:bg-green-800');
+                btn.classList.add('bg-zinc-700', 'hover:bg-zinc-600');
+            }
+        }
+
+        function updateGameVouchersVisibility() {
+            const enabled = getGameVouchersSettings().enabled;
+            const registrationRow = document.getElementById('registrationGameVouchersRow');
+            const statsSection = document.getElementById('statsGameVouchersSection');
+            if (registrationRow) registrationRow.classList.toggle('hidden', !enabled);
+            if (statsSection) statsSection.classList.toggle('hidden', !enabled);
+            if (!enabled) {
+                resetGameVouchersInputs();
+            }
+            updateRegistrationSideExtrasVisibility();
+        }
+
+        function toggleGameVouchersEnabled() {
+            normalizeAdminSettings();
+            adminSettings.gameVouchersEnabled = !getGameVouchersSettings().enabled;
+            saveAdminSettings();
+            updateGameVouchersToggleButton();
+            updateGameVouchersVisibility();
+            updateStats();
         }
 
         function updateRaffleCashAlert() {
@@ -4696,8 +5475,21 @@
             }
             // Display buy-in cost
             document.getElementById('buyInCostDisplay').textContent = `$${buyIn}`;
-            const totalCash = buyIn * players.length;
+            const grossBuyInCash = buyIn * players.length;
+            const vouchersUsed = getGameVouchersUsed();
+            const voucherCash = getGameVouchersCash(vouchersUsed);
+            const totalCash = Math.max(0, grossBuyInCash - voucherCash);
             document.getElementById('totalCashTaking').textContent = `$${totalCash}`;
+            const voucherNote = document.getElementById('gameVouchersCashNote');
+            if (voucherNote) {
+                if (voucherCash > 0) {
+                    voucherNote.textContent = `Vouchers (${vouchersUsed} × $${getGameVouchersSettings().value}): -$${voucherCash}`;
+                    voucherNote.classList.remove('hidden');
+                } else {
+                    voucherNote.textContent = '';
+                    voucherNote.classList.add('hidden');
+                }
+            }
 
             // --- Use adminSettings for percentages ---
             let pascPercent = 25;
@@ -4866,39 +5658,79 @@
                 hideGhostPlayerDisplays();
             } else if (window.selectedGhostPlayer) {
                 const ghostStatus = getGhostPlayerStatus();
+                const ghostName = getGhostDisplayName();
+                const isTeamGhost = isTeamsEvent() && !!window.selectedGhostPlayer.teamId;
+                updateGhostFeatureHeadings(isTeamGhost);
                 ghostSection.classList.remove('hidden');
-                ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
+                ghostNameDiv.textContent = formatGhostPlayerDisplay(ghostName, ghostStatus);
                 if (blindTimerGhostSection && blindTimerGhostNameDiv) {
                     blindTimerGhostSection.classList.remove('hidden');
-                    blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus);
+                    blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(ghostName, ghostStatus);
                 }
-            } else if (ghostEligible && activePlayers.length === 3 && originalPlayers.length > 0) {
-                // Only select ghost once per game
-                const ghostCandidates = originalPlayers;
-                
-                // Run random selection 5 times for more randomness
-                let finalRandomIdx = 0;
-                for (let i = 0; i < 5; i++) {
-                    finalRandomIdx = Math.floor(Math.random() * ghostCandidates.length);
-                    // Add a small delay to increase entropy
-                    if (i < 4) {
-                        // Generate additional random numbers to add entropy
-                        Math.random();
-                        Math.random();
+            } else if (ghostEligible && originalPlayers.length > 0) {
+                const teamsMode = isTeamsEvent();
+                const shouldSelectGhost = teamsMode
+                    ? getActiveTeamCount() === 3
+                    : activePlayers.length === 3;
+
+                if (shouldSelectGhost) {
+                    let selected = null;
+                    let displayName = '';
+                    let isTeamGhost = false;
+
+                    if (teamsMode) {
+                        const teamIds = [...new Set(originalPlayers.map((p) => p.teamId).filter(Boolean))];
+                        if (teamIds.length === 0) {
+                            hideGhostPlayerDisplays();
+                        } else {
+                            let finalRandomIdx = 0;
+                            for (let i = 0; i < 5; i++) {
+                                finalRandomIdx = Math.floor(Math.random() * teamIds.length);
+                                if (i < 4) {
+                                    Math.random();
+                                    Math.random();
+                                }
+                            }
+                            const chosenTeamId = teamIds[finalRandomIdx];
+                            const members = originalPlayers.filter((p) => p.teamId === chosenTeamId);
+                            selected = members[0] || null;
+                            displayName = members.map((m) => m.name).join(' & ');
+                            isTeamGhost = true;
+                        }
+                    } else {
+                        const ghostCandidates = originalPlayers;
+                        let finalRandomIdx = 0;
+                        for (let i = 0; i < 5; i++) {
+                            finalRandomIdx = Math.floor(Math.random() * ghostCandidates.length);
+                            if (i < 4) {
+                                Math.random();
+                                Math.random();
+                            }
+                        }
+                        selected = ghostCandidates[finalRandomIdx];
+                        displayName = selected?.name || '';
                     }
-                }
-                
-                window.selectedGhostPlayer = ghostCandidates[finalRandomIdx];
-                const newGhostStatus = getGhostPlayerStatus();
-                if ('speechSynthesis' in window) {
-                    performSpeakGhostPlayer(window.selectedGhostPlayer.name);
-                    queueLiveAnnouncement('ghostPlayer', { name: window.selectedGhostPlayer.name });
-                }
-                ghostSection.classList.remove('hidden');
-                ghostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
-                if (blindTimerGhostSection && blindTimerGhostNameDiv) {
-                    blindTimerGhostSection.classList.remove('hidden');
-                    blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(window.selectedGhostPlayer.name, newGhostStatus);
+
+                    if (selected) {
+                        window.selectedGhostPlayer = selected;
+                        const newGhostStatus = getGhostPlayerStatus();
+                        updateGhostFeatureHeadings(isTeamGhost);
+                        if ('speechSynthesis' in window) {
+                            performSpeakGhostPlayer(displayName, isTeamGhost);
+                            queueLiveAnnouncement('ghostPlayer', { name: displayName, isTeam: isTeamGhost });
+                        }
+                        ghostSection.classList.remove('hidden');
+                        ghostNameDiv.textContent = formatGhostPlayerDisplay(displayName, newGhostStatus);
+                        if (blindTimerGhostSection && blindTimerGhostNameDiv) {
+                            blindTimerGhostSection.classList.remove('hidden');
+                            blindTimerGhostNameDiv.textContent = formatGhostPlayerDisplay(displayName, newGhostStatus);
+                        }
+                    } else {
+                        hideGhostPlayerDisplays();
+                    }
+                } else {
+                    hideGhostPlayerDisplays();
+                    window.selectedGhostPlayer = null;
                 }
             } else {
                 hideGhostPlayerDisplays();
@@ -4910,6 +5742,20 @@
         
         function getPointsTableWinner() {
             const activePlayers = players.filter(p => !p.eliminated);
+            if (isTeamsEvent()) {
+                const remainingTeamIds = new Set(activePlayers.map((p) => p.teamId).filter(Boolean));
+                if (remainingTeamIds.size === 1 && activePlayers.length >= 1) {
+                    if (declaredWinner && activePlayers.some((p) => p.id === declaredWinner.id)) {
+                        return declaredWinner;
+                    }
+                    return activePlayers[0];
+                }
+                if (activePlayers.length === 0 && declaredWinner) return declaredWinner;
+                if (activePlayers.length === 0 && eliminatedPlayers.length === players.length) {
+                    return eliminatedPlayers[eliminatedPlayers.length - 1] || declaredWinner || null;
+                }
+                return declaredWinner && remainingTeamIds.size <= 1 ? declaredWinner : null;
+            }
             if (activePlayers.length === 1) return activePlayers[0];
             if (activePlayers.length === 2 && declaredWinner && activePlayers.some(p => p.id === declaredWinner.id)) {
                 return declaredWinner;
@@ -5070,12 +5916,19 @@
             }
         }
 
+        function updateRegistrationSideExtrasVisibility() {
+            const card = document.getElementById('registrationRaffleCashCard');
+            if (!card) return;
+            const showCard = getRaffleCashSettings().enabled || getGameVouchersSettings().enabled;
+            card.classList.toggle('hidden', !showCard);
+        }
+
         function updateRaffleCashVisibility() {
             const enabled = getRaffleCashSettings().enabled;
-            const registrationCard = document.getElementById('registrationRaffleCashCard');
+            const registrationRow = document.getElementById('registrationRaffleCashRow');
             const statsSection = document.getElementById('statsRaffleCashSection');
             const summaryRow = document.getElementById('statsRaffleCashSummaryRow');
-            if (registrationCard) registrationCard.classList.toggle('hidden', !enabled);
+            if (registrationRow) registrationRow.classList.toggle('hidden', !enabled);
             if (statsSection) statsSection.classList.toggle('hidden', !enabled);
             if (summaryRow) summaryRow.classList.toggle('hidden', !enabled);
             if (!enabled) {
@@ -5083,6 +5936,7 @@
                 const raffleCashInput = document.getElementById('raffleCash');
                 if (raffleCashInput) raffleCashInput.classList.remove('raffle-cash-alert');
             }
+            updateRegistrationSideExtrasVisibility();
         }
 
         function toggleRaffleCashEnabled() {
@@ -5106,6 +5960,10 @@
             updateRemoteControlNavVisibility();
             updateRaffleCashToggleButton();
             updateRaffleCashVisibility();
+            const voucherValueInput = document.getElementById('adminGameVoucherValue');
+            if (voucherValueInput) voucherValueInput.value = getGameVouchersSettings().value;
+            updateGameVouchersToggleButton();
+            updateGameVouchersVisibility();
         }
 
         function populateAdminSeasonNumberForm() {
@@ -5323,7 +6181,66 @@
             return 0;
         }
 
+        function splitPrizeBetweenTeam(fullPrize, memberCount, memberIndex) {
+            if (!(fullPrize > 0) || memberCount <= 0) return 0;
+            const base = Math.floor((fullPrize / memberCount) * 100) / 100;
+            if (memberIndex === memberCount - 1) {
+                return Math.round((fullPrize - base * (memberCount - 1)) * 100) / 100;
+            }
+            return base;
+        }
+
+        function formatPrizeAmount(amount) {
+            const value = Number(amount) || 0;
+            return `$${value.toFixed(2)}`;
+        }
+
+        function getTeamGameResults() {
+            const payout1st = parseMoneyAmount(document.getElementById('payout1st')?.textContent);
+            const payout2nd = parseMoneyAmount(document.getElementById('payout2nd')?.textContent);
+            const payout3rd = parseMoneyAmount(document.getElementById('payout3rd')?.textContent);
+            const prizes = { 1: payout1st, 2: payout2nd, 3: payout3rd };
+            const winner = getPointsTableWinner();
+            const winningTeamId = winner?.teamId || null;
+            const totalTeams = new Set(players.map((p) => p.teamId).filter(Boolean)).size;
+            const teamElimOrder = [];
+            const seen = new Set();
+            eliminatedPlayers.forEach((player) => {
+                if (!player.eliminated || !player.teamId) return;
+                if (winningTeamId && player.teamId === winningTeamId) return;
+                if (seen.has(player.teamId)) return;
+                seen.add(player.teamId);
+                teamElimOrder.push(player.teamId);
+            });
+
+            const results = [];
+            function addTeamResults(teamId, place) {
+                const members = players.filter((p) => p.teamId === teamId);
+                const fullPrize = place <= 3 ? (prizes[place] || 0) : 0;
+                members.forEach((player, idx) => {
+                    results.push({
+                        name: player.name,
+                        place,
+                        points: getPlacePoints(place),
+                        cashWon: splitPrizeBetweenTeam(fullPrize, members.length, idx),
+                        teamId
+                    });
+                });
+            }
+
+            if (winningTeamId) addTeamResults(winningTeamId, 1);
+            for (let i = teamElimOrder.length - 1; i >= 0; i--) {
+                const place = totalTeams - i;
+                if (winningTeamId && place === 1) continue;
+                addTeamResults(teamElimOrder[i], place);
+            }
+            return results.sort((a, b) => a.place - b.place || a.name.localeCompare(b.name));
+        }
+
         function getGameResults() {
+            if (isTeamsEvent()) {
+                return getTeamGameResults();
+            }
             const totalPlayers = players.length;
             const winner = getPointsTableWinner();
             const payout1st = parseMoneyAmount(document.getElementById('payout1st')?.textContent);
@@ -5422,9 +6339,9 @@
         function collectStatsDashboardSnapshot(results) {
             const ghostSettings = getGhostPlayerCashSettings();
             const ghostStatus = ghostSettings.enabled ? getGhostPlayerStatus() : '';
-            const ghostName = ghostSettings.enabled ? (window.selectedGhostPlayer?.name || '') : '';
+            const ghostName = ghostSettings.enabled ? getGhostDisplayName() : '';
             const ghostDisplay = ghostSettings.enabled && window.selectedGhostPlayer
-                ? formatGhostPlayerDisplay(window.selectedGhostPlayer.name, ghostStatus)
+                ? formatGhostPlayerDisplay(ghostName, ghostStatus)
                 : '-';
             const startingStackEl = document.getElementById('startingStack');
             const rebuyAddonEl = document.getElementById('rebuyAddon');
@@ -5446,6 +6363,8 @@
             }
             const ghostWonThisGame = ghostSettings.enabled && isGhostPlayerWonThisGame();
             const totalBuyInCash = parseMoneyAmount(getStatsText('totalCashTaking', '$0'));
+            const gameVouchersUsed = getGameVouchersUsed();
+            const gameVouchersCash = getGameVouchersCash(gameVouchersUsed);
             let ghostContribution = 0;
             if (ghostSettings.enabled) {
                 ghostContribution = Math.min(totalBuyInCash, ghostSettings.amountPerGame);
@@ -5457,7 +6376,10 @@
                 gameCount: getStatsText('gameCountStat'),
                 totalPlayers: parseInt(getStatsText('totalPlayersStat', '0'), 10) || players.length,
                 playerBuyInCost: parseMoneyAmount(getStatsText('buyInCostDisplay', '$0')),
-                totalBuyInCash: parseMoneyAmount(getStatsText('totalCashTaking', '$0')),
+                totalBuyInCash: totalBuyInCash,
+                gameVouchersUsed,
+                gameVouchersCash,
+                gameVoucherValue: getGameVouchersSettings().value,
                 raffleCash: raffleCashGross,
                 raffleCashNet: Math.max(0, raffleAfterBonus - badBeatContribution),
                 bonusHand: {
@@ -5516,12 +6438,14 @@
                 },
                 startingStack: startingStackEl ? (startingStackEl.value || '') : '',
                 rebuyAddon: rebuyAddonEl ? (rebuyAddonEl.value || 'no') : 'no',
+                teamsEvent: isTeamsEvent(),
                 settingsSnapshot: typeof adminSettings !== 'undefined' ? { ...adminSettings } : null,
                 results: (results || []).map((r) => ({
                     name: r.name,
                     place: r.place,
                     points: r.points,
-                    cashWon: r.cashWon
+                    cashWon: r.cashWon,
+                    teamId: r.teamId || null
                 }))
             };
         }
@@ -6176,24 +7100,26 @@
             const payout2nd = document.getElementById('payout2nd')?.textContent || '$0';
             const payout3rd = document.getElementById('payout3rd')?.textContent || '$0';
             const ghostFeatureEnabled = getGhostPlayerCashSettings().enabled;
+            const teamsMode = isTeamsEvent();
 
-            function appendPointsRow(player, place) {
+            function appendPointsRow(player, place, prizeOverride = null) {
                 let points = 0;
                 if (place >= 1 && place <= 8) points = pointsArr[place - 1];
                 let prize = '';
                 let medal = '';
                 let ghostLabel = '';
-                if (ghostFeatureEnabled && place <= 3 && window.selectedGhostPlayer && player.id === window.selectedGhostPlayer.id) {
-                    ghostLabel = `<span class="ml-2 inline-flex items-center px-2 py-1 rounded bg-indigo-700 text-white text-xs" style="white-space:nowrap;"><svg width='16' height='16' viewBox='0 0 48 48' fill='none' style='display:inline-block;vertical-align:middle;margin-right:2px;'><path d='M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z' fill='#fff' stroke='#6366f1' stroke-width='2'/><ellipse cx='18' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='30' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='24' cy='30' rx='3' ry='2' fill='#6366f1'/></svg>Ghost Player</span>`;
+                if (ghostFeatureEnabled && place <= 3 && isGhostSelectionTarget(player)) {
+                    const ghostBadge = isTeamsEvent() ? 'Ghost Team' : 'Ghost Player';
+                    ghostLabel = `<span class="ml-2 inline-flex items-center px-2 py-1 rounded bg-indigo-700 text-white text-xs" style="white-space:nowrap;"><svg width='16' height='16' viewBox='0 0 48 48' fill='none' style='display:inline-block;vertical-align:middle;margin-right:2px;'><path d='M24 4C13.6 4 6 12.1 6 22.5c0 6.7 3.7 12.5 9.2 15.2V44c0 1.1 1.2 1.7 2.1 1.1l3.7-2.5c0.6-0.4 1.4-0.4 2 0l3.7 2.5c0.9 0.6 2.1 0 2.1-1.1v-6.3C38.3 35 42 29.2 42 22.5 42 12.1 34.4 4 24 4z' fill='#fff' stroke='#6366f1' stroke-width='2'/><ellipse cx='18' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='30' cy='22' rx='2' ry='3' fill='#6366f1'/><ellipse cx='24' cy='30' rx='3' ry='2' fill='#6366f1'/></svg>${ghostBadge}</span>`;
                 }
                 if (place === 1) {
-                    prize = payout1st;
+                    prize = prizeOverride != null ? prizeOverride : payout1st;
                     medal = '<span title="Gold" class="ml-2 text-yellow-400 text-xl">&#x1F947;</span>';
                 } else if (place === 2) {
-                    prize = payout2nd;
+                    prize = prizeOverride != null ? prizeOverride : payout2nd;
                     medal = '<span title="Silver" class="ml-2 text-gray-300 text-xl">&#x1F948;</span>';
                 } else if (place === 3) {
-                    prize = payout3rd;
+                    prize = prizeOverride != null ? prizeOverride : payout3rd;
                     medal = '<span title="Bronze" class="ml-2 text-orange-500 text-xl">&#x1F949;</span>';
                 }
                 const row = document.createElement('div');
@@ -6207,6 +7133,24 @@
     <div class=\"font-bold text-right min-w-[70px] w-[70px]\">${points} pts</div>
 `;
                 container.appendChild(row);
+            }
+
+            if (teamsMode) {
+                const teamResults = getTeamGameResults();
+                const orderedPlayers = [];
+                const seen = new Set();
+                teamResults.forEach((result) => {
+                    const player = players.find((p) => p.name.toLowerCase() === result.name.toLowerCase());
+                    if (player && !seen.has(player.id)) {
+                        seen.add(player.id);
+                        orderedPlayers.push({ player, place: result.place, cashWon: result.cashWon });
+                    }
+                });
+                orderedPlayers.forEach(({ player, place, cashWon }) => {
+                    const prizeText = place <= 3 ? formatPrizeAmount(cashWon) : null;
+                    appendPointsRow(player, place, prizeText);
+                });
+                return;
             }
 
             if (totalPlayers >= 2 && winner) {
@@ -6237,6 +7181,10 @@
         function isGameFinishedWithWinner() {
             if (!declaredWinner || players.length < 2) return false;
             const activePlayers = players.filter((p) => !p.eliminated);
+            if (isTeamsEvent()) {
+                const remainingTeamIds = new Set(activePlayers.map((p) => p.teamId).filter(Boolean));
+                return remainingTeamIds.size <= 1;
+            }
             return activePlayers.length <= 1;
         }
 
@@ -6274,7 +7222,23 @@
         function afterPlayerActiveStateChange(wasElimination, playerId) {
             const activeAfter = players.filter((p) => !p.eliminated);
 
-            if (wasElimination) {
+            if (isTeamsEvent()) {
+                const remainingTeamIds = new Set(activeAfter.map((p) => p.teamId).filter(Boolean));
+                if (wasElimination) {
+                    if (remainingTeamIds.size === 1) {
+                        declaredWinner = activeAfter.find((p) => p.teamId === [...remainingTeamIds][0]) || activeAfter[0] || declaredWinner;
+                    } else if (remainingTeamIds.size === 0) {
+                        const justEliminated = players.find((p) => p.id === playerId);
+                        if (justEliminated) declaredWinner = justEliminated;
+                    } else if (declaredWinner && !activeAfter.some((p) => p.id === declaredWinner.id)) {
+                        declaredWinner = null;
+                    }
+                } else if (remainingTeamIds.size === 1) {
+                    declaredWinner = activeAfter[0];
+                } else if (remainingTeamIds.size > 1) {
+                    declaredWinner = null;
+                }
+            } else if (wasElimination) {
                 if (activeAfter.length === 1) {
                     declaredWinner = activeAfter[0];
                 } else if (activeAfter.length === 0) {
@@ -6301,7 +7265,10 @@
             renderTables();
             updateStats();
             publishLiveGameState();
-            if (wasElimination && players.length >= 2 && activeAfter.length <= 1) {
+            const finished = isTeamsEvent()
+                ? (wasElimination && players.length >= 4 && new Set(activeAfter.map((p) => p.teamId).filter(Boolean)).size <= 1)
+                : (wasElimination && players.length >= 2 && activeAfter.length <= 1);
+            if (finished) {
                 pauseTimer();
                 exitBlindTimerFullscreenIfNeeded();
                 showPage('stats');
@@ -6316,6 +7283,30 @@
                 showToast('Please start the game before eliminating players.', 'info');
                 return;
             }
+
+            if (isTeamsEvent() && player.teamId) {
+                const activeTeammates = players.filter((p) => p.teamId === player.teamId && !p.eliminated);
+                const otherActive = players.filter((p) => !p.eliminated && p.teamId !== player.teamId);
+                if (otherActive.length === 0) {
+                    declaredWinner = player;
+                    showToast(`${activeTeammates.map((p) => p.name).join(' & ')} are the winning team. Save the game on the Game Dashboard.`, 'info');
+                    pauseTimer();
+                    updateStats();
+                    exitBlindTimerFullscreenIfNeeded();
+                    showPage('stats');
+                    void stopLiveHostingIfGameFinished();
+                    return;
+                }
+                activeTeammates.forEach((teammate) => {
+                    teammate.eliminated = true;
+                    teammate._tableBeforeElimination = teammate.table;
+                    teammate.table = null;
+                    eliminatedPlayers.push(teammate);
+                });
+                afterPlayerActiveStateChange(true, playerId);
+                return;
+            }
+
             const activePlayers = players.filter((p) => !p.eliminated);
             if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
                 declaredWinner = player;
@@ -6503,11 +7494,14 @@
                     isMember: !!p.isMember,
                     isCommittee: !!p.isCommittee,
                     birthdayBonusPaid: !!p.birthdayBonusPaid,
+                    teamId: p.teamId || null,
                     _tableBeforeElimination: p._tableBeforeElimination != null ? p._tableBeforeElimination : null
                 })),
                 tables: Array.isArray(tables) ? [...tables] : [],
                 eliminatedIds: eliminatedPlayers.map((p) => p.id),
                 gameStarted: !!gameStarted,
+                teamsEvent: document.getElementById('teamsEvent')?.value === 'yes',
+                teamsPairedPhase: isTeamsPairedSeatingPhase(),
                 declaredWinnerId: declaredWinner ? declaredWinner.id : null,
                 clubName: getClubName(),
                 season: getSeasonNumber(),
@@ -6528,6 +7522,13 @@
                     .map((id) => byId[String(id)])
                     .filter(Boolean);
                 gameStarted = !!state.gameStarted;
+                if (liveSyncRole === 'remote') {
+                    const teamsEl = document.getElementById('teamsEvent');
+                    if (teamsEl) teamsEl.value = state.teamsEvent ? 'yes' : 'no';
+                    liveTeamsPairedPhase = state.teamsPairedPhase != null
+                        ? !!state.teamsPairedPhase
+                        : null;
+                }
                 declaredWinner = state.declaredWinnerId != null
                     ? players.find((p) => String(p.id) === String(state.declaredWinnerId)) || null
                     : null;
@@ -6610,7 +7611,7 @@
             ensureAnnouncementVoice();
             switch (announcement.type) {
                 case 'warning':
-                    performSpeakWarning();
+                    performSpeakWarning(!!announcement.isBreakComing);
                     break;
                 case 'gameStart':
                     performSpeakGameStart(announcement.smallBlind, announcement.bigBlind);
@@ -6622,7 +7623,7 @@
                     performSpeakBreak(announcement.minutes);
                     break;
                 case 'ghostPlayer':
-                    performSpeakGhostPlayer(announcement.name);
+                    performSpeakGhostPlayer(announcement.name, !!announcement.isTeam);
                     break;
                 default:
                     break;
@@ -6751,23 +7752,48 @@
 
             const active = players.filter((p) => !p.eliminated).sort((a, b) => a.number - b.number);
             const eliminated = [...eliminatedPlayers].reverse();
+            const pairedTeams = isTeamsEvent() && isTeamsPairedSeatingPhase();
             if (meta) {
                 meta.textContent = gameStarted
-                    ? `${active.length} players still in · Season ${getSeasonNumber()}`
+                    ? (pairedTeams
+                        ? `${getActiveTeamCount()} teams still in · Season ${getSeasonNumber()}`
+                        : `${active.length} players still in · Season ${getSeasonNumber()}`)
                     : 'Host has not started the game yet. Eliminate unlocks after Start Game.';
             }
 
             list.innerHTML = '';
             if (active.length === 0) {
                 list.innerHTML = '<div class="text-gray-400 text-sm">No active players.</div>';
-            } else {
+            } else if (pairedTeams) {
+                const seats = [];
+                const seen = new Set();
                 active.forEach((player) => {
-                    const isWinnerAction = active.length === 1;
+                    if (!player.teamId || seen.has(player.teamId)) return;
+                    seen.add(player.teamId);
+                    const members = active.filter((p) => p.teamId === player.teamId);
+                    seats.push({ primary: members[0], label: members.map((m) => m.name).join(' & '), table: members[0].table });
+                });
+                seats.forEach((seat) => {
+                    const isWinnerAction = isLastActivePlayer(seat.primary.id);
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = isWinnerAction ? 'remote-eliminate-btn remote-winner-btn' : 'remote-eliminate-btn';
                     btn.disabled = !gameStarted;
-                    const tableLabel = player.table != null ? `T${player.table}` : '';
+                    const tableLabel = seat.table != null ? (seat.table === 'final' ? 'FT' : `T${seat.table}`) : '';
+                    btn.innerHTML = isWinnerAction
+                        ? `<span class="text-yellow-400 mr-2">Team</span>${seat.label}<span class="float-right text-sm font-normal opacity-80">${tableLabel ? `${tableLabel} · ` : ''}Winner</span>`
+                        : `<span class="text-yellow-400 mr-2">Team</span>${seat.label}<span class="float-right text-sm font-normal opacity-80">${tableLabel}</span>`;
+                    btn.onclick = () => requestRemoteEliminate(seat.primary.id);
+                    list.appendChild(btn);
+                });
+            } else {
+                active.forEach((player) => {
+                    const isWinnerAction = isLastActivePlayer(player.id);
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = isWinnerAction ? 'remote-eliminate-btn remote-winner-btn' : 'remote-eliminate-btn';
+                    btn.disabled = !gameStarted;
+                    const tableLabel = player.table != null ? (player.table === 'final' ? 'FT' : `T${player.table}`) : '';
                     btn.innerHTML = isWinnerAction
                         ? `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${tableLabel ? `${tableLabel} · ` : ''}Winner</span>`
                         : `<span class="text-yellow-400 mr-2">#${player.number}</span>${player.name}<span class="float-right text-sm font-normal opacity-80">${tableLabel}</span>`;
@@ -6782,13 +7808,28 @@
                     restoreWrap.classList.add('hidden');
                 } else {
                     restoreWrap.classList.remove('hidden');
-                    eliminated.slice(0, 8).forEach((player) => {
+                    const restoreEntries = [];
+                    const seenTeams = new Set();
+                    eliminated.forEach((player) => {
+                        if (isTeamsEvent() && player.teamId) {
+                            if (seenTeams.has(player.teamId)) return;
+                            seenTeams.add(player.teamId);
+                            const members = eliminated.filter((p) => p.teamId === player.teamId);
+                            restoreEntries.push({
+                                id: members[0].id,
+                                label: members.map((m) => m.name).join(' & ')
+                            });
+                        } else {
+                            restoreEntries.push({ id: player.id, label: player.name });
+                        }
+                    });
+                    restoreEntries.slice(0, 8).forEach((entry) => {
                         const btn = document.createElement('button');
                         btn.type = 'button';
                         btn.className = 'remote-eliminate-btn';
                         btn.style.background = 'rgba(75, 85, 99, 0.55)';
-                        btn.textContent = `Restore ${player.name}`;
-                        btn.onclick = () => requestRemoteRestore(player.id);
+                        btn.textContent = `Restore ${entry.label}`;
+                        btn.onclick = () => requestRemoteRestore(entry.id);
                         restoreList.appendChild(btn);
                     });
                 }
@@ -6899,6 +7940,7 @@
             liveSyncRole = null;
             liveGameCode = null;
             lastLiveAnnouncement = null;
+            liveTeamsPairedPhase = null;
             if (db && code) {
                 try {
                     await db.ref(`liveGames/${code}/meta/status`).set('ended');
@@ -7021,6 +8063,7 @@
             remoteLastAnnouncementSeq = 0;
             liveSyncRole = null;
             liveGameCode = null;
+            liveTeamsPairedPhase = null;
             renderRemoteControlPage();
             showToast(toastMessage, 'info');
         }
@@ -7054,15 +8097,22 @@
                 showToast('Host must start the game before eliminations.', 'info');
                 return;
             }
-            const activePlayers = players.filter((p) => !p.eliminated);
             const player = players.find((p) => p.id === playerId);
             if (!player) return;
-            if (activePlayers.length === 1 && activePlayers[0].id === playerId) {
-                if (!(await showConfirm(`Declare ${player.name} as winner?`))) return;
+            if (isLastActivePlayer(playerId)) {
+                const teamLabel = (isTeamsEvent() && player.teamId)
+                    ? players.filter((p) => p.teamId === player.teamId && !p.eliminated).map((p) => p.name).join(' & ')
+                    : player.name;
+                if (!(await showConfirm(`Declare ${teamLabel} as winner?`))) return;
                 await pushLiveGameCommand('eliminate', playerId);
                 return;
             }
-            if (!(await showConfirm(`Eliminate ${player.name}?`))) return;
+            if (isTeamsEvent() && player.teamId) {
+                const teamLabel = players.filter((p) => p.teamId === player.teamId && !p.eliminated).map((p) => p.name).join(' & ');
+                if (!(await showConfirm(`Eliminate team ${teamLabel}?`))) return;
+            } else if (!(await showConfirm(`Eliminate ${player.name}?`))) {
+                return;
+            }
             await pushLiveGameCommand('eliminate', playerId);
         }
 
@@ -7158,17 +8208,36 @@
         function restorePlayer(playerId) {
             const player = players.find((p) => p.id === playerId);
             if (!player || !player.eliminated) return;
-            player.eliminated = false;
-            if (player._tableBeforeElimination != null) {
-                player.table = player._tableBeforeElimination;
-            }
-            delete player._tableBeforeElimination;
-            eliminatedPlayers = eliminatedPlayers.filter((p) => p.id !== playerId);
+            const toRestore = (isTeamsEvent() && player.teamId)
+                ? players.filter((p) => p.teamId === player.teamId && p.eliminated)
+                : [player];
+            toRestore.forEach((member) => {
+                member.eliminated = false;
+                if (member._tableBeforeElimination != null) {
+                    member.table = member._tableBeforeElimination;
+                }
+                delete member._tableBeforeElimination;
+            });
+            const restoreIds = new Set(toRestore.map((p) => p.id));
+            eliminatedPlayers = eliminatedPlayers.filter((p) => !restoreIds.has(p.id));
             afterPlayerActiveStateChange(false, playerId);
         }
 
-        // Automatically combine to Final Table when max players remain
+        // Automatically combine to Final Table when max players (or teams) remain
         function checkForFinalTable() {
+            if (isTeamsEvent()) {
+                if (!isTeamsPairedSeatingPhase()) return false;
+                const teamCount = getActiveTeamCount();
+                if (teamCount <= 0 || teamCount > getMaxTeamsPerTable()) return false;
+                const alreadyFinal = tables.length === 1 && tables[0] === 'final';
+                seatTeamsPaired(getActiveTeamPlayers(), { shuffle: false });
+                renderTables();
+                renderPlayersList();
+                if (!alreadyFinal) {
+                    showToast('Final table: 8 or fewer teams remaining.', 'info');
+                }
+                return true;
+            }
             const maxPerTable = getMaxPlayersPerTable();
             const activePlayers = players.filter(p => !p.eliminated);
             if (activePlayers.length === maxPerTable) {
@@ -7270,6 +8339,27 @@
             const { afterElimination = false } = options;
             if (tables.length === 1 && tables[0] === 'final') return;
 
+            if (isTeamsEvent()) {
+                if (isTeamsPairedSeatingPhase()) {
+                    const teamCount = getActiveTeamCount();
+                    if (teamCount <= getMaxTeamsPerTable()) {
+                        checkForFinalTable();
+                        return;
+                    }
+                    applyTeamsSeating({ shuffle: false });
+                    renderTables();
+                    renderPlayersList();
+                    if (afterElimination) {
+                        showToast(`Tables balanced: ${tables.length} tables for ${teamCount} teams.`, 'info');
+                    }
+                    return;
+                }
+                applyTeamsSeating({ shuffle: false });
+                renderTables();
+                renderPlayersList();
+                return;
+            }
+
             const maxPerTable = getMaxPlayersPerTable();
             const activePlayers = players.filter((p) => !p.eliminated && p.table != null && p.table !== 'final');
             const count = activePlayers.length;
@@ -7310,9 +8400,11 @@
             }
         }
         
-        function performSpeakWarning() {
+        function performSpeakWarning(isBreakComing = false) {
             if (!('speechSynthesis' in window) || selectedVoice === null) return;
-            const message = 'Players, Blinds are up in 30 seconds.';
+            const message = isBreakComing
+                ? 'Players, in 30 seconds we have a break.'
+                : 'Players, Blinds are up in 30 seconds.';
             const utterance = new SpeechSynthesisUtterance(message);
             if (selectedVoice) utterance.voice = selectedVoice;
             window.speechSynthesis.speak(utterance);
@@ -7320,8 +8412,12 @@
 
         function speakWarning() {
             if (liveSyncRole === 'remote') return;
-            performSpeakWarning();
-            queueLiveAnnouncement('warning', {});
+            const nextIndex = blindLevels.length
+                ? (currentBlindIndex + 1) % blindLevels.length
+                : -1;
+            const isBreakComing = nextIndex >= 0 && blindLevels[nextIndex]?.type === 'break';
+            performSpeakWarning(isBreakComing);
+            queueLiveAnnouncement('warning', { isBreakComing });
         }
         
         // Voice selection is stored locally because each device exposes different voices.
@@ -7659,6 +8755,22 @@
                 showLoginScreen();
             }
 
+            window.addEventListener('storage', (event) => {
+                if (!event.key) return;
+                if (event.key === 'pointsTableHistory' || event.key === 'adminSettings' || event.key === 'adminPlayers') {
+                    const pointsPage = document.getElementById('points-table');
+                    const viewingPoints = pointsPage && !pointsPage.classList.contains('hidden');
+                    if (isPointsTableDisplayMode() || viewingPoints) {
+                        refreshPointsTableDisplayFromStorage();
+                    }
+                }
+            });
+
+            window.addEventListener('focus', () => {
+                if (!isPointsTableDisplayMode()) return;
+                refreshPointsTableDisplayFromStorage();
+            });
+
             // Add some sample blind levels
             loadDefaultBlindLevels();
             currentBlindIndex = 0;
@@ -7687,13 +8799,13 @@
             const playerNameInput = document.getElementById('playerName');
             if (playerNameInput) {
                 playerNameInput.addEventListener('focus', function() {
-                    showPlayerNameDropdown(this.value);
+                    showPlayerNameDropdown(this.value, 'playerName', 'playerNameDropdown', true);
                 });
                 playerNameInput.addEventListener('input', function() {
-                    showPlayerNameDropdown(this.value);
+                    showPlayerNameDropdown(this.value, 'playerName', 'playerNameDropdown', true);
                 });
                 playerNameInput.addEventListener('blur', function() {
-                    setTimeout(hidePlayerNameDropdown, 150);
+                    setTimeout(hideAllPlayerNameDropdowns, 150);
                 });
                 playerNameInput.addEventListener('keydown', function(e) {
                     if (e.key === 'ArrowDown') {
@@ -7703,7 +8815,7 @@
                         e.preventDefault();
                         moveDropdownActive(-1);
                     } else if (e.key === 'Escape') {
-                        hidePlayerNameDropdown();
+                        hideAllPlayerNameDropdowns();
                     } else if (e.key === 'Enter') {
                         e.preventDefault();
                         if (selectActiveDropdownItem()) {
@@ -7713,6 +8825,39 @@
                     }
                 });
             }
+
+            ['teamPlayer1', 'teamPlayer2'].forEach((inputId) => {
+                const input = document.getElementById(inputId);
+                const dropdownId = `${inputId}Dropdown`;
+                if (!input) return;
+                input.addEventListener('focus', function() {
+                    showPlayerNameDropdown(this.value, inputId, dropdownId, false);
+                });
+                input.addEventListener('input', function() {
+                    showPlayerNameDropdown(this.value, inputId, dropdownId, false);
+                });
+                input.addEventListener('blur', function() {
+                    setTimeout(hideAllPlayerNameDropdowns, 150);
+                });
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        moveDropdownActive(1);
+                    } else if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        moveDropdownActive(-1);
+                    } else if (e.key === 'Escape') {
+                        hideAllPlayerNameDropdowns();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (!selectActiveDropdownItem()) {
+                            registerTeam();
+                        }
+                    }
+                });
+            });
+
+            updateRegistrationMode();
             
             // Update stats when buy-in changes
             const buyInInput = document.getElementById('buyIn');
@@ -7960,6 +9105,7 @@
                 overlay.appendChild(fullscreenContent);
                 document.body.appendChild(overlay);
                 updateBlindDisplay();
+                updateNextBlindVisibility();
                 requestAnimationFrame(() => requestAnimationFrame(fitFullscreenTimerText));
             }
         }
@@ -8099,7 +9245,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"raffleCashEnabled":true}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"raffleCashEnabled":true,"gameVouchersEnabled":true,"gameVoucherValue":50,"showNextBlindLevel":true}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -8129,9 +9275,13 @@
             if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = true;
             if (adminSettings.remoteCodeDisplayMinutes == null) adminSettings.remoteCodeDisplayMinutes = 3;
             if (adminSettings.raffleCashEnabled == null) adminSettings.raffleCashEnabled = true;
+            if (adminSettings.gameVouchersEnabled == null) adminSettings.gameVouchersEnabled = true;
+            if (adminSettings.gameVoucherValue == null) adminSettings.gameVoucherValue = 50;
+            if (adminSettings.showNextBlindLevel == null) adminSettings.showNextBlindLevel = true;
         }
         normalizeAdminSettings();
         updateRaffleCashVisibility();
+        updateGameVouchersVisibility();
         function populateAdminSettingsForm() {
             normalizeAdminSettings();
             const pascPercentInput = document.getElementById('adminPascPercent');
@@ -8268,14 +9418,26 @@
         }
         let registrationNames = [];
         let dropdownActiveIndex = -1;
+        let activePlayerDropdown = { inputId: 'playerName', dropdownId: 'playerNameDropdown', autoRegister: true };
+
+        function hideAllPlayerNameDropdowns() {
+            ['playerNameDropdown', 'teamPlayer1Dropdown', 'teamPlayer2Dropdown'].forEach((id) => {
+                const dropdown = document.getElementById(id);
+                if (dropdown) dropdown.classList.add('hidden');
+            });
+            dropdownActiveIndex = -1;
+        }
+
         function renderRegistrationDatalist() {
             registrationNames = adminPlayers
                 .map(p => (p.name || '').trim())
                 .filter(name => name.length > 0)
                 .sort((a, b) => a.localeCompare(b));
         }
-        function showPlayerNameDropdown(filter = '') {
-            const dropdown = document.getElementById('playerNameDropdown');
+        function showPlayerNameDropdown(filter = '', inputId = 'playerName', dropdownId = 'playerNameDropdown', autoRegister = true) {
+            hideAllPlayerNameDropdowns();
+            activePlayerDropdown = { inputId, dropdownId, autoRegister };
+            const dropdown = document.getElementById(dropdownId);
             if (!dropdown) return;
             const term = filter.trim().toLowerCase();
             const matches = registrationNames.filter(n => n.toLowerCase().includes(term));
@@ -8291,31 +9453,30 @@
                 item.textContent = name;
                 item.addEventListener('mousedown', function(e) {
                     e.preventDefault();
-                    const input = document.getElementById('playerName');
-                    input.value = name;
-                    hidePlayerNameDropdown();
-                    registerPlayer();
+                    const input = document.getElementById(inputId);
+                    if (input) input.value = name;
+                    hideAllPlayerNameDropdowns();
+                    if (autoRegister) registerPlayer();
                 });
                 dropdown.appendChild(item);
             });
             dropdown.classList.remove('hidden');
         }
         function hidePlayerNameDropdown() {
-            const dropdown = document.getElementById('playerNameDropdown');
-            if (dropdown) dropdown.classList.add('hidden');
-            dropdownActiveIndex = -1;
+            hideAllPlayerNameDropdowns();
         }
-        function togglePlayerNameDropdown(e) {
+        function togglePlayerNameDropdown(e, inputId = 'playerName', dropdownId = 'playerNameDropdown') {
             if (e) { e.preventDefault(); e.stopPropagation(); }
-            const dropdown = document.getElementById('playerNameDropdown');
-            if (dropdown && !dropdown.classList.contains('hidden')) {
-                hidePlayerNameDropdown();
+            const dropdown = document.getElementById(dropdownId);
+            const autoRegister = inputId === 'playerName';
+            if (dropdown && !dropdown.classList.contains('hidden') && activePlayerDropdown.dropdownId === dropdownId) {
+                hideAllPlayerNameDropdowns();
             } else {
-                showPlayerNameDropdown('');
+                showPlayerNameDropdown('', inputId, dropdownId, autoRegister);
             }
         }
         function moveDropdownActive(delta) {
-            const dropdown = document.getElementById('playerNameDropdown');
+            const dropdown = document.getElementById(activePlayerDropdown.dropdownId);
             if (!dropdown || dropdown.classList.contains('hidden')) return;
             const items = Array.from(dropdown.querySelectorAll('.player-dropdown-item'));
             if (items.length === 0) return;
@@ -8327,13 +9488,14 @@
             items[dropdownActiveIndex].scrollIntoView({ block: 'nearest' });
         }
         function selectActiveDropdownItem() {
-            const dropdown = document.getElementById('playerNameDropdown');
+            const dropdown = document.getElementById(activePlayerDropdown.dropdownId);
             if (!dropdown || dropdown.classList.contains('hidden')) return false;
             const items = Array.from(dropdown.querySelectorAll('.player-dropdown-item'));
             if (dropdownActiveIndex >= 0 && items[dropdownActiveIndex]) {
-                document.getElementById('playerName').value = items[dropdownActiveIndex].textContent;
-                hidePlayerNameDropdown();
-                registerPlayer();
+                const input = document.getElementById(activePlayerDropdown.inputId);
+                if (input) input.value = items[dropdownActiveIndex].textContent;
+                hideAllPlayerNameDropdowns();
+                if (activePlayerDropdown.autoRegister) registerPlayer();
                 return true;
             }
             return false;
@@ -8503,7 +9665,9 @@
                 { smallBlind: 15000, bigBlind: 30000, levelTime: 1200, timeLeft: 1200 },
                 { smallBlind: 20000, bigBlind: 40000, levelTime: 1200, timeLeft: 1200 },
                 { smallBlind: 25000, bigBlind: 50000, levelTime: 1200, timeLeft: 1200 },
-                { smallBlind: 50000, bigBlind: 100000, levelTime: 1200, timeLeft: 1200 }
+                { smallBlind: 50000, bigBlind: 100000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 100000, bigBlind: 200000, levelTime: 1200, timeLeft: 1200 },
+                { smallBlind: 200000, bigBlind: 400000, levelTime: 1200, timeLeft: 1200 }
             ];
             blindLevels.splice(5, 0, {
                 type: 'break',
@@ -8538,7 +9702,10 @@
                 clubName: 'Poker Club',
                 remoteControlEnabled: true,
                 remoteCodeDisplayMinutes: 3,
-                raffleCashEnabled: true
+                raffleCashEnabled: true,
+                gameVouchersEnabled: true,
+                gameVoucherValue: 50,
+                showNextBlindLevel: true
             };
         }
 
@@ -8561,6 +9728,7 @@
             renderEliminatedPlayersList();
             updateStartGameButton();
             resetRaffleCashInputs();
+            resetGameVouchersInputs();
             const bonusHandWonCheckbox = document.getElementById('bonusHandWonCheckbox');
             if (bonusHandWonCheckbox) {
                 bonusHandWonCheckbox.checked = false;
@@ -8726,6 +9894,8 @@
                     renderBlindLevelsList();
                     updateAfterLevelSelects();
                     populateVoiceList();
+                    updateShowNextBlindLevelToggleButton();
+                    updateNextBlindVisibility();
                     break;
                 default:
                     break;
@@ -8744,6 +9914,8 @@
             renderBlindLevelsList();
             updateAfterLevelSelects();
             populateVoiceList();
+            updateShowNextBlindLevelToggleButton();
+            updateNextBlindVisibility();
             renderAdminGameManagement();
             renderAdminSecurityList();
             applyClubBranding();
@@ -8901,6 +10073,7 @@
                     const maxPlayersPerTable = parseInt(document.getElementById('adminMaxPlayersPerTable').value, 10);
                     const minGamesForSeasonFinal = parseInt(document.getElementById('adminMinGamesForSeasonFinal').value, 10);
                     const remoteCodeDisplayMinutes = parseInt(document.getElementById('adminRemoteCodeDisplayMinutes').value, 10);
+                    const gameVoucherValue = parseFloat(document.getElementById('adminGameVoucherValue').value);
                     if (!clubName) {
                         showToast('Please enter a club name.', 'error');
                         return;
@@ -8921,17 +10094,23 @@
                         showToast('Please enter valid remote code display minutes (0 or higher).', 'error');
                         return;
                     }
+                    if (isNaN(gameVoucherValue) || gameVoucherValue < 0) {
+                        showToast('Please enter a valid voucher value (0 or higher).', 'error');
+                        return;
+                    }
                     adminSettings.clubName = clubName;
                     adminSettings.seasonNumber = seasonNumber;
                     adminSettings.maxPlayersPerTable = maxPlayersPerTable;
                     adminSettings.minGamesForSeasonFinal = minGamesForSeasonFinal;
                     adminSettings.remoteCodeDisplayMinutes = remoteCodeDisplayMinutes;
+                    adminSettings.gameVoucherValue = gameVoucherValue;
                     saveAdminSettings();
                     populateAdminGeneralForm();
                     applyClubBranding();
                     renderAdminSeasonStatistics();
                     renderPointsTablePage();
                     renderBlindTimerRemoteInviteCard();
+                    updateStats();
                     showToast('General settings saved!', 'success');
                 });
             }
