@@ -1,9 +1,10 @@
-const CACHE_NAME = 'pasc-v36';
+const CACHE_NAME = 'pasc-v37';
 
 const PRECACHE_ASSETS = [
   './index.html',
   './manifest.webmanifest',
   './icons/icon.svg',
+  './images/Poker-Manager-logo-sml-optimized.png',
   './Logos/Logo-S19-1.1.png',
   './Logos/Logo-S19-2.png',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
