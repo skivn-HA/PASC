@@ -1324,6 +1324,67 @@
             animation: fadeIn 0.2s ease-out;
         }
 
+        #gameViewOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 29000;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.80);
+            backdrop-filter: blur(3px);
+            overflow-y: auto;
+            animation: fadeIn 0.2s ease-out;
+        }
+        #gameViewOverlay.hidden { display: none; }
+        #gameViewPanel {
+            width: min(98vw, 52rem);
+            background: linear-gradient(160deg, #1f2937 0%, #111827 100%);
+            border: 1px solid rgba(138,43,226,0.45);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 24px rgba(138,43,226,0.2);
+            margin: auto;
+        }
+        .gv-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 0.4rem;
+            margin-bottom: 0.75rem;
+        }
+        .gv-stat-card {
+            background: #111827;
+            border: 1px solid rgba(138,43,226,0.2);
+            border-radius: 0.5rem;
+            padding: 0.35rem 0.6rem;
+        }
+        .gv-stat-label { font-size: 0.7rem; color: #9ca3af; margin-bottom: 0.1rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        .gv-stat-value { font-size: 1.15rem; font-weight: 700; color: #facc15; }
+        .gv-stat-value.green { color: #4ade80; }
+        .gv-stat-status { font-size: 0.8rem; font-weight: 600; margin-top: 0.15rem; }
+        .gv-result-row {
+            display: flex;
+            align-items: center;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.4rem;
+            margin-bottom: 2px;
+            background: rgba(5,109,120,0.35);
+            font-size: 0.875rem;
+        }
+        .gv-result-place { min-width: 3.5rem; font-weight: 700; }
+        .gv-result-name { flex: 1; }
+        .gv-result-pts { min-width: 4rem; text-align: right; font-weight: 700; color: #ffffff; }
+        .gv-section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #facc15;
+            margin-bottom: 0.4rem;
+            margin-top: 0.25rem;
+            border-bottom: 1px solid rgba(138,43,226,0.25);
+            padding-bottom: 0.2rem;
+        }
+
         .pasc-modal-overlay.hidden {
             display: none;
         }
@@ -1430,6 +1491,13 @@
         #splash {
             background: linear-gradient(160deg, #0f1419 0%, #111827 45%, #1a1f2e 100%);
         }
+
+        #splashLogo {
+            width: 350px;
+            max-width: min(350px, calc(100vw - 2rem));
+            height: auto;
+            image-rendering: auto;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
@@ -1441,6 +1509,20 @@
             <div id="pascModalActions" class="pasc-modal-actions"></div>
         </div>
     </div>
+    <!-- Game View Modal -->
+    <div id="gameViewOverlay" class="hidden" role="dialog" aria-modal="true" aria-label="Game Details">
+        <div id="gameViewPanel">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-yellow-400"><i class="fas fa-chart-bar mr-2"></i>Game Details</h2>
+                <button type="button" onclick="closeGameView()" class="text-gray-400 hover:text-white text-2xl leading-none" title="Close">&times;</button>
+            </div>
+            <div id="gameViewContent"></div>
+            <div class="flex justify-end mt-4">
+                <button type="button" onclick="closeGameView()" class="px-5 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg font-medium text-white">Close</button>
+            </div>
+        </div>
+    </div>
+
     <div id="pascHelpOverlay" class="pasc-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pascHelpTitle">
         <div class="pasc-help-modal">
             <div class="pasc-help-header">
@@ -1537,7 +1619,7 @@
         </div>
     </div>
     <div id="splash" class="hidden fixed inset-0 z-40 flex flex-col items-center justify-center px-4">
-        <img src="images/Poker-Manager-logo-sml-optimized.png" alt="Poker Manager" class="h-auto" width="350" height="391" style="width:350px; image-rendering:auto;">
+        <img id="splashLogo" src="images/Poker-Manager-logo-sml-optimized.png" alt="Poker Manager" width="350" height="391">
         <button type="button" id="splashLoginBtn" onclick="openLoginFromSplash()" class="mt-8 px-8 py-3 bg-[#056d78] hover:bg-orange-500 rounded-lg font-semibold text-white text-lg shadow-lg transition-colors duration-300">
             <i class="fas fa-sign-in-alt mr-2"></i>Login
         </button>
@@ -1675,9 +1757,6 @@
                             </button>
                             <button onclick="clearPlayers()" class="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors duration-300 text-white">
                                 <i class="fas fa-trash mr-2"></i>Clear All
-                            </button>
-                            <button type="button" onclick="openPointsTableInNewWindow()" class="px-6 py-2 bg-[#056d78] hover:bg-orange-500 rounded-lg font-medium transition-colors duration-300 text-white">
-                                <i class="fas fa-external-link-alt mr-2"></i>Open Points Table
                             </button>
                         </div>
                     </div>
@@ -1902,7 +1981,7 @@
                             <div class="text-2xl font-bold text-green-400" id="totalCashTaking">$0</div>
                             <div id="gameVouchersCashNote" class="text-sm text-poker-text/70 mt-1 hidden">Vouchers: -$0</div>
                             <div id="statsRaffleCashSection" class="border-t border-poker-accent/20 pt-2 mt-3">
-                                <h3 class="text-lg font-semibold mb-2">Raffle Cash</h3>
+                                <h3 class="text-lg font-semibold mb-2">Raffle Cash (gross)</h3>
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-poker-text/70 pointer-events-none">$</span>
                                     <input type="number" id="raffleCash" min="0" step="1" value="0" oninput="syncRaffleCashInput('raffleCash')" class="w-full pl-7 pr-3 py-1 rounded-lg bg-poker-secondary border border-poker-accent text-poker-text focus:outline-none focus:ring-2 focus:ring-poker-highlight">
@@ -1929,12 +2008,18 @@
                         <div id="statsPoolsCard" class="bg-poker-primary rounded-xl p-4 shadow border border-poker-accent/10 hidden">
                             <div id="ghostPlayerCashCardSection">
                                 <h3 class="text-lg font-semibold mb-2">Ghost Player Cash</h3>
-                                <div class="text-2xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
+                                <div class="flex items-baseline flex-wrap gap-x-2 gap-y-0.5">
+                                    <div class="text-2xl font-bold text-green-400" id="ghostPlayerCash">$20</div>
+                                    <div class="text-xs text-poker-text/70" id="ghostPlayerCashBreakdown">Pool: $0.00 + Game: $0.00</div>
+                                </div>
                             </div>
                             <div id="bonusHandStatsSection" class="border-t pt-2 mt-3 hidden">
                                 <h3 class="text-lg font-semibold mb-2">Bonus Hand</h3>
                                 <div class="text-sm text-poker-text/80 mb-1" id="bonusHandDescriptionDisplay">-</div>
-                                <div class="text-2xl font-bold text-green-400 mb-1" id="bonusHandPoolDisplay">$0.00</div>
+                                <div class="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mb-1">
+                                    <div class="text-2xl font-bold text-green-400" id="bonusHandPoolDisplay">$0.00</div>
+                                    <div class="text-xs text-poker-text/70" id="bonusHandPoolBreakdown">Pool: $0.00 + Game: $0.00</div>
+                                </div>
                                 <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
                                     <input type="checkbox" id="bonusHandWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
                                     <span>WON</span>
@@ -1947,7 +2032,10 @@
                             <div id="badBeatBonusStatsSection" class="border-t pt-2 mt-3 hidden">
                                 <h3 class="text-lg font-semibold mb-2">Bad Beat Bonus</h3>
                                 <div class="text-sm text-poker-text/80 mb-1">Quads beaten by a higher hand</div>
-                                <div class="text-2xl font-bold text-green-400 mb-1" id="badBeatBonusPoolDisplay">$0.00</div>
+                                <div class="flex items-baseline flex-wrap gap-x-2 gap-y-0.5 mb-1">
+                                    <div class="text-2xl font-bold text-green-400" id="badBeatBonusPoolDisplay">$0.00</div>
+                                    <div class="text-xs text-poker-text/70" id="badBeatBonusPoolBreakdown">Pool: $0.00 + Game: $0.00</div>
+                                </div>
                                 <label class="flex items-center gap-2 text-sm text-poker-text cursor-pointer">
                                     <input type="checkbox" id="badBeatBonusWonCheckbox" onchange="updateStats()" class="rounded border-poker-accent">
                                     <span>WON</span>
@@ -1963,7 +2051,7 @@
                             <div class="text-2xl font-bold text-green-400" id="pascCashTakings">$0</div>
                             <div class="mt-2 text-sm text-poker-text">
                                 <div>Club Game Cash: <span id="pascGameCashSummary">$0</span></div>
-                                <div id="statsRaffleCashSummaryRow">Raffle: <span id="raffleCashSummary">$0</span></div>
+                                <div id="statsRaffleCashSummaryRow">Raffle (net): <span id="raffleCashSummary">$0</span></div>
                             </div>
                         </div>
                         <!-- Ghost Player Section (now in grid) -->
@@ -2523,13 +2611,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.19</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.20</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.19';
+        const PASC_APP_VERSION = '2026.7.20';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -5331,6 +5419,57 @@
             return currentGameSaved ? poolAmount : poolAmount + contribution;
         }
 
+        function formatPoolGameBreakdown(poolAmount, gameAmount) {
+            const pool = Math.max(0, parseFloat(poolAmount) || 0);
+            const game = Math.max(0, parseFloat(gameAmount) || 0);
+            return `Pool: $${pool.toFixed(2)} + Game: $${game.toFixed(2)}`;
+        }
+
+        function getGhostPoolBreakdown(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.ghostPlayerCashPool) {
+                const pool = savedGame.ghostPlayerCashPool;
+                return {
+                    pool: Number(pool.poolBeforeGame) || 0,
+                    game: Number(pool.contributionThisGame) || 0
+                };
+            }
+            return {
+                pool: Math.max(0, parseFloat(ghostPlayerPool) || 0),
+                game: Math.max(0, parseFloat(contributionThisGame) || 0)
+            };
+        }
+
+        function getBonusHandPoolBreakdown(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.bonusHand) {
+                const pool = savedGame.bonusHand;
+                return {
+                    pool: Number(pool.poolBeforeGame) || 0,
+                    game: Number(pool.contributionThisGame) || 0
+                };
+            }
+            return {
+                pool: Math.max(0, parseFloat(bonusHandPool) || 0),
+                game: Math.max(0, parseFloat(contributionThisGame) || 0)
+            };
+        }
+
+        function getBadBeatBonusPoolBreakdown(contributionThisGame) {
+            const savedGame = getCurrentSavedGame();
+            if (savedGame?.badBeatBonus) {
+                const pool = savedGame.badBeatBonus;
+                return {
+                    pool: Number(pool.poolBeforeGame) || 0,
+                    game: Number(pool.contributionThisGame) || 0
+                };
+            }
+            return {
+                pool: Math.max(0, parseFloat(badBeatBonusPool) || 0),
+                game: Math.max(0, parseFloat(contributionThisGame) || 0)
+            };
+        }
+
         function getCurrentSavedGame() {
             if (!currentGameSaved || currentSavedGameId == null) return null;
             return pointsTableHistory.find((g) => String(g.id) === String(currentSavedGameId)) || null;
@@ -5571,6 +5710,16 @@
                     ghostPlayerCashEl.textContent = '$0.00';
                 }
             }
+            const ghostPlayerCashBreakdown = document.getElementById('ghostPlayerCashBreakdown');
+            if (ghostPlayerCashBreakdown) {
+                if (ghostSettings.enabled) {
+                    const ghostParts = getGhostPoolBreakdown(ghostContributionThisGame);
+                    ghostPlayerCashBreakdown.textContent = formatPoolGameBreakdown(ghostParts.pool, ghostParts.game);
+                    ghostPlayerCashBreakdown.classList.remove('hidden');
+                } else {
+                    ghostPlayerCashBreakdown.classList.add('hidden');
+                }
+            }
             if (ghostPlayerCashCardSection) {
                 ghostPlayerCashCardSection.classList.toggle('hidden', !ghostSettings.enabled);
             }
@@ -5621,6 +5770,11 @@
                     if (bonusHandPoolDisplay) {
                         bonusHandPoolDisplay.textContent = `$${totalPoolPayout.toFixed(2)}`;
                     }
+                    const bonusHandPoolBreakdown = document.getElementById('bonusHandPoolBreakdown');
+                    if (bonusHandPoolBreakdown) {
+                        const bonusParts = getBonusHandPoolBreakdown(bonusContribution);
+                        bonusHandPoolBreakdown.textContent = formatPoolGameBreakdown(bonusParts.pool, bonusParts.game);
+                    }
                 } else {
                     bonusHandStatsSection.classList.add('hidden');
                 }
@@ -5635,6 +5789,11 @@
                     const totalBadBeatPayout = getBadBeatBonusPoolDisplayAmount(badBeatContribution);
                     if (badBeatBonusPoolDisplay) {
                         badBeatBonusPoolDisplay.textContent = `$${totalBadBeatPayout.toFixed(2)}`;
+                    }
+                    const badBeatBonusPoolBreakdown = document.getElementById('badBeatBonusPoolBreakdown');
+                    if (badBeatBonusPoolBreakdown) {
+                        const badBeatParts = getBadBeatBonusPoolBreakdown(badBeatContribution);
+                        badBeatBonusPoolBreakdown.textContent = formatPoolGameBreakdown(badBeatParts.pool, badBeatParts.game);
                     }
                 } else {
                     badBeatBonusStatsSection.classList.add('hidden');
@@ -6659,7 +6818,7 @@
             row.classList.toggle('hidden');
             const btn = document.querySelector(`[data-history-target="${rowId}"]`);
             if (btn) {
-                btn.textContent = row.classList.contains('hidden') ? 'Show games' : 'Hide games';
+                btn.textContent = row.classList.contains('hidden') ? 'Games' : 'Hide games';
             }
         }
 
@@ -6743,7 +6902,7 @@
                     <td>${formatPointsTableGameRatio(player.totalPoints, player.games.length)}</td>
                     <td>${formatPointsTableMoney(player.totalCashWon)}</td>
                     <td class="${qualificationClass}">${qualification}</td>
-                    <td><button type="button" class="points-toggle-btn" data-history-target="${historyId}" onclick="togglePointsPlayerHistory('${historyId}')">Show games</button></td>
+                    <td><button type="button" class="points-toggle-btn" data-history-target="${historyId}" onclick="togglePointsPlayerHistory('${historyId}')">Games</button></td>
                     <td><button type="button" class="points-email-btn" onclick="emailPointsTablePlayer(${index})" ${playerEmail ? '' : 'disabled'} title="${emailTitle}">@</button></td>
                 `;
                 tbody.appendChild(mainRow);
@@ -7089,7 +7248,7 @@
                         <th>Game Type</th>
                         <th>Game Count</th>
                         <th>Total Players</th>
-                        <th>Total Club Cash</th>
+                        <th>Game Details</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -7106,7 +7265,11 @@
                     <td>${game.gameType || '-'}</td>
                     <td>${game.gameCount || '-'}</td>
                     <td>${game.totalPlayers != null ? game.totalPlayers : '-'}</td>
-                    <td>${formatAdminGameMoney(game.totalPascCash)}</td>
+                    <td>
+                        <button type="button" onclick="openGameView('${safeId}')" class="text-yellow-400 hover:text-yellow-200 font-bold" title="View game details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
                     <td class="text-right">
                         <button type="button" onclick="deleteSavedGameFromPointsTable('${safeId}')" class="text-red-400 hover:text-red-200 font-bold text-lg leading-none" title="Delete game">
                             <i class="fas fa-times"></i>
@@ -7130,6 +7293,117 @@
             persistPointsTableHistory();
             renderAdminGameManagement();
             renderPointsTablePage();
+        }
+
+        function openGameView(gameId) {
+            const game = pointsTableHistory.find((g) => String(g.id) === String(gameId));
+            if (!game) return;
+            const content = document.getElementById('gameViewContent');
+            if (!content) return;
+            content.innerHTML = buildGameViewHTML(game);
+            document.getElementById('gameViewOverlay').classList.remove('hidden');
+            document.getElementById('gameViewOverlay').scrollTop = 0;
+        }
+
+        function closeGameView() {
+            document.getElementById('gameViewOverlay').classList.add('hidden');
+        }
+
+        function buildGameViewHTML(g) {
+            const fm = (v) => '$' + (Number(v) || 0).toFixed(2);
+            const fd = (v) => v != null && v !== '' ? v : '-';
+            const placeSuffix = (p) => p === 1 ? 'st' : p === 2 ? 'nd' : p === 3 ? 'rd' : 'th';
+            const placemedal = (p) => p === 1 ? '🥇' : p === 2 ? '🥈' : p === 3 ? '🥉' : '';
+
+            // --- Header stats grid ---
+            const raffleNet = g.raffleCashNet != null ? g.raffleCashNet : g.raffleCashSummary;
+            let statsCards = `
+                <div class="gv-stat-grid">
+                    <div class="gv-stat-card"><div class="gv-stat-label">Date</div><div class="gv-stat-value">${fd(g.date)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Game Type</div><div class="gv-stat-value">${fd(g.gameType)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Game Count</div><div class="gv-stat-value">${fd(g.gameCount)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Total Players</div><div class="gv-stat-value">${fd(g.totalPlayers)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Buy-in Cost</div><div class="gv-stat-value green">${fm(g.playerBuyInCost)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Total Buy-in Cash</div><div class="gv-stat-value green">${fm(g.totalBuyInCash)}</div></div>`;
+
+            if (g.gameVouchersUsed > 0) {
+                statsCards += `<div class="gv-stat-card"><div class="gv-stat-label">Vouchers Used</div><div class="gv-stat-value">${g.gameVouchersUsed} (−${fm(g.gameVouchersCash)})</div></div>`;
+            }
+            if (g.raffleCash > 0 || (Number(raffleNet) || 0) > 0) {
+                statsCards += `<div class="gv-stat-card"><div class="gv-stat-label">Raffle Cash (gross)</div><div class="gv-stat-value green">${fm(g.raffleCash)}</div></div>`;
+            }
+
+            statsCards += `
+                    <div class="gv-stat-card"><div class="gv-stat-label">Player Cash Payout</div><div class="gv-stat-value green">${fm(g.playerCashPayout)}</div></div>
+                    <div class="gv-stat-card"><div class="gv-stat-label">Club Game Cash</div><div class="gv-stat-value green">${fm(g.pascGameCash)}</div></div>
+                    <div class="gv-stat-card">
+                        <div class="gv-stat-label">Total Club Cash</div>
+                        <div class="gv-stat-value green">${fm(g.totalPascCash)}</div>
+                        <div class="gv-stat-label mt-1">Club Game Cash: ${fm(g.pascGameCashSummary != null ? g.pascGameCashSummary : g.pascGameCash)}</div>
+                        <div class="gv-stat-label">Raffle Cash (net): ${fm(raffleNet)}</div>
+                    </div>`;
+
+            // Ghost player
+            if (g.ghostPlayerCashPool?.enabled) {
+                const gp = g.ghostPlayerCashPool;
+                const gpAmount = gp.wonThisGame
+                    ? (Number(gp.payoutThisGame) || ((Number(gp.poolBeforeGame) || 0) + (Number(gp.contributionThisGame) || 0)))
+                    : ((Number(gp.poolBeforeGame) || 0) + (Number(gp.contributionThisGame) || 0));
+                const gpName = (g.ghostPlayer?.name || '').trim();
+                const gpStatus = gp.wonThisGame
+                    ? `<span class="text-green-400">Won${gpName ? ` — ${gpName}` : ''}</span>`
+                    : `<span class="text-yellow-400">Not Won</span>`;
+                statsCards += `<div class="gv-stat-card"><div class="gv-stat-label">Ghost Player</div><div class="gv-stat-value green">${fm(gpAmount)}</div><div class="gv-stat-status">${gpStatus}</div><div class="gv-stat-label mt-1">Pool: ${fm(gp.poolBeforeGame)} + Game: ${fm(gp.contributionThisGame)}</div></div>`;
+            }
+            // Bonus hand
+            if (g.bonusHand?.enabled) {
+                const bh = g.bonusHand;
+                const bhAmount = bh.wonThisGame
+                    ? (Number(bh.payoutThisGame) || ((Number(bh.poolBeforeGame) || 0) + (Number(bh.contributionThisGame) || 0)))
+                    : ((Number(bh.poolBeforeGame) || 0) + (Number(bh.contributionThisGame) || 0));
+                const bhName = (bh.winnerName || '').trim();
+                const bhStatus = bh.wonThisGame
+                    ? `<span class="text-green-400">Won${bhName ? ` — ${bhName}` : ''}</span>`
+                    : `<span class="text-yellow-400">Not Won</span>`;
+                const bhDesc = bh.description ? `<div class="gv-stat-label">${bh.description}</div>` : '';
+                statsCards += `<div class="gv-stat-card"><div class="gv-stat-label">Bonus Hand</div>${bhDesc}<div class="gv-stat-value green">${fm(bhAmount)}</div><div class="gv-stat-status">${bhStatus}</div><div class="gv-stat-label mt-1">Pool: ${fm(bh.poolBeforeGame)} + Game: ${fm(bh.contributionThisGame)}</div></div>`;
+            }
+            // Bad beat bonus
+            if (g.badBeatBonus?.enabled) {
+                const bb = g.badBeatBonus;
+                const bbAmount = bb.wonThisGame
+                    ? (Number(bb.payoutThisGame) || ((Number(bb.poolBeforeGame) || 0) + (Number(bb.contributionThisGame) || 0)))
+                    : ((Number(bb.poolBeforeGame) || 0) + (Number(bb.contributionThisGame) || 0));
+                const bbName = (bb.winnerName || '').trim();
+                const bbStatus = bb.wonThisGame
+                    ? `<span class="text-green-400">Won${bbName ? ` — ${bbName}` : ''}</span>`
+                    : `<span class="text-yellow-400">Not Won</span>`;
+                statsCards += `<div class="gv-stat-card"><div class="gv-stat-label">Bad Beat Bonus</div><div class="gv-stat-value green">${fm(bbAmount)}</div><div class="gv-stat-status">${bbStatus}</div><div class="gv-stat-label mt-1">Pool: ${fm(bb.poolBeforeGame)} + Game: ${fm(bb.contributionThisGame)}</div></div>`;
+            }
+
+            statsCards += `</div>`;
+
+            // --- Game Results ---
+            const pointsArr = [100, 80, 60, 50, 40, 30, 20, 10];
+            const results = Array.isArray(g.results) ? g.results : [];
+            let resultsHTML = `<div class="gv-section-title"><i class="fas fa-trophy mr-2"></i>Game Results</div>`;
+            if (results.length === 0) {
+                resultsHTML += `<div class="text-gray-400 text-sm">No results recorded.</div>`;
+            } else {
+                results.forEach((r) => {
+                    const pts = r.points != null ? r.points : (r.place >= 1 && r.place <= 8 ? pointsArr[r.place - 1] : 0);
+                    const cash = r.cashWon > 0 ? `<span class="text-green-400 font-bold ml-2">${fm(r.cashWon)}</span>` : '';
+                    const medal = placemedal(r.place);
+                    resultsHTML += `
+                        <div class="gv-result-row">
+                            <div class="gv-result-place">${r.place}${placeSuffix(r.place)} ${medal}</div>
+                            <div class="gv-result-name">${r.name}${cash}</div>
+                            <div class="gv-result-pts">${pts} pts</div>
+                        </div>`;
+                });
+            }
+
+            return statsCards + resultsHTML;
         }
 
         function renderPointsTable() {
