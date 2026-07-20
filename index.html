@@ -1426,6 +1426,10 @@
             from { opacity: 0; transform: scale(0.94) translateY(8px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
+
+        #splash {
+            background: linear-gradient(160deg, #0f1419 0%, #111827 45%, #1a1f2e 100%);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen">
@@ -1532,7 +1536,13 @@
             </div>
         </div>
     </div>
-    <div class="w-full flex justify-center m-0 leading-none">
+    <div id="splash" class="hidden fixed inset-0 z-40 flex flex-col items-center justify-center px-4">
+        <img src="images/Poker-Manager-logo-sml-optimized.png" alt="Poker Manager" class="h-auto" width="350" height="391" style="width:350px; image-rendering:auto;">
+        <button type="button" id="splashLoginBtn" onclick="openLoginFromSplash()" class="mt-8 px-8 py-3 bg-[#056d78] hover:bg-orange-500 rounded-lg font-semibold text-white text-lg shadow-lg transition-colors duration-300">
+            <i class="fas fa-sign-in-alt mr-2"></i>Login
+        </button>
+    </div>
+    <div id="appHeaderLogos" class="w-full flex justify-center m-0 leading-none">
         <div class="flex items-center justify-center">
             <img id="clubLogoPrimary" src="Logos/Logo-S19-1.1.png" alt="Club logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
             <img src="Logos/Logo-S19-2.png" alt="" class="block" style="height:120px; width:auto; object-fit:contain;" />
@@ -2980,10 +2990,41 @@
             if (nav) nav.classList.toggle('hidden', joinedRemote);
         }
 
-        function showLoginScreen() {
+        function hideSplashScreen() {
+            const splash = document.getElementById('splash');
+            if (splash) {
+                splash.classList.add('hidden');
+                splash.classList.remove('fade-in');
+            }
+        }
+
+        function showSplashScreen() {
             setAppLoggedIn(false);
             document.getElementById('appShell')?.classList.add('hidden');
             document.getElementById('appChrome')?.classList.add('hidden');
+            document.getElementById('appHeaderLogos')?.classList.add('hidden');
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('fade-in');
+            });
+            const splash = document.getElementById('splash');
+            if (splash) {
+                splash.classList.remove('hidden');
+                setTimeout(() => splash.classList.add('fade-in'), 10);
+            }
+        }
+
+        function openLoginFromSplash() {
+            hideSplashScreen();
+            showLoginScreen();
+        }
+
+        function showLoginScreen() {
+            hideSplashScreen();
+            setAppLoggedIn(false);
+            document.getElementById('appShell')?.classList.add('hidden');
+            document.getElementById('appChrome')?.classList.add('hidden');
+            document.getElementById('appHeaderLogos')?.classList.remove('hidden');
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.add('hidden');
                 page.classList.remove('fade-in');
@@ -2998,6 +3039,8 @@
         }
 
         function showAppAfterLogin() {
+            hideSplashScreen();
+            document.getElementById('appHeaderLogos')?.classList.remove('hidden');
             updateAppNavigation();
             updateRaffleCashVisibility();
             updateGameVouchersVisibility();
@@ -8752,7 +8795,7 @@
             if (isAppLoggedIn()) {
                 showAppAfterLogin();
             } else {
-                showLoginScreen();
+                showSplashScreen();
             }
 
             window.addEventListener('storage', (event) => {
