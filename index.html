@@ -5837,9 +5837,15 @@
             if (ghostPlayerCashEl) {
                 if (ghostSettings.enabled) {
                     const totalGhostPayout = getGhostPlayerPoolDisplayAmount(ghostContributionThisGame);
-                    ghostPlayerCashEl.textContent = ghostWonThisGame && !currentGameSaved
-                        ? `$${totalGhostPayout.toFixed(2)} (won — resets on save)`
-                        : `$${totalGhostPayout.toFixed(2)}`;
+                    if (ghostWonThisGame) {
+                        const ghostName = getGhostDisplayName()
+                            || (getCurrentSavedGame()?.ghostPlayer?.name || '').trim();
+                        ghostPlayerCashEl.textContent = ghostName
+                            ? `$${totalGhostPayout.toFixed(2)} WON - ${ghostName}`
+                            : `$${totalGhostPayout.toFixed(2)} WON`;
+                    } else {
+                        ghostPlayerCashEl.textContent = `$${totalGhostPayout.toFixed(2)}`;
+                    }
                 } else {
                     ghostPlayerCashEl.textContent = '$0.00';
                 }
