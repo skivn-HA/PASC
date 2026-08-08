@@ -194,14 +194,16 @@
             padding-bottom: 0.375rem;
         }
 
-        #gameTypeDropdown .game-type-dropdown-item {
+        #gameTypeDropdown .game-type-dropdown-item,
+        #blindProfileDropdown .game-type-dropdown-item {
             padding: 0.125rem 0.5rem;
             line-height: 1.2;
             font-size: 0.875rem;
             min-height: 0;
         }
 
-        #gameTypeDropdown button {
+        #gameTypeDropdown button,
+        #blindProfileDropdown button {
             margin: 0;
             padding: 0;
             line-height: 1;
@@ -1819,7 +1821,7 @@
                         <i class="fas fa-clock mr-2"></i>Blind Timer
                     </button>
                 </li>
-                <li>
+                <li id="navNumbers">
                     <button data-page="numbers" onclick="showPage('numbers')" class="px-4 py-2 bg-[#056d78] hover:bg-orange-500 text-white rounded-lg transition-colors duration-300 font-semibold shadow">
                         <i class="fas fa-dice mr-2"></i>Numbers
                     </button>
@@ -1989,6 +1991,18 @@
                         <div>
                             <label for="blindTime" class="block mb-1 font-semibold text-poker-text">Blind Time</label>
                             <input type="number" id="blindTime" min="1" placeholder="Minutes" oninput="syncBlindTimeToTimer()" class="w-full px-4 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text">
+                        </div>
+                        <div>
+                            <label for="blindProfile" class="block mb-1 font-semibold text-poker-text">Blind Profile</label>
+                            <div class="relative">
+                                <input type="text" id="blindProfile" autocomplete="off" readonly value="Default" placeholder="Default" class="w-full pl-4 pr-10 py-2 rounded-lg bg-poker-primary border border-poker-accent focus:outline-none focus:ring-2 focus:ring-poker-highlight text-poker-text cursor-pointer" onmousedown="toggleBlindProfileDropdown(event)">
+                                <button type="button" onmousedown="toggleBlindProfileDropdown(event)" tabindex="-1" title="Select a blind profile" class="absolute right-2 top-1/2 -translate-y-1/2 text-poker-text/70 hover:text-poker-text px-1">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div id="blindProfileDropdown" class="hidden absolute left-0 right-0 top-full mt-1 z-50 bg-poker-primary border border-poker-accent rounded-lg shadow-2xl max-h-60 overflow-y-auto">
+                                    <!-- Saved blind profiles populated here -->
+                                </div>
+                            </div>
                         </div>
                         <button type="button" onclick="saveGameType()" class="mt-2 px-4 py-2 bg-green-700 hover:bg-green-800 rounded-lg font-medium text-white">
                             <i class="fas fa-save mr-2"></i>Save Game
@@ -2490,6 +2504,10 @@
                                             <span class="text-xs text-poker-text/80">minutes</span>
                                         </div>
                                     </div>
+                                    <div class="admin-general-field">
+                                        <span class="text-sm font-semibold">Random Number Generator</span>
+                                        <button type="button" onclick="toggleRandomNumberGeneratorEnabled()" id="toggleRandomNumberGeneratorBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="true" aria-label="Random Number Generator"></button>
+                                    </div>
                                     <button type="submit" class="self-start mt-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                                 </form>
                             </div>
@@ -2661,17 +2679,26 @@
                                             <i class="fas fa-clock mr-2"></i>Set Blind Times
                                         </button>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="block mb-1 font-medium">Show Next Blind Level:</label>
-                                        <button type="button" onclick="toggleShowNextBlindLevelEnabled()" id="toggleShowNextBlindLevelBtn" class="pasc-switch" role="switch" aria-checked="true" aria-label="Show Next Blind Level"></button>
-                                    </div>
-                                    <div id="breaksSection" class="mb-2 mt-4">
+                                    <div id="breaksSection" class="mb-3">
                                         <label class="block mb-1 font-medium">Breaks:</label>
                                         <div class="flex flex-wrap gap-2 items-center">
                                             <select id="breakAfterLevelSelect" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:120px;"></select>
                                             <input type="number" id="breakTimeInput" placeholder="(min)" min="1" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:90px;">
                                             <button onclick="addBreakLevel()" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 rounded-lg font-medium transition-colors duration-300 text-white">
                                                 <i class="fas fa-coffee mr-2"></i>Add Break
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="block mb-1 font-medium">Show Next Blind Level:</label>
+                                        <button type="button" onclick="toggleShowNextBlindLevelEnabled()" id="toggleShowNextBlindLevelBtn" class="pasc-switch" role="switch" aria-checked="true" aria-label="Show Next Blind Level"></button>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="blindProfileNameInput" class="block mb-1 font-medium">Save Blind Profile as:</label>
+                                        <div class="flex flex-wrap gap-2 items-center">
+                                            <input type="text" id="blindProfileNameInput" placeholder="Profile name" autocomplete="off" class="px-2 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:180px; flex:1;">
+                                            <button type="button" onclick="saveCurrentBlindProfile()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium transition-colors duration-300 text-white">
+                                                <i class="fas fa-save mr-2"></i>Save Profile
                                             </button>
                                         </div>
                                     </div>
@@ -2750,13 +2777,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div id="appVersionFooterWrap" class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.7.23</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.8.8</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.7.23';
+        const PASC_APP_VERSION = '2026.8.8';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -3085,6 +3112,7 @@
             });
             updateRemoteSyncSettingsVisibility();
             updateRemoteControlNavVisibility();
+            updateRandomNumberGeneratorNavVisibility();
             updateRemoteJoinedNavVisibility();
         }
 
@@ -3203,6 +3231,38 @@
             const onRemotePage = remotePage && !remotePage.classList.contains('hidden');
             const inLiveRemoteSession = liveSyncRole === 'remote' && !!liveGameCode;
             if (!getRemoteControlSettings().enabled && onRemotePage && !inLiveRemoteSession && !pendingLiveJoinCode) {
+                showPage(hasFullAppAccess() ? 'registration' : 'points-table');
+            }
+        }
+
+        function getRandomNumberGeneratorSettings() {
+            normalizeAdminSettings();
+            return {
+                enabled: adminSettings.randomNumberGeneratorEnabled !== false
+            };
+        }
+
+        function updateRandomNumberGeneratorToggleButton() {
+            setToggleSwitchState('toggleRandomNumberGeneratorBtn', getRandomNumberGeneratorSettings().enabled);
+        }
+
+        function updateRandomNumberGeneratorNavVisibility() {
+            const enabled = getRandomNumberGeneratorSettings().enabled;
+            const navItem = document.getElementById('navNumbers');
+            if (navItem) {
+                navItem.classList.toggle('hidden', !enabled);
+            }
+        }
+
+        function toggleRandomNumberGeneratorEnabled() {
+            normalizeAdminSettings();
+            adminSettings.randomNumberGeneratorEnabled = !getRandomNumberGeneratorSettings().enabled;
+            saveAdminSettings();
+            updateRandomNumberGeneratorToggleButton();
+            updateRandomNumberGeneratorNavVisibility();
+            const numbersPage = document.getElementById('numbers');
+            const onNumbersPage = numbersPage && !numbersPage.classList.contains('hidden');
+            if (!getRandomNumberGeneratorSettings().enabled && onNumbersPage) {
                 showPage(hasFullAppAccess() ? 'registration' : 'points-table');
             }
         }
@@ -3384,6 +3444,11 @@
                     showPage(hasFullAppAccess() ? 'registration' : 'points-table');
                     return;
                 }
+            }
+
+            if (pageId === 'numbers' && !getRandomNumberGeneratorSettings().enabled) {
+                showPage(hasFullAppAccess() ? 'registration' : 'points-table');
+                return;
             }
 
             document.querySelectorAll('.page').forEach(page => {
@@ -4050,9 +4115,239 @@
 
         // --- SAVED GAME TYPES ---
         let savedGames = JSON.parse(localStorage.getItem('savedGames') || '[]');
+        let blindProfiles = JSON.parse(localStorage.getItem('blindProfiles') || '[]');
         function persistSavedGames() {
             localStorage.setItem('savedGames', JSON.stringify(savedGames));
         }
+        function persistBlindProfiles() {
+            if (!Array.isArray(blindProfiles)) blindProfiles = [];
+            localStorage.setItem('blindProfiles', JSON.stringify(blindProfiles));
+        }
+        function normalizeBlindProfiles() {
+            if (!Array.isArray(blindProfiles)) blindProfiles = [];
+            blindProfiles = blindProfiles
+                .filter((p) => p && typeof p === 'object' && typeof p.name === 'string' && p.name.trim() && Array.isArray(p.levels))
+                .filter((p) => p.name.trim().toLowerCase() !== 'default')
+                .map((p) => ({
+                    name: p.name.trim(),
+                    levels: p.levels.map((level) => {
+                        if (level && level.type === 'break') {
+                            const breakSeconds = Math.max(60, parseInt(level.breakTime, 10) || (30 * 60));
+                            return { type: 'break', breakTime: breakSeconds };
+                        }
+                        return {
+                            smallBlind: Math.max(1, parseInt(level.smallBlind, 10) || 0),
+                            bigBlind: Math.max(1, parseInt(level.bigBlind, 10) || 0)
+                        };
+                    }).filter((level) => level.type === 'break' || (level.smallBlind > 0 && level.bigBlind > 0))
+                }))
+                .filter((p) => p.levels.length > 0);
+            blindProfiles.sort((a, b) => a.name.localeCompare(b.name));
+        }
+        normalizeBlindProfiles();
+
+        function getSelectedBlindProfileName() {
+            const value = (document.getElementById('blindProfile')?.value || '').trim();
+            return value || 'Default';
+        }
+
+        function setSelectedBlindProfileName(name) {
+            const profileField = document.getElementById('blindProfile');
+            if (profileField) profileField.value = name || 'Default';
+        }
+
+        function findBlindProfileIndexByName(name) {
+            const target = (name || '').trim().toLowerCase();
+            if (!target || target === 'default') return -1;
+            return blindProfiles.findIndex((p) => p.name.toLowerCase() === target);
+        }
+
+        function resetBlindTimerAfterProfileChange() {
+            currentBlindIndex = 0;
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            window.timerHasStarted = false;
+            const startBtn = document.getElementById('startBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            if (startBtn) startBtn.classList.remove('hidden');
+            if (pauseBtn) pauseBtn.classList.add('hidden');
+            renderBlindLevelsList();
+            updateBlindDisplay();
+            updateAfterLevelSelects();
+        }
+
+        function applyDefaultBlindProfile() {
+            loadDefaultBlindLevels();
+            resetBlindTimerAfterProfileChange();
+            const blindTimeEl = document.getElementById('blindTime');
+            if (blindTimeEl?.value) {
+                applyBlindTimeMinutes(blindTimeEl.value);
+            }
+            setSelectedBlindProfileName('Default');
+        }
+
+        function buildBlindProfileLevelsFromCurrent() {
+            return blindLevels.map((level) => {
+                if (level.type === 'break') {
+                    return {
+                        type: 'break',
+                        breakTime: Math.max(60, parseInt(level.breakTime, 10) || (30 * 60))
+                    };
+                }
+                return {
+                    smallBlind: level.smallBlind,
+                    bigBlind: level.bigBlind
+                };
+            });
+        }
+
+        function saveCurrentBlindProfile() {
+            const nameInput = document.getElementById('blindProfileNameInput');
+            const name = (nameInput?.value || '').trim();
+            if (!name) {
+                showToast('Please enter a profile name.', 'error');
+                return;
+            }
+            if (name.toLowerCase() === 'default') {
+                showToast('"Default" is reserved. Choose another profile name.', 'error');
+                return;
+            }
+            if (!blindLevels.length) {
+                showToast('Add at least one blind level before saving a profile.', 'error');
+                return;
+            }
+            const entry = {
+                name,
+                levels: buildBlindProfileLevelsFromCurrent()
+            };
+            const existingIdx = blindProfiles.findIndex((p) => p.name.toLowerCase() === name.toLowerCase());
+            if (existingIdx !== -1) {
+                blindProfiles[existingIdx] = entry;
+            } else {
+                blindProfiles.push(entry);
+            }
+            normalizeBlindProfiles();
+            persistBlindProfiles();
+            if (nameInput) nameInput.value = '';
+            setSelectedBlindProfileName(name);
+            showToast(`Blind profile "${name}" saved.`, 'success');
+        }
+
+        function applyBlindProfile(idx) {
+            const profile = blindProfiles[idx];
+            if (!profile || !Array.isArray(profile.levels) || !profile.levels.length) {
+                applyDefaultBlindProfile();
+                return;
+            }
+            const mins = getDefaultBlindLevelMinutes();
+            blindLevels = profile.levels.map((level) => {
+                if (level.type === 'break') {
+                    const breakSeconds = Math.max(60, parseInt(level.breakTime, 10) || (30 * 60));
+                    return {
+                        type: 'break',
+                        breakTime: breakSeconds,
+                        timeLeft: breakSeconds
+                    };
+                }
+                return {
+                    smallBlind: level.smallBlind,
+                    bigBlind: level.bigBlind,
+                    levelTime: mins * 60,
+                    timeLeft: mins * 60
+                };
+            });
+            resetBlindTimerAfterProfileChange();
+            setSelectedBlindProfileName(profile.name);
+        }
+
+        function applyBlindProfileByName(name) {
+            const profileName = (name || '').trim();
+            if (!profileName || profileName.toLowerCase() === 'default') {
+                applyDefaultBlindProfile();
+                return;
+            }
+            const idx = findBlindProfileIndexByName(profileName);
+            if (idx === -1) {
+                applyDefaultBlindProfile();
+                return;
+            }
+            applyBlindProfile(idx);
+        }
+
+        function showBlindProfileDropdown() {
+            const dropdown = document.getElementById('blindProfileDropdown');
+            if (!dropdown) return;
+            dropdown.innerHTML = '';
+
+            const defaultItem = document.createElement('div');
+            defaultItem.className = 'game-type-dropdown-item flex justify-between items-center cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+            const defaultName = document.createElement('span');
+            defaultName.className = 'flex-grow truncate';
+            defaultName.textContent = 'Default';
+            defaultName.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                applyDefaultBlindProfile();
+                hideBlindProfileDropdown();
+            });
+            defaultItem.appendChild(defaultName);
+            dropdown.appendChild(defaultItem);
+
+            blindProfiles.forEach((profile, idx) => {
+                const item = document.createElement('div');
+                item.className = 'game-type-dropdown-item flex justify-between items-center cursor-pointer text-poker-text hover:bg-poker-accent hover:text-white transition-colors';
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'flex-grow truncate';
+                nameSpan.textContent = profile.name;
+                nameSpan.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    applyBlindProfile(idx);
+                    hideBlindProfileDropdown();
+                });
+                const del = document.createElement('button');
+                del.type = 'button';
+                del.className = 'ml-2 text-red-400 hover:text-red-200 font-bold flex-shrink-0';
+                del.title = 'Delete this blind profile';
+                del.innerHTML = '<i class="fas fa-times"></i>';
+                del.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteBlindProfile(idx);
+                });
+                item.appendChild(nameSpan);
+                item.appendChild(del);
+                dropdown.appendChild(item);
+            });
+            dropdown.classList.remove('hidden');
+        }
+
+        function hideBlindProfileDropdown() {
+            const dropdown = document.getElementById('blindProfileDropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+
+        function toggleBlindProfileDropdown(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const dropdown = document.getElementById('blindProfileDropdown');
+            if (dropdown && !dropdown.classList.contains('hidden')) {
+                hideBlindProfileDropdown();
+            } else {
+                showBlindProfileDropdown();
+            }
+        }
+
+        async function deleteBlindProfile(idx) {
+            const profile = blindProfiles[idx];
+            if (!profile) return;
+            if (!(await showConfirm(`Delete blind profile "${profile.name}"?`, { danger: true }))) return;
+            const deletedName = profile.name;
+            blindProfiles.splice(idx, 1);
+            persistBlindProfiles();
+            if (getSelectedBlindProfileName() === deletedName) {
+                applyDefaultBlindProfile();
+            }
+            showBlindProfileDropdown();
+        }
+
         function showGameTypeDropdown(filter = '') {
             const dropdown = document.getElementById('gameTypeDropdown');
             if (!dropdown) return;
@@ -4140,6 +4435,7 @@
             if (gameCount) gameCount.value = g.gameCount || '1';
             const blindTime = document.getElementById('blindTime');
             if (blindTime) blindTime.value = g.blindTime || '';
+            applyBlindProfileByName(g.blindProfile || 'Default');
             syncBlindTimeToTimer();
             updateRegistrationMode();
             updateStats();
@@ -4158,7 +4454,8 @@
                 teamsEvent: document.getElementById('teamsEvent')?.value || 'no',
                 buyIn: document.getElementById('buyIn').value,
                 gameCount: document.getElementById('gameCount').value,
-                blindTime: document.getElementById('blindTime').value
+                blindTime: document.getElementById('blindTime').value,
+                blindProfile: getSelectedBlindProfileName()
             };
             const existingIdx = savedGames.findIndex(g => (g.gameType || '').toLowerCase() === gameType.toLowerCase());
             if (existingIdx !== -1) {
@@ -6327,6 +6624,8 @@
             }
             updateRemoteControlToggleButton();
             updateRemoteControlNavVisibility();
+            updateRandomNumberGeneratorToggleButton();
+            updateRandomNumberGeneratorNavVisibility();
             updateRaffleCashToggleButton();
             updateRaffleCashVisibility();
             updateTeamsEventToggleButton();
@@ -9365,6 +9664,13 @@
                 });
             }
 
+            const blindProfileField = document.getElementById('blindProfile');
+            if (blindProfileField) {
+                blindProfileField.addEventListener('blur', function() {
+                    setTimeout(hideBlindProfileDropdown, 200);
+                });
+            }
+
             // Initialize slider for timer
             setTimeout(() => {
                 const slider = document.getElementById('timeSlider');
@@ -9725,7 +10031,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"raffleCashEnabled":true,"gameVouchersEnabled":true,"gameVoucherValue":50,"showNextBlindLevel":true}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"randomNumberGeneratorEnabled":true,"raffleCashEnabled":true,"gameVouchersEnabled":true,"gameVoucherValue":50,"showNextBlindLevel":true}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -9754,6 +10060,7 @@
             if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
             if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = true;
             if (adminSettings.remoteCodeDisplayMinutes == null) adminSettings.remoteCodeDisplayMinutes = 3;
+            if (adminSettings.randomNumberGeneratorEnabled == null) adminSettings.randomNumberGeneratorEnabled = true;
             if (adminSettings.raffleCashEnabled == null) adminSettings.raffleCashEnabled = true;
             if (adminSettings.teamsEventEnabled == null) adminSettings.teamsEventEnabled = true;
             if (adminSettings.gameVouchersEnabled == null) adminSettings.gameVouchersEnabled = true;
@@ -10003,6 +10310,7 @@
                 adminSettings,
                 adminMemberStats,
                 savedGames,
+                blindProfiles,
                 pointsTableHistory,
                 bonusHandPool,
                 ghostPlayerPool,
@@ -10071,6 +10379,11 @@
                     if (Array.isArray(data.savedGames)) {
                         savedGames = data.savedGames;
                         persistSavedGames();
+                    }
+                    if (Array.isArray(data.blindProfiles)) {
+                        blindProfiles = data.blindProfiles;
+                        normalizeBlindProfiles();
+                        persistBlindProfiles();
                     }
                     if (Array.isArray(data.pointsTableHistory)) {
                         pointsTableHistory = data.pointsTableHistory;
@@ -10184,6 +10497,7 @@
                 clubName: 'Poker Club',
                 remoteControlEnabled: true,
                 remoteCodeDisplayMinutes: 3,
+                randomNumberGeneratorEnabled: true,
                 raffleCashEnabled: true,
                 teamsEventEnabled: true,
                 gameVouchersEnabled: true,
@@ -10296,6 +10610,7 @@
             adminSettings = getDefaultAdminSettings();
             adminMemberStats = [];
             savedGames = [];
+            blindProfiles = [];
             pointsTableHistory = [];
             bonusHandPool = 0;
             ghostPlayerPool = 0;
@@ -10306,6 +10621,7 @@
             localStorage.setItem('adminSettings', JSON.stringify(adminSettings));
             localStorage.setItem('adminMemberStats', JSON.stringify(adminMemberStats));
             persistSavedGames();
+            persistBlindProfiles();
             persistPointsTableHistory();
             persistBonusHandPool();
             persistGhostPlayerPool();
