@@ -60,6 +60,21 @@
             border-top: none;
         }
 
+        body.login-view #clubLogoPrimary {
+            display: none;
+        }
+
+        body:not(.login-view) #loginSplashLogo {
+            display: none;
+        }
+
+        #loginSplashLogo {
+            width: 350px;
+            max-width: min(350px, calc(100vw - 2rem));
+            height: auto;
+            object-fit: contain;
+        }
+
         /* Small slider switch used for enable/disable settings */
         .pasc-switch {
             position: relative;
@@ -1750,12 +1765,12 @@
                 <h3>Settings overview</h3>
                 <p>Optional features are switched on and off with small slider switches — green means enabled, grey means disabled. Switch changes save immediately; other fields use the Save Settings button.</p>
                 <ul>
-                    <li><strong>General:</strong> Club name, season, max players/table, season-final qualification, and switches for Raffle Cash, Teams Event, Game Vouchers (with voucher value), and Remote Control (with QR display minutes).</li>
+                    <li><strong>General:</strong> Club name, club logo, season, max players/table, season-final qualification, and switches for Raffle Cash, Teams Event, Game Vouchers (with voucher value), and Remote Control (with QR display minutes).</li>
                     <li><strong>Blind Timer:</strong> Voice, blind levels, set all times, breaks.</li>
                     <li><strong>Player Management:</strong> Player records (name, email, phone, DOB, membership, committee).</li>
                     <li><strong>Club Cash &amp; Payout:</strong> Club vs player cash split and 1st/2nd place payout %.</li>
-                    <li><strong>Ghost Player / Bonus Hand / Bad Beat / Birthday:</strong> Optional season features and pool amounts.</li>
-                    <li><strong>Security:</strong> Login usernames/passwords for members. Committee gets full access; others get Points Table, Blind Timer, and Numbers.</li>
+                    <li><strong>Bonuses:</strong> Ghost Player, Bonus Hand, Bad Beat, and Birthday — optional season features and pool amounts.</li>
+                    <li><strong>Security:</strong> Master Password for the admin login, plus usernames/passwords for members. Committee gets full access; others get Points Table, Blind Timer, and Numbers.</li>
                     <li><strong>Game Management:</strong> List/delete saved games.</li>
                     <li><strong>Season Statistics:</strong> Season totals and expenses.</li>
                     <li><strong>Backup / Restore:</strong> Export, email to committee, or import a full club data file.</li>
@@ -1777,8 +1792,8 @@
     </div>
     <div id="appHeaderLogos" class="hidden w-full flex justify-center m-0 leading-none">
         <div class="flex items-center justify-center">
-            <img id="clubLogoPrimary" src="Logos/Logo-S19-1.1.png" alt="Club logo" class="block" style="height:157px; width:auto; object-fit:contain;" />
-            <img src="Logos/Logo-S19-2.png" alt="" class="block" style="height:120px; width:auto; object-fit:contain;" />
+            <img id="loginSplashLogo" src="images/Poker-Manager-logo-sml-optimized.png" alt="Poker Manager" class="block" />
+            <img id="clubLogoPrimary" src="images/poker_manager_120_transparent.png" alt="Poker Manager" class="block" style="height:120px; width:auto; object-fit:contain;" />
         </div>
     </div>
     <div id="appChrome" class="fixed top-2 right-2 z-50 flex gap-2 hidden">
@@ -2398,10 +2413,7 @@
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="blind-timer" onclick="showAdminSettingsSection('blind-timer')">Blind Timer</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="player-management" onclick="showAdminSettingsSection('player-management')">Player Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="pasc-cash" onclick="showAdminSettingsSection('pasc-cash')">Club Cash &amp; Payout</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="ghost-player-cash" onclick="showAdminSettingsSection('ghost-player-cash')">Ghost Player</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="bonus-hand" onclick="showAdminSettingsSection('bonus-hand')">Bonus Hand</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="bad-beat-bonus" onclick="showAdminSettingsSection('bad-beat-bonus')">Bad Beat Bonus</button>
-                            <button type="button" class="admin-settings-nav-btn" data-admin-section="birthday-bonus" onclick="showAdminSettingsSection('birthday-bonus')">Birthday Bonus</button>
+                            <button type="button" class="admin-settings-nav-btn" data-admin-section="bonuses" onclick="showAdminSettingsSection('bonuses')">Bonuses</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="security" onclick="showAdminSettingsSection('security')">Security</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="game-management" onclick="showAdminSettingsSection('game-management')">Game Management</button>
                             <button type="button" class="admin-settings-nav-btn" data-admin-section="season-statistics" onclick="showAdminSettingsSection('season-statistics')">Season Statistics</button>
@@ -2457,11 +2469,21 @@
                             </div>
                             <div id="adminSection-general" class="admin-settings-section hidden">
                                 <h3>General</h3>
-                                <p class="admin-section-intro">Club name, season number, table seating limits, season final qualification rules, and whether the Remote tab appears in the main navigation.</p>
+                                <p class="admin-section-intro">Club name, club logo, season number, table seating limits, season final qualification rules, and whether the Remote tab appears in the main navigation.</p>
                                 <form id="adminGeneralForm">
                                     <div class="admin-general-field">
                                         <label for="adminClubName" class="text-sm font-semibold">Club Name</label>
                                         <input type="text" id="adminClubName" placeholder="e.g. Poker Academy Social Club" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:60%;">
+                                    </div>
+                                    <div class="admin-general-field">
+                                        <span class="text-sm font-semibold">Club Logo</span>
+                                        <div class="admin-general-input-row mt-1 items-center">
+                                            <img id="adminClubLogoPreview" src="images/poker_manager_120_transparent.png" alt="Club logo preview" class="block rounded bg-poker-primary border border-poker-accent/30" style="height:48px; width:auto; max-width:180px; object-fit:contain;">
+                                            <input type="file" id="adminClubLogoFile" accept="image/*" class="hidden" onchange="onClubLogoFileSelected(event)">
+                                            <button type="button" onclick="document.getElementById('adminClubLogoFile').click()" class="px-3 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white text-sm">Choose Image</button>
+                                            <button type="button" onclick="clearClubLogo()" id="adminClubLogoClearBtn" class="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 rounded-lg font-medium text-white text-sm">Use Default</button>
+                                        </div>
+                                        <p class="text-xs text-poker-text/70 mt-1">Shown above the main game screen and on the login page. Leave as default to keep the Poker Manager logo.</p>
                                     </div>
                                     <div class="admin-general-field">
                                         <label for="adminSeasonNumber" class="text-sm font-semibold">Season Number</label>
@@ -2480,16 +2502,16 @@
                                     </div>
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Raffle Cash</span>
-                                        <button type="button" onclick="toggleRaffleCashEnabled()" id="toggleRaffleCashBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="true" aria-label="Raffle Cash"></button>
+                                        <button type="button" onclick="toggleRaffleCashEnabled()" id="toggleRaffleCashBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="false" aria-label="Raffle Cash"></button>
                                     </div>
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Teams Event</span>
-                                        <button type="button" onclick="toggleTeamsEventEnabled()" id="toggleTeamsEventBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="true" aria-label="Teams Event"></button>
+                                        <button type="button" onclick="toggleTeamsEventEnabled()" id="toggleTeamsEventBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="false" aria-label="Teams Event"></button>
                                     </div>
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Game Vouchers</span>
                                         <div class="admin-general-input-row mt-1">
-                                            <button type="button" onclick="toggleGameVouchersEnabled()" id="toggleGameVouchersBtn" class="pasc-switch" role="switch" aria-checked="true" aria-label="Game Vouchers"></button>
+                                            <button type="button" onclick="toggleGameVouchersEnabled()" id="toggleGameVouchersBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Game Vouchers"></button>
                                             <label for="adminGameVoucherValue" class="text-xs text-poker-text/80">Voucher Value</label>
                                             <span class="text-xs text-poker-text/80">$</span>
                                             <input type="number" id="adminGameVoucherValue" min="0" step="1" value="50" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:86px;">
@@ -2498,7 +2520,7 @@
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Remote Control</span>
                                         <div class="admin-general-input-row mt-1">
-                                            <button type="button" onclick="toggleRemoteControlEnabled()" id="toggleRemoteControlBtn" class="pasc-switch" role="switch" aria-checked="true" aria-label="Remote Control"></button>
+                                            <button type="button" onclick="toggleRemoteControlEnabled()" id="toggleRemoteControlBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Remote Control"></button>
                                             <label for="adminRemoteCodeDisplayMinutes" class="text-xs text-poker-text/80">Show code/QR on Blind Timer for</label>
                                             <input type="number" id="adminRemoteCodeDisplayMinutes" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:86px;">
                                             <span class="text-xs text-poker-text/80">minutes</span>
@@ -2506,14 +2528,22 @@
                                     </div>
                                     <div class="admin-general-field">
                                         <span class="text-sm font-semibold">Random Number Generator</span>
-                                        <button type="button" onclick="toggleRandomNumberGeneratorEnabled()" id="toggleRandomNumberGeneratorBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="true" aria-label="Random Number Generator"></button>
+                                        <button type="button" onclick="toggleRandomNumberGeneratorEnabled()" id="toggleRandomNumberGeneratorBtn" class="pasc-switch self-start mt-1" role="switch" aria-checked="false" aria-label="Random Number Generator"></button>
                                     </div>
                                     <button type="submit" class="self-start mt-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
                                 </form>
                             </div>
                             <div id="adminSection-security" class="admin-settings-section hidden">
                                 <h3>Security</h3>
-                                <p class="admin-section-intro">Set login usernames and passwords for all members. Committee members can access the full app; other members can access Points Table, Blind Timer, and Numbers only.</p>
+                                <p class="admin-section-intro">Set the Master Password for the admin login, and login usernames and passwords for all members. Committee members can access the full app; other members can access Points Table, Blind Timer, and Numbers only.</p>
+                                <div class="mb-6">
+                                    <label for="adminMasterPassword" class="text-sm font-semibold mb-1 block">Master Password</label>
+                                    <div class="flex flex-wrap gap-2 items-center">
+                                        <input type="password" id="adminMasterPassword" placeholder="Leave blank to keep current password" autocomplete="new-password" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="min-width:220px; max-width:320px;">
+                                        <button type="button" onclick="saveMasterPassword()" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Master Password</button>
+                                    </div>
+                                    <p class="text-xs text-poker-text/70 mt-1">Used with the admin username. Default is admin.</p>
+                                </div>
                                 <div id="adminSecurityList" class="overflow-x-auto mb-4"></div>
                                 <form id="adminSecurityForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
                                     <input type="hidden" id="adminSecurityEditIdx">
@@ -2579,77 +2609,85 @@
                                     </div>
                                 </form>
                             </div>
-                            <div id="adminSection-ghost-player-cash" class="admin-settings-section hidden">
-                                <h3>Ghost Player</h3>
-                                <p class="admin-section-intro">Amount taken from each game before the percentage split. Builds up each game until the ghost player wins, then resets.</p>
-                                <div class="flex flex-wrap items-center gap-3 mb-3">
-                                    <button type="button" onclick="toggleGhostPlayerCashEnabled()" id="toggleGhostPlayerCashBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Ghost Player"></button>
-                                </div>
-                                <div class="text-base text-poker-text mb-3">
-                                    Current pool: <span id="adminGhostPlayerPoolDisplay" class="font-bold text-green-400">$0.00</span>
-                                </div>
-                                <form id="adminGhostCashForm" class="flex flex-col gap-4">
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col">
-                                            <label for="adminGhostPlayerCash" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
-                                            <input type="number" id="adminGhostPlayerCash" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                        </div>
-                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                        <button type="button" onclick="resetGhostPlayerPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                            <div id="adminSection-bonuses" class="admin-settings-section hidden">
+                                <h3>Bonuses</h3>
+                                <p class="admin-section-intro">Optional season bonus features. Enable each one with the switch, then set amounts and manage pools.</p>
+
+                                <div class="mb-8">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-1">Ghost Player</h4>
+                                    <p class="admin-section-intro">Amount taken from each game before the percentage split. Builds up each game until the ghost player wins, then resets.</p>
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <button type="button" onclick="toggleGhostPlayerCashEnabled()" id="toggleGhostPlayerCashBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Ghost Player"></button>
                                     </div>
-                                </form>
-                            </div>
-                            <div id="adminSection-bonus-hand" class="admin-settings-section hidden">
-                                <h3>Bonus Hand</h3>
-                                <p class="admin-section-intro">Season bonus hand (e.g. Straight Flush 6–10). Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
-                                <div class="flex flex-wrap items-center gap-3 mb-3">
-                                    <button type="button" onclick="toggleBonusHandEnabled()" id="toggleBonusHandBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Bonus Hand"></button>
-                                </div>
-                                <div class="text-base text-poker-text mb-3">
-                                    Current pool: <span id="adminBonusHandPoolDisplay" class="font-bold text-green-400">$0.00</span>
-                                </div>
-                                <form id="adminBonusHandForm" class="flex flex-col gap-4">
-                                    <div class="flex flex-col md:flex-row gap-4 flex-wrap">
-                                        <div class="flex flex-col w-1/3 min-w-[140px]">
-                                            <label for="adminBonusHandDescription" class="text-sm font-semibold mb-1">Bonus Hand</label>
-                                            <input type="text" id="adminBonusHandDescription" placeholder="e.g. Straight Flush 6-10" class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
-                                        </div>
-                                        <div class="flex flex-col">
-                                            <label for="adminBonusHandAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
-                                            <input type="number" id="adminBonusHandAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
-                                        </div>
+                                    <div class="text-base text-poker-text mb-3">
+                                        Current pool: <span id="adminGhostPlayerPoolDisplay" class="font-bold text-green-400">$0.00</span>
                                     </div>
-                                    <div class="flex flex-wrap items-center gap-4">
-                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                        <button type="button" onclick="resetBonusHandPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div id="adminSection-bad-beat-bonus" class="admin-settings-section hidden">
-                                <h3>Bad Beat Bonus</h3>
-                                <p class="admin-section-intro">When a player holding quads loses to a higher hand, they win the bad beat bonus. Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
-                                <div class="flex flex-wrap items-center gap-3 mb-3">
-                                    <button type="button" onclick="toggleBadBeatBonusEnabled()" id="toggleBadBeatBonusBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Bad Beat Bonus"></button>
-                                </div>
-                                <div class="text-base text-poker-text mb-3">
-                                    Current pool: <span id="adminBadBeatBonusPoolDisplay" class="font-bold text-green-400">$0.00</span>
-                                </div>
-                                <form id="adminBadBeatBonusForm" class="flex flex-col gap-4">
-                                    <div class="flex flex-wrap items-end gap-4">
-                                        <div class="flex flex-col">
-                                            <label for="adminBadBeatBonusAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
-                                            <input type="number" id="adminBadBeatBonusAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                    <form id="adminGhostCashForm" class="flex flex-col gap-4">
+                                        <div class="flex flex-wrap items-end gap-4">
+                                            <div class="flex flex-col">
+                                                <label for="adminGhostPlayerCash" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                                <input type="number" id="adminGhostPlayerCash" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                            </div>
+                                            <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                            <button type="button" onclick="resetGhostPlayerPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
                                         </div>
-                                        <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
-                                        <button type="button" onclick="resetBadBeatBonusPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                    </form>
+                                </div>
+
+                                <div class="mb-8 pt-4 border-t border-white/10">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-1">Bonus Hand</h4>
+                                    <p class="admin-section-intro">Season bonus hand (e.g. Straight Flush 6–10). Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <button type="button" onclick="toggleBonusHandEnabled()" id="toggleBonusHandBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Bonus Hand"></button>
                                     </div>
-                                </form>
-                            </div>
-                            <div id="adminSection-birthday-bonus" class="admin-settings-section hidden">
-                                <h3>Birthday Bonus</h3>
-                                <p class="admin-section-intro">Track players with birthdays this month and mark when their birthday bonus has been paid. Paid status resets each year when their birthday month comes around again. When disabled, birthday icons and bonus tracking are hidden throughout the app.</p>
-                                <div class="flex flex-wrap items-center gap-3">
-                                    <button type="button" onclick="toggleBirthdayBonusEnabled()" id="toggleBirthdayBonusBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Birthday Bonus"></button>
+                                    <div class="text-base text-poker-text mb-3">
+                                        Current pool: <span id="adminBonusHandPoolDisplay" class="font-bold text-green-400">$0.00</span>
+                                    </div>
+                                    <form id="adminBonusHandForm" class="flex flex-col gap-4">
+                                        <div class="flex flex-col md:flex-row gap-4 flex-wrap">
+                                            <div class="flex flex-col w-1/3 min-w-[140px]">
+                                                <label for="adminBonusHandDescription" class="text-sm font-semibold mb-1">Bonus Hand</label>
+                                                <input type="text" id="adminBonusHandDescription" placeholder="e.g. Straight Flush 6-10" class="w-full px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <label for="adminBonusHandAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                                <input type="number" id="adminBonusHandAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                            </div>
+                                        </div>
+                                        <div class="flex flex-wrap items-center gap-4">
+                                            <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                            <button type="button" onclick="resetBonusHandPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="mb-8 pt-4 border-t border-white/10">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-1">Bad Beat Bonus</h4>
+                                    <p class="admin-section-intro">When a player holding quads loses to a higher hand, they win the bad beat bonus. Each game, the set amount is taken from raffle cash and added to the pool until won.</p>
+                                    <div class="flex flex-wrap items-center gap-3 mb-3">
+                                        <button type="button" onclick="toggleBadBeatBonusEnabled()" id="toggleBadBeatBonusBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Bad Beat Bonus"></button>
+                                    </div>
+                                    <div class="text-base text-poker-text mb-3">
+                                        Current pool: <span id="adminBadBeatBonusPoolDisplay" class="font-bold text-green-400">$0.00</span>
+                                    </div>
+                                    <form id="adminBadBeatBonusForm" class="flex flex-col gap-4">
+                                        <div class="flex flex-wrap items-end gap-4">
+                                            <div class="flex flex-col">
+                                                <label for="adminBadBeatBonusAmount" class="text-sm font-semibold mb-1">Amount per Game ($)</label>
+                                                <input type="number" id="adminBadBeatBonusAmount" min="0" step="1" class="px-3 py-2 rounded-lg bg-poker-primary border border-poker-accent text-poker-text" style="width:120px;">
+                                            </div>
+                                            <button type="submit" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg font-medium text-white">Save Settings</button>
+                                            <button type="button" onclick="resetBadBeatBonusPool()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg font-medium text-white">Mark as Won / Reset Pool</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div class="pt-4 border-t border-white/10">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-1">Birthday Bonus</h4>
+                                    <p class="admin-section-intro">Track players with birthdays this month and mark when their birthday bonus has been paid. Paid status resets each year when their birthday month comes around again. When disabled, birthday icons and bonus tracking are hidden throughout the app.</p>
+                                    <div class="flex flex-wrap items-center gap-3">
+                                        <button type="button" onclick="toggleBirthdayBonusEnabled()" id="toggleBirthdayBonusBtn" class="pasc-switch" role="switch" aria-checked="false" aria-label="Birthday Bonus"></button>
+                                    </div>
                                 </div>
                             </div>
                             <div id="adminSection-blind-timer" class="admin-settings-section hidden">
@@ -2777,13 +2815,13 @@
         
         <!-- Version Number - Appears on all pages -->
         <div id="appVersionFooterWrap" class="text-center mt-4 pt-3 border-t border-poker-accent/20">
-            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.8.12</p>
+            <p id="appVersionFooter" class="text-sm text-poker-text/60">Poker Manager v2026.8.16</p>
         </div>
     </div>
 
     <script>
         const PASC_APP_NAME = 'Poker Manager';
-        const PASC_APP_VERSION = '2026.8.12';
+        const PASC_APP_VERSION = '2026.8.16';
 
         // Firebase web config for Remote Sync (Realtime Database).
         const FIREBASE_CONFIG = {
@@ -3119,7 +3157,7 @@
         function getRemoteControlSettings() {
             normalizeAdminSettings();
             return {
-                enabled: adminSettings.remoteControlEnabled !== false,
+                enabled: adminSettings.remoteControlEnabled === true,
                 codeDisplayMinutes: Math.max(0, parseInt(adminSettings.remoteCodeDisplayMinutes, 10) || 0)
             };
         }
@@ -3238,7 +3276,7 @@
         function getRandomNumberGeneratorSettings() {
             normalizeAdminSettings();
             return {
-                enabled: adminSettings.randomNumberGeneratorEnabled !== false
+                enabled: adminSettings.randomNumberGeneratorEnabled === true
             };
         }
 
@@ -5764,7 +5802,7 @@
             normalizeAdminSettings();
             const value = parseFloat(adminSettings.gameVoucherValue);
             return {
-                enabled: adminSettings.gameVouchersEnabled !== false,
+                enabled: adminSettings.gameVouchersEnabled === true,
                 value: Number.isFinite(value) && value >= 0 ? value : GAME_VOUCHER_VALUE_DEFAULT
             };
         }
@@ -6448,6 +6486,89 @@
             return slug || 'poker-club';
         }
 
+        const DEFAULT_CLUB_LOGO_SRC = 'images/poker_manager_120_transparent.png';
+        const DEFAULT_LOGIN_LOGO_SRC = 'images/Poker-Manager-logo-sml-optimized.png';
+        const CLUB_LOGO_MAX_BYTES = 2 * 1024 * 1024;
+
+        function getClubLogoSrc() {
+            normalizeAdminSettings();
+            const dataUrl = adminSettings.clubLogoDataUrl;
+            if (typeof dataUrl === 'string' && dataUrl.startsWith('data:image/')) {
+                return dataUrl;
+            }
+            return DEFAULT_CLUB_LOGO_SRC;
+        }
+
+        function hasCustomClubLogo() {
+            normalizeAdminSettings();
+            return typeof adminSettings.clubLogoDataUrl === 'string' && adminSettings.clubLogoDataUrl.startsWith('data:image/');
+        }
+
+        function applyClubLogo() {
+            const custom = hasCustomClubLogo();
+            const clubName = getClubName();
+            const mainSrc = getClubLogoSrc();
+            const loginSrc = custom ? mainSrc : DEFAULT_LOGIN_LOGO_SRC;
+            const alt = custom ? `${clubName} logo` : 'Poker Manager';
+
+            const clubLogo = document.getElementById('clubLogoPrimary');
+            if (clubLogo) {
+                clubLogo.src = mainSrc;
+                clubLogo.alt = alt;
+            }
+            const loginLogo = document.getElementById('loginSplashLogo');
+            if (loginLogo) {
+                loginLogo.src = loginSrc;
+                loginLogo.alt = alt;
+            }
+            const preview = document.getElementById('adminClubLogoPreview');
+            if (preview) {
+                preview.src = mainSrc;
+                preview.alt = custom ? `${clubName} logo preview` : 'Default logo preview';
+            }
+            const clearBtn = document.getElementById('adminClubLogoClearBtn');
+            if (clearBtn) clearBtn.classList.toggle('hidden', !custom);
+        }
+
+        function onClubLogoFileSelected(event) {
+            const file = event.target.files && event.target.files[0];
+            event.target.value = '';
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('Please choose an image file.', 'error');
+                return;
+            }
+            if (file.size > CLUB_LOGO_MAX_BYTES) {
+                showToast('Club logo must be 2 MB or smaller.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function() {
+                const result = reader.result;
+                if (typeof result !== 'string' || !result.startsWith('data:image/')) {
+                    showToast('Could not read that image.', 'error');
+                    return;
+                }
+                normalizeAdminSettings();
+                adminSettings.clubLogoDataUrl = result;
+                saveAdminSettings();
+                applyClubLogo();
+                showToast('Club logo saved.', 'success');
+            };
+            reader.onerror = function() {
+                showToast('Could not read that image.', 'error');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearClubLogo() {
+            normalizeAdminSettings();
+            adminSettings.clubLogoDataUrl = '';
+            saveAdminSettings();
+            applyClubLogo();
+            showToast('Club logo reset to default.', 'info');
+        }
+
         function applyClubBranding() {
             const clubName = getClubName();
             const season = getSeasonNumber();
@@ -6465,8 +6586,7 @@
             const footer = document.getElementById('appVersionFooter');
             if (footer) footer.textContent = `${PASC_APP_NAME} v${PASC_APP_VERSION}`;
 
-            const clubLogo = document.getElementById('clubLogoPrimary');
-            if (clubLogo) clubLogo.alt = `${clubName} logo`;
+            applyClubLogo();
         }
 
         function populateAdminAboutSection() {
@@ -6519,6 +6639,7 @@
             normalizeAdminSettings();
             const clubNameInput = document.getElementById('adminClubName');
             if (clubNameInput) clubNameInput.value = adminSettings.clubName || '';
+            applyClubLogo();
         }
 
         function getMinGamesForSeasonFinal() {
@@ -6536,7 +6657,7 @@
         function getRaffleCashSettings() {
             normalizeAdminSettings();
             return {
-                enabled: adminSettings.raffleCashEnabled !== false
+                enabled: adminSettings.raffleCashEnabled === true
             };
         }
 
@@ -6579,7 +6700,7 @@
         function getTeamsEventSettings() {
             normalizeAdminSettings();
             return {
-                enabled: adminSettings.teamsEventEnabled !== false
+                enabled: adminSettings.teamsEventEnabled === true
             };
         }
 
@@ -7643,7 +7764,7 @@
                     </div>
                 </div>
                 <div class="mt-4 bg-poker-primary/50 rounded-xl px-4 py-6 border border-poker-accent/20 text-center">
-                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Total Club Cash for Season Final</h4>
+                    <h4 class="text-xl font-semibold text-yellow-400 mb-3">Total Club Cash</h4>
                     <div class="text-4xl md:text-5xl font-bold text-green-400">${formatAdminGameMoney(seasonFinalTotal)}</div>
                 </div>
             `;
@@ -7672,7 +7793,7 @@
                         <th>Game Type</th>
                         <th>Game Count</th>
                         <th>Total Players</th>
-                        <th>Game Details</th>
+                        <th>View Game</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -9984,9 +10105,9 @@
         }
 
         // --- ADMIN PAGE LOGIC ---
-        // Owner login credentials (SHA-256 hashes only — default username: admin, password: pasc)
+        // Owner login: username is always admin. Password is the Master Password setting (default: admin).
         const OWNER_USER_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-        const OWNER_PASS_HASH = 'b683573ac88ce4a7b5cd04d849743c2d9f1ee543f62a6c4e51e7cd8927f47869';
+        const DEFAULT_MASTER_PASSWORD_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
         const DEV_USER_HASH = 'ef260e9aa3c673af240d17a2660480361a8e081d1ffeca2a5ed0e3219fc18567';
         const DEV_PASS_HASH = 'fba2eac3ee47ff78190eab8acfc21686955e4aed6fd45a5524ad84b537aeeb23';
 
@@ -10003,7 +10124,7 @@
             const userHash = await sha256(normalizeAdminUsername(username));
             const passHash = await sha256(password);
 
-            if (userHash === OWNER_USER_HASH && passHash === OWNER_PASS_HASH) {
+            if (userHash === OWNER_USER_HASH && passHash === getMasterPasswordHash()) {
                 return { ok: true, role: 'owner' };
             }
 
@@ -10031,7 +10152,7 @@
 
         // Store players and settings in localStorage for persistence
         let adminPlayers = JSON.parse(localStorage.getItem('adminPlayers') || '[]');
-        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":true,"remoteCodeDisplayMinutes":3,"randomNumberGeneratorEnabled":true,"raffleCashEnabled":true,"gameVouchersEnabled":true,"gameVoucherValue":50,"showNextBlindLevel":true}');
+        let adminSettings = JSON.parse(localStorage.getItem('adminSettings') || '{"pascPercent":25,"playerPayoutPercent":75,"payout1stPercent":50,"payout2ndPercent":30,"seasonNumber":1,"ghostPlayerCash":20,"ghostPlayerEnabled":false,"bonusHandEnabled":false,"bonusHandDescription":"","bonusHandAmountPerGame":20,"badBeatBonusEnabled":false,"badBeatBonusAmountPerGame":10,"maxPlayersPerTable":8,"minGamesForSeasonFinal":0,"birthdayBonusEnabled":false,"clubName":"Poker Club","remoteControlEnabled":false,"remoteCodeDisplayMinutes":3,"randomNumberGeneratorEnabled":false,"raffleCashEnabled":false,"teamsEventEnabled":false,"gameVouchersEnabled":false,"gameVoucherValue":50,"showNextBlindLevel":true}');
         function normalizeAdminSettings() {
             if (!adminSettings || typeof adminSettings !== 'object') {
                 adminSettings = getDefaultAdminSettings();
@@ -10058,19 +10179,44 @@
             if (adminSettings.licensedTo == null) adminSettings.licensedTo = '';
             if (adminSettings.birthdayBonusEnabled == null) adminSettings.birthdayBonusEnabled = false;
             if (adminSettings.clubName == null) adminSettings.clubName = 'Poker Club';
-            if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = true;
+            if (adminSettings.clubLogoDataUrl == null) adminSettings.clubLogoDataUrl = '';
+            if (adminSettings.remoteControlEnabled == null) adminSettings.remoteControlEnabled = false;
             if (adminSettings.remoteCodeDisplayMinutes == null) adminSettings.remoteCodeDisplayMinutes = 3;
-            if (adminSettings.randomNumberGeneratorEnabled == null) adminSettings.randomNumberGeneratorEnabled = true;
-            if (adminSettings.raffleCashEnabled == null) adminSettings.raffleCashEnabled = true;
-            if (adminSettings.teamsEventEnabled == null) adminSettings.teamsEventEnabled = true;
-            if (adminSettings.gameVouchersEnabled == null) adminSettings.gameVouchersEnabled = true;
+            if (adminSettings.randomNumberGeneratorEnabled == null) adminSettings.randomNumberGeneratorEnabled = false;
+            if (adminSettings.raffleCashEnabled == null) adminSettings.raffleCashEnabled = false;
+            if (adminSettings.teamsEventEnabled == null) adminSettings.teamsEventEnabled = false;
+            if (adminSettings.gameVouchersEnabled == null) adminSettings.gameVouchersEnabled = false;
             if (adminSettings.gameVoucherValue == null) adminSettings.gameVoucherValue = 50;
             if (adminSettings.showNextBlindLevel == null) adminSettings.showNextBlindLevel = true;
+            if (!adminSettings.masterPasswordHash) adminSettings.masterPasswordHash = DEFAULT_MASTER_PASSWORD_HASH;
         }
         normalizeAdminSettings();
         updateRaffleCashVisibility();
         updateGameVouchersVisibility();
         updateTeamsEventVisibility();
+
+        function getMasterPasswordHash() {
+            normalizeAdminSettings();
+            return adminSettings.masterPasswordHash || DEFAULT_MASTER_PASSWORD_HASH;
+        }
+
+        function populateMasterPasswordForm() {
+            const input = document.getElementById('adminMasterPassword');
+            if (input) input.value = '';
+        }
+
+        async function saveMasterPassword() {
+            const input = document.getElementById('adminMasterPassword');
+            const password = (input?.value || '').trim();
+            if (!password) {
+                showToast('Please enter a new Master Password.', 'error');
+                return;
+            }
+            adminSettings.masterPasswordHash = await sha256(password);
+            saveAdminSettings();
+            if (input) input.value = '';
+            showToast('Master Password saved.', 'success');
+        }
         function populateAdminSettingsForm() {
             normalizeAdminSettings();
             const pascPercentInput = document.getElementById('adminPascPercent');
@@ -10495,14 +10641,16 @@
                 licensedTo: '',
                 birthdayBonusEnabled: false,
                 clubName: 'Poker Club',
-                remoteControlEnabled: true,
+                clubLogoDataUrl: '',
+                remoteControlEnabled: false,
                 remoteCodeDisplayMinutes: 3,
-                randomNumberGeneratorEnabled: true,
-                raffleCashEnabled: true,
-                teamsEventEnabled: true,
-                gameVouchersEnabled: true,
+                randomNumberGeneratorEnabled: false,
+                raffleCashEnabled: false,
+                teamsEventEnabled: false,
+                gameVouchersEnabled: false,
                 gameVoucherValue: 50,
-                showNextBlindLevel: true
+                showNextBlindLevel: true,
+                masterPasswordHash: DEFAULT_MASTER_PASSWORD_HASH
             };
         }
 
@@ -10647,6 +10795,9 @@
         }
 
         function showAdminSettingsSection(sectionId) {
+            if (['ghost-player-cash', 'bonus-hand', 'bad-beat-bonus', 'birthday-bonus'].includes(sectionId)) {
+                sectionId = 'bonuses';
+            }
             if (sectionId === 'remote-sync' && !isDevLoggedIn()) {
                 sectionId = 'general';
             }
@@ -10670,6 +10821,7 @@
                 case 'security':
                     renderAdminSecurityList();
                     cancelAdminSecurityEdit();
+                    populateMasterPasswordForm();
                     break;
                 case 'game-management':
                     renderAdminGameManagement();
@@ -10677,7 +10829,10 @@
                 case 'season-statistics':
                     renderAdminSeasonStatistics();
                     break;
-                case 'birthday-bonus':
+                case 'bonuses':
+                    populateAdminGhostCashForm();
+                    populateAdminBonusHandForm();
+                    populateAdminBadBeatBonusForm();
                     populateAdminBirthdayBonusForm();
                     break;
                 case 'general':
@@ -10721,6 +10876,9 @@
             let savedSection = localStorage.getItem('adminSettingsSection') || 'backup-restore';
             if (['club', 'season-number', 'table-assignments'].includes(savedSection)) {
                 savedSection = 'general';
+            }
+            if (['ghost-player-cash', 'bonus-hand', 'bad-beat-bonus', 'birthday-bonus'].includes(savedSection)) {
+                savedSection = 'bonuses';
             }
             if (savedSection === 'remote-sync' && !isDevLoggedIn()) {
                 savedSection = 'general';
