@@ -2856,6 +2856,7 @@
         let remoteLastAnnouncementSeq = 0;
         let remoteAnnouncementsEnabled = false;
         let remoteWakeLockSentinel = null;
+        let screenWakeLockRequest = null;
         let remoteAutoLeaveTimeout = null;
 
         // Global variables
@@ -3340,6 +3341,7 @@
                     setTimeout(() => splash.classList.add('fade-in'), 10);
                 }
             }
+            void syncRemoteWakeLock();
         }
 
         function openLoginFromSplash() {
@@ -3364,6 +3366,7 @@
             }
             const passwordInput = document.getElementById('appPassword');
             if (passwordInput) passwordInput.value = '';
+            void syncRemoteWakeLock();
         }
 
         function showAppAfterLogin() {
@@ -3523,6 +3526,7 @@
             if (pageId === 'remote-control') {
                 renderRemoteControlPage();
             }
+            void syncRemoteWakeLock();
         }
 
         function randomIntInclusive(min, max) {
@@ -8458,30 +8462,51 @@
             } catch (e) { /* ignore */ }
         }
 
+        function blindTimerScreenIsActive() {
+            const page = document.getElementById('blind-timer');
+            return !!(page && !page.classList.contains('hidden'));
+        }
+
+        function shouldKeepScreenAwake() {
+            if (document.visibilityState !== 'visible') return false;
+            if (blindTimerScreenIsActive()) return true;
+            return liveSyncRole === 'remote' && !!liveGameCode;
+        }
+
         async function releaseRemoteWakeLock() {
-            if (!remoteWakeLockSentinel) return;
-            try {
-                await remoteWakeLockSentinel.release();
-            } catch (e) { /* ignore */ }
+            const sentinel = remoteWakeLockSentinel;
             remoteWakeLockSentinel = null;
+            if (!sentinel || sentinel.released) return;
+            try {
+                await sentinel.release();
+            } catch (e) { /* ignore */ }
         }
 
         async function requestRemoteWakeLock() {
-            if (liveSyncRole !== 'remote' || !liveGameCode || !('wakeLock' in navigator)) return;
-            if (document.visibilityState !== 'visible') return;
+            if (!shouldKeepScreenAwake() || !('wakeLock' in navigator)) return;
             if (remoteWakeLockSentinel && !remoteWakeLockSentinel.released) return;
-            try {
-                remoteWakeLockSentinel = await navigator.wakeLock.request('screen');
-                remoteWakeLockSentinel.addEventListener('release', () => {
-                    remoteWakeLockSentinel = null;
-                });
-            } catch (e) {
-                remoteWakeLockSentinel = null;
-            }
+            if (screenWakeLockRequest) return screenWakeLockRequest;
+            screenWakeLockRequest = (async () => {
+                try {
+                    const sentinel = await navigator.wakeLock.request('screen');
+                    if (!shouldKeepScreenAwake()) {
+                        try { await sentinel.release(); } catch (e) { /* ignore */ }
+                        return;
+                    }
+                    remoteWakeLockSentinel = sentinel;
+                    sentinel.addEventListener('release', () => {
+                        if (remoteWakeLockSentinel === sentinel) remoteWakeLockSentinel = null;
+                    });
+                } catch (e) { /* ignore */ }
+                finally {
+                    screenWakeLockRequest = null;
+                }
+            })();
+            return screenWakeLockRequest;
         }
 
         async function syncRemoteWakeLock() {
-            if (liveSyncRole === 'remote' && liveGameCode) {
+            if (shouldKeepScreenAwake()) {
                 await requestRemoteWakeLock();
             } else {
                 await releaseRemoteWakeLock();
@@ -9690,10 +9715,18 @@
             }
 
             document.addEventListener('visibilitychange', () => {
-                if (document.visibilityState === 'visible') {
-                    void syncRemoteWakeLock();
+                void syncRemoteWakeLock();
+            });
+            document.addEventListener('pointerdown', () => {
+                if (shouldKeepScreenAwake() && (!remoteWakeLockSentinel || remoteWakeLockSentinel.released)) {
+                    void requestRemoteWakeLock();
                 }
             });
+            setInterval(() => {
+                if (shouldKeepScreenAwake() && (!remoteWakeLockSentinel || remoteWakeLockSentinel.released)) {
+                    void requestRemoteWakeLock();
+                }
+            }, 30000);
             
             // Allow Enter key to confirm player registration
             const playerNameInput = document.getElementById('playerName');
